@@ -305,7 +305,7 @@ void Game::gameAddData()
 // Function to Display Game Menus
 // Accepts 5 Int Parameters for adjusting output of Menu Lines
 // Returns Void
-int Game::gameMenu(int mMENU, int mLINETOTAL, int sLINEMIN, int sLINEMAX)
+int Game::gameMenu(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLINEMAX)
 {
 	// Initialize Variable(s) for gameMenu()
 	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
@@ -670,8 +670,194 @@ void Game::gameMenus(int mMENU, int mPAGE)
 	// If mMENU != 0, Open Selected Menu
 	if (mMENU != 0)
 	{
-		// Display Menu and Take User Choice
-		userInt = gameMenu(mMENU);
+		if (isSettings == true)
+		{
+			// Set Settings Values
+			menuLinesNumbers[4][0] = floorDifficulty;
+			menuLinesNumbers[5][0] = floorTotal;
+			menuLinesNumbers[6][0] = enemyTotal;
+			menuLinesNumbers[7][0] = playerTotal;
+		}
+
+		else if (isFloorIntro == true)
+		{
+			// Set Settings Values
+			menuLinesNumbers[5][0] = (floorCurrent + 1);
+		}
+
+		// Take User's Choice with gameChoiceInt() while isDone != true;
+		do
+		{
+			// If User is Editing, Display Settings Menu Page 2
+			if (menuLinesSelected[4][0] == true || menuLinesSelected[5][0] == true || menuLinesSelected[6][0] == true || menuLinesSelected[7][0] == true)
+			{
+				// Display Settings Menu Page 2
+				mPAGE = 2;
+			}
+
+			// If User is Not Editing a Setting, Display Settings Menu Page 1
+			else
+			{
+				// Display Settings Menu Page 1
+				mPAGE = 1;
+			}
+
+			// Display Menu and Take User Choice
+			userInt = gameMenu(mMENU, mPAGE);
+
+			// Check if User is Editing floorDifficulty
+			if (menuLinesSelected[4][0] == true)
+			{
+				// Take User Choice of any Number
+				floorDifficulty = userInt;
+				menuLinesNumbers[4][0] = floorDifficulty;
+				menuLinesSelected[4][0] = false;
+			}
+
+			// Check if User is Editing floorTotal
+			else if (menuLinesSelected[5][0] == true)
+			{
+				// Take User Choice of any Number
+				floorTotal = userInt;
+				menuLinesNumbers[5][0] = floorTotal;
+				menuLinesSelected[5][0] = false;
+			}
+
+			// Check if User is Editing enemyTotal
+			else if (menuLinesSelected[6][0] == true)
+			{
+				// Take User Choice of any Number
+				enemyTotal = userInt;
+				menuLinesNumbers[6][0] = enemyTotal;
+				menuLinesSelected[6][0] = false;
+			}
+
+			// Check if User is Editing playerTotal
+			else if (menuLinesSelected[7][0] == true)
+			{
+				// Take User Choice of any Number
+				playerTotal = userInt;
+				menuLinesNumbers[7][0] = playerTotal;
+				menuLinesSelected[7][0] = false;
+			}
+
+			// If User is Not Editing Settings, Display Settings Menu Page 1
+			else
+			{
+				// Check User Choice
+				switch (userInt)
+				{
+				case 1: // If User Choice is 1, Continue
+					// Send Choice 1 to Menu
+					isChoice[1] = true;
+
+					// Close the Menus
+					isDone = true;
+					break;
+				case 2: // If User Choice is 2, Continue
+					// Send Choice 2 to Menu
+					isChoice[2] = true;
+
+					// If Settings
+					if (isSettings == true)
+					{
+						menuLinesSelected[4][0] = true; // Set Menu Line 4 to Selected
+					}
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				case 3: // If User Choice is 3, Continue
+					// Send Choice 3 to Menu
+					isChoice[3] = true;
+
+					// If Settings
+					if (isSettings == true)
+					{
+						menuLinesSelected[5][0] = true; // Set Menu Line 5 to Selected
+					}
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				case 4: // If User Choice is 4, Continue
+					// Send Choice 4 to Menu
+					isChoice[4] = true;
+
+					// If Settings
+					if (isSettings == true)
+					{
+						menuLinesSelected[6][0] = true; // Set Menu Line 6 to Selected
+					}
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				case 5: // If User Choice is 5, Continue
+					// Send Choice 5 to Menu
+					isChoice[5] = true;
+
+					// If Settings
+					if (isSettings == true)
+					{
+						menuLinesSelected[7][0] = true; // Set Menu Line 7 to Selected
+					}
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				case 6: // If User Choice is 6, Continue
+					// Send Choice 6 to Menu
+					isChoice[6] = true;
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				case 7: // If User Choice is 7, Continue
+					// Send Choice 7 to Menu
+					isChoice[7] = true;
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				case 8: // If User Choice is 8, Continue
+					// Send Choice 8 to Menu
+					isChoice[8] = true;
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				case 9: // If User Choice is 9, Continue
+					// Send Choice 9 to Menu
+					isChoice[9] = true;
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				case 0: // If User Choice is 0, Continue
+					// Send Choice 0 to Menu
+					isChoice[0] = true;
+
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				default: // If Error, Take Choice Again
+					// Keep Menus Running until Closed
+					isDone = false;
+					break;
+				}
+			}
+		} while (isDone != true);
+
+		// Fill menuLinesNumbers Array Lines with (-1)
+		for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+		{
+			// Fill menuLinesNumbers Array Columns with (-1)
+			for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+			{
+				menuLinesNumbers[mLINE][mCOL] = (-1);
+			}
+		}
 	}
 
 	// If mMENU == 0, Select Menu

@@ -415,9 +415,12 @@ public:
 		gameAddData();
 
 		// Start Menus
-		gameIntro();
-		gameRules();
-		gameSettings();
+		gameMenus(1);
+		gameMenus(2);
+		gameMenus(3);
+		// gameIntro();
+		// gameRules();
+		// gameSettings();
 
 		// Build Game
 		// Fill Floors Vector with new Floors
@@ -490,7 +493,7 @@ public:
 
 	// MENU FUNCTIONS
 	void gameAddData();
-	int gameMenu(int, int = mLINES, int = 1, int = 0);
+	int gameMenu(int, int = 1, int = mLINES, int = 1, int = 0);
 	void gameIntro();
 	void gameRules();
 	void gameSettings();
