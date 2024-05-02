@@ -20,9 +20,9 @@ The player enters 1 Floor at a time, and each floor has
 a specifed amount of Enemies per Floor (Default is 1 Enemy per Floor).
 
 Game Rules:
-Attack  beats  Block  -  Attacker deals Damage to Blocker divided by block strength.
-Block   beats  Dodge  -  Blocker deals Damage to Dodger.
-Dodge   beats  Attack -  Dodger deals Damage to Attacker.
+Attack	beats	Block	-	Attacker deals Damage to Blocker divided by block strength.
+Block	beats	Dodge	-	Blocker deals Damage to Dodger.
+Dodge	beats	Attack	-	Dodger deals Damage to Attacker.
 
 If a Blocker Blocks an Attack, and the Blocker's Stamina reaches 0 or Lower,
 Blocker gets Stunned, and Attacker deals ANOTHER UNBlocked Damage to Blocker.
