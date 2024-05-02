@@ -1,2 +1,2 @@
 # Default
-Default Repository for General Projects
+Default Repository Template for General Projects
