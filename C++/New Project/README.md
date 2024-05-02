@@ -1,4 +1,6 @@
-# New Project
-Folder for New Project
+# Template.cpp
+Template for C++ Projects
 
-New Project Details:
+Template.cpp Details:
+
+Template for C++ Projects
