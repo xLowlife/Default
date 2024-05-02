@@ -47,6 +47,9 @@ using namespace std;
 
 int main()
 {
+	// Start Game
 	Game DosSouls;
+
+	// Return Void
 	return 0;
 }
