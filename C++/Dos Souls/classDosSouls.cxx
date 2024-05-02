@@ -1087,8 +1087,8 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 8; uLINE < uiCombat; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << left << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
-			 << setw(40) << right << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
+		cout << setw(40) << right << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
+			 << setw(40) << left << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
 
 		// cout New Line
 		cout << endl;
@@ -1098,11 +1098,11 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 10; uLINE < uLINES; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << left << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
-			 << setw(40) << right << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
+		cout << setw(40) << right << uiLines[uMENU][uLINE][1]
+			 << left << uiLines[uMENU][uLINE][2];
 
 		// cout New Line for All Lines, Except Last Line
-		if (uLINE <= (uiOptions - 2))
+		if (uLINE <= (uiOptions - 1))
 		{
 			cout << endl;
 		}
