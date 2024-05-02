@@ -1,2 +1,2 @@
-# Default
-Default Repository Template for General Projects
+# C++
+Folder for C++ Projects
