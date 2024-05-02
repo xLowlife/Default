@@ -1,2 +1,4 @@
-# Default
-Default Repository Template for General Projects
+# New Project
+Folder for New Project
+
+New Project Details:
