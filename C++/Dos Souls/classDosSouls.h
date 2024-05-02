@@ -405,7 +405,7 @@ public:
 	// string *personLabels = new string[pSIZE]{};		 // Establish a dynamic array for Person Labels
 	// string *floorDescriptions = new string[fSIZE]{}; // Establish a dynamic array for Floor Labels
 
-	// Constructor with default parameters
+	// Constructor with Default Parameters
 	// Allows player to pass int parameters to overwrite default parameters
 	Game(int fDiff = 3, int fTotal = 10, int eTotal = 1, int pTotal = 1)
 	{
