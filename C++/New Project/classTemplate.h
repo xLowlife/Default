@@ -50,6 +50,7 @@ public:
 	}
 
 	// classTemplate Functions
+	void classTemplateFunction();
 
 private:
 	// Initialize Variable(s) for classTemplate
