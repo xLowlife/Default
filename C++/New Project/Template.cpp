@@ -28,7 +28,7 @@ using namespace std;
 int main()
 {
 	classTemplate Template;
-	
+
 	// Return 0
 	return 0;
 }
