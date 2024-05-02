@@ -54,6 +54,7 @@ public:
 
 private:
 	// Initialize Variable(s) for classTemplate
+	
 };
 
 #endif
