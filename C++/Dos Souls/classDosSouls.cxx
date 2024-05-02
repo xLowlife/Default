@@ -305,7 +305,7 @@ void Game::gameAddData()
 // Function to Display Game Menus
 // Accepts 5 Int Parameters for adjusting output of Menu Lines
 // Returns Void
-void Game::gameMenu(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLINEMAX)
+int Game::gameMenu(int mMENU, int mLINETOTAL, int sLINEMIN, int sLINEMAX)
 {
 	// Initialize Variable(s) for gameMenu()
 	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
@@ -313,18 +313,6 @@ void Game::gameMenu(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLIN
 	bool				   // Initialize Bool(s) for storing Bool(s)
 		isMenu = false,
 		isDone = false;
-
-	// Find mMENU in menuLines[i][0][0]
-	for (int i = 0; !(isMenu) && i < mMENUS; ++i)
-	{
-		// If Menu Index is found, Correct mMENU with Menu Index
-		if (stoi(menuLines[i][0][0]) == mMENU)
-		{
-			// Correct mMENU with Menu Page Index
-			mMENU = i + (mPAGE - 1);
-			isMenu = true;
-		}
-	}
 
 	// Set Any menuLinesSelected[sLINE][0] == true
 	for (int sLINE = sLINEMIN; sLINE < (sLINEMIN + sLINEMAX); ++sLINE)
@@ -354,7 +342,7 @@ void Game::gameMenu(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLIN
 		// If Line is Selected, cout Selected Message
 		if (menuLinesSelected[mLINE][0] == true)
 		{
-			cout << menuLines[mMENU][0][3];
+			cout << menuLines[mMENU][11][3];
 		}
 
 		// cout New Line for All Lines, Except Last Line
@@ -364,8 +352,11 @@ void Game::gameMenu(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLIN
 		}
 	}
 
-	// Return Void
-	return;
+	// Take User Choice Specified by Menu
+	userInt = gameChoiceInt(menuLines[mMENU][0][1][0], menuLines[mMENU][0][1][1]);
+
+	// Return User Choice as Int
+	return userInt;
 }
 
 // Function to Display Intro Menu
@@ -381,7 +372,7 @@ void Game::gameIntro()
 	// Take User's Choice with gameChoiceInt() while isDone != true;
 	do
 	{
-		// Display Rules Menu
+		// Display Intro Menu
 		gameMenu(1);
 
 		// Take User Choice of (1 - 1)
@@ -572,7 +563,7 @@ void Game::gameFloorIntro()
 	// Take User's Choice with gameChoiceInt() while isDone != true;
 	do
 	{
-		// Display Rules Menu
+		// Display Floor Intro
 		gameMenu(4);
 
 		// Take User Choice of (1 - 1)
@@ -634,6 +625,154 @@ void Game::gameOutro()
 			break;
 		}
 	} while (isDone != true);
+
+	// Return Void
+	return;
+}
+
+// Function to Display Game Menus
+// Accepts no Parameters
+// Returns Void
+void Game::gameMenus(int mMENU, int mPAGE)
+{
+	// Initialize Variable(s) for gameMenus()
+	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+	bool				   // Initialize Bool(s) for storing Bool(s)
+		isMenu = false,
+		isIntro = false,
+		isRules = false,
+		isSettings = false,
+		isFloorIntro = false,
+		isOutro = false,
+		isDone = false,
+		isPaused = false,
+		isChoice[10];
+
+	// Find mMENU in menuLines[i][0][0]
+	for (int i = 0; !(isMenu) && i < mMENUS; ++i)
+	{
+		// If Menu Index is found, Correct mMENU with Menu Index
+		if (stoi(menuLines[i][0][0]) == mMENU)
+		{
+			// Correct mMENU with Menu Page Index
+			mMENU = i + (mPAGE - 1);
+			isMenu = true;
+		}
+	}
+
+	// Fill isChoice[] with false
+	for (int i = 0; i < 10; ++i)
+	{
+		isChoice[i] = false;
+	}
+
+	// If mMENU != 0, Open Selected Menu
+	if (mMENU != 0)
+	{
+		// Display Menu and Take User Choice
+		userInt = gameMenu(mMENU);
+	}
+
+	// If mMENU == 0, Select Menu
+	else
+	{
+		// Game is Paused
+		isPaused = true;
+
+		// Take User's Choice with gameChoiceInt() while isPaused == true;
+		do
+		{
+			// Display Menu and Take User Choice
+			userInt = gameMenu(mMENU);
+
+			// Fill isChoice[] with false
+			for (int i = 0; i < 10; ++i)
+			{
+				isChoice[i] = false;
+			}
+
+			// Check User Choice
+			switch (userInt)
+			{
+			case 1: // If User Choice is 1, Continue
+				// Send Choice 1 to Menu
+				isChoice[1] = true;
+				isDone = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			case 2: // If User Choice is 2, Continue
+				// Send Choice 2 to Menu
+				isChoice[2] = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			case 3: // If User Choice is 3, Continue
+				// Send Choice 3 to Menu
+				isChoice[3] = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			case 4: // If User Choice is 4, Continue
+				// Send Choice 4 to Menu
+				isChoice[4] = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			case 5: // If User Choice is 5, Continue
+				// Send Choice 5 to Menu
+				isChoice[5] = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			case 6: // If User Choice is 6, Continue
+				// Send Choice 6 to Menu
+				isChoice[6] = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			case 7: // If User Choice is 7, Continue
+				// Send Choice 7 to Menu
+				isChoice[7] = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			case 8: // If User Choice is 8, Continue
+				// Send Choice 8 to Menu
+				isChoice[8] = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			case 9: // If User Choice is 9, Continue
+				// Send Choice 9 to Menu
+				isChoice[9] = true;
+
+				// Close the Menus
+				isPaused = true;
+				break;
+			case 0: // If User Choice is 0, Continue
+				// Send Choice 0 to Menu
+				isChoice[0] = true;
+
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			default: // If Error, Take Choice Again
+				// Keep Menus Running until Closed
+				isPaused = false;
+				break;
+			}
+		} while (isPaused == true);
+	}
 
 	// Return Void
 	return;
@@ -1040,8 +1179,8 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 1; uLINE < uiHud; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << left << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
-			 << setw(40) << right << (to_string(uiLinesNumbers[uLINE][1]) + uiLines[uMENU][uLINE][2]);
+		cout << left << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
+			 << right << setw(40) << (to_string(uiLinesNumbers[uLINE][1]) + uiLines[uMENU][uLINE][2]);
 
 		// cout New Line
 		cout << endl;
@@ -1051,8 +1190,8 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 5; uLINE < uiChoices; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << left << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
-			 << setw(40) << right << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
+		cout << right << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
+			 << left << setw(40) << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
 
 		// If Line Has Value, cout Value Message
 		if (uiLinesNumbers[uLINE][0] >= 0)
@@ -1077,8 +1216,8 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 8; uLINE < uiCombat; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << right << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
-			 << setw(40) << left << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
+		cout << right << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
+			 << left << setw(40) << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
 
 		// cout New Line
 		cout << endl;
@@ -1088,7 +1227,7 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 10; uLINE < uLINES; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << right << uiLines[uMENU][uLINE][1]
+		cout << right << setw(40) << uiLines[uMENU][uLINE][1]
 			 << left << uiLines[uMENU][uLINE][2];
 
 		// cout New Line for All Lines, Except Last Line
@@ -1122,7 +1261,7 @@ void Game::gameCombat()
 		if (uiLinesSelected[4][0] == true || uiLinesSelected[5][0] == true || uiLinesSelected[6][0] == true || uiLinesSelected[7][0] == true)
 		{
 			// Display Settings Menu Page 2
-			gameUi(2);
+			gameUi(1);
 		}
 
 		// If User is Not Editing a Setting, Display Settings Menu Page 1
@@ -1224,26 +1363,17 @@ void Game::gameCombats()
 {
 	for (int i = 0; i < enemyTotal; ++i)
 	{
-		// Get Combat Turns System
-		gameCombatTurns();
-
 		do
 		{
 			// Progress Combat and Excute combat choices
-			gamePlayerTurn();
+			gamePlayerTurn(playerChoice, enemyChoice);
 			gameEnemyTurn();
-
-			// Display UI
-			gameProgress();
 
 			// Move to next round
 			++floorRound;
 
 			// Stamina Recovery System
 			gameStaminaRecovery();
-
-			// Get Combat Turns System
-			gameCombatTurns();
 		} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
 		++enemyCurrent;
 	}
@@ -1358,11 +1488,24 @@ void Game::gameStaminaRecovery()
 	return;
 }
 
-// Function for resetting Combat and taking Turns
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::gameCombatTurns()
+/******************************************************************************
+ *                                SYSTEM FUNCTIONS                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                  GAME FUNCTIONS                            *
+ ******************************************************************************/
+
+// Function to Take Player's Turn
+// Accepts no Parameters
+// Returns Void, Passes Data by Member Access
+void Game::gamePlayerTurn(int uMENU, int uPAGE)
 {
+	// Initialize Variable(s) for gamePlayerTurn()
+	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+
 	// Reset Player
 	// playerChoice = 0;
 	Players.at(playerCurrent).isRecovering = true;
@@ -1370,6 +1513,80 @@ void Game::gameCombatTurns()
 	Players.at(playerCurrent).isBlocking = false;
 	Players.at(playerCurrent).isDodging = false;
 	Players.at(playerCurrent).isWaiting = false;
+
+	// Take User's Choice with gameChoiceInt() while isDone != true;
+	do
+	{
+		// Display Game Ui
+		gameUi(1);
+
+		// Take User Choice of (1 - 4)
+		userInt = gameChoiceInt(uMENU, uPAGE);
+
+		// Check User Choice
+		switch (userInt)
+		{
+		case 1: // If User Choice is 1, Attack
+			// If User has enough Stamina, Attack
+			if (Players.at(playerCurrent).personStamina >= aCOST)
+			{
+				Players.at(playerCurrent).personStamina -= aCOST;
+				Players.at(playerCurrent).isAttacking = true;
+				isDone = true;
+			}
+			// If User does Not have enough Stamina, Take Choice Again
+			else
+			{
+				isDone = false;
+			}
+			break;
+		case 2: // If User Choice is 2, Block
+			// Disable Stamina Recovery, Block
+			Players.at(playerCurrent).isRecovering = false;
+			Players.at(playerCurrent).isBlocking = true;
+			isDone = true;
+			break;
+		case 3: // If User Choice is 3, Dodge
+			// If User has enough Stamina, Dodge
+			if (Players.at(playerCurrent).personStamina >= dCOST)
+			{
+				Players.at(playerCurrent).personStamina -= dCOST;
+				Players.at(playerCurrent).isDodging = true;
+				isDone = true;
+			}
+			// If User does Not have enough Stamina, Take Choice Again
+			else
+			{
+				isDone = false;
+			}
+			break;
+		case 4: // If User Choice is 4, Wait
+			// Enable Stamina Recovery, Wait
+			Players.at(playerCurrent).isRecovering = true;
+			Players.at(playerCurrent).isWaiting = true;
+			isDone = true;
+			break;
+		case 9: // If User Choice is 9, Exit
+			isDone = true;
+			break;
+		default: // If User Choice is Not within range, Wait
+			isDone = false;
+			break;
+		}
+	} while (isDone != true);
+
+	// Return Void
+	return;
+}
+
+// Function to Take Enemy's Turn
+// Accepts no Parameters
+// Returns Void, Passes Data by Member Access
+void Game::gameEnemyTurn()
+{
+	// Initialize Variable(s) for gameEnemyTurn()
+	int enemyInt = 0;	 // Initialize Int(s) for storing User Int(s)
+	bool isDone = false; // Initialize Bool(s) for storing Bool(s)
 
 	// Reset Enemy
 	// enemyChoice = 0;
@@ -1379,264 +1596,231 @@ void Game::gameCombatTurns()
 	Floors.at(floorCurrent).Enemies.at(enemyCurrent).isDodging = false;
 	Floors.at(floorCurrent).Enemies.at(enemyCurrent).isWaiting = false;
 
+	// Take Enemy's Choice while isDone != true;
 	do
 	{
-		// Generate Choice for Enemy's Turn
-		gameEnemyAi();
-		cout << "Enemy's Choice: " << enemyChoice << endl
-			 << endl;
-	} while (enemyChoice < 1 && enemyChoice > 4);
+		// Take Enemy's Choice of (1 - 4)
+		enemyInt = gameEnemyAi();
 
-	do
-	{
-		// Take Players Choice for Turn
-		cout << "Please choose an option for Round: " << floorRound << endl
-			 << "(1 = Attack, 2 = Block, 3 = Dodge, 4 = Wait): ";
-		gameChoiceInt();
-		playerChoice = userInt;
-		cout << "Player's Choice: " << playerChoice << endl
-			 << endl;
-	} while (playerChoice < 1 && playerChoice > 4);
+		// Check Enemy's Choice
+		switch (enemyInt)
+		{
+		case 1: // If Enemy's Choice is 1, Attack
+			// If Enemy has enough Stamina, Attack
+			if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= aCOST)
+			{
+				Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina -= aCOST;
+				Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking = true;
+				isDone = true;
+			}
+			// If Enemy does Not have enough Stamina, Take Choice Again
+			else
+			{
+				isDone = false;
+			}
+			break;
+		case 2: // If Enemy's Choice is 2, Block
+			// Disable Stamina Recovery, Block
+			Floors.at(floorCurrent).Enemies.at(enemyCurrent).isRecovering = false;
+			Floors.at(floorCurrent).Enemies.at(enemyCurrent).isBlocking = true;
+			isDone = true;
+			break;
+		case 3: // If Enemy's Choice is 3, Dodge
+			// If Enemy has enough Stamina, Dodge
+			if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= dCOST)
+			{
+				Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina -= dCOST;
+				Floors.at(floorCurrent).Enemies.at(enemyCurrent).isDodging = true;
+				isDone = true;
+			}
+			// If Enemy does Not have enough Stamina, Take Choice Again
+			else
+			{
+				isDone = false;
+			}
+			break;
+		case 4: // If Enemy's Choice is 4, Wait
+			// Enable Stamina Recovery, Wait
+			Floors.at(floorCurrent).Enemies.at(enemyCurrent).isRecovering = true;
+			Floors.at(floorCurrent).Enemies.at(enemyCurrent).isWaiting = true;
+			isDone = true;
+			break;
+		default: // If Enemy's Choice is Not within range, Wait
+			isDone = false;
+			break;
+		}
+	} while (isDone != true);
 
+	// enemyChoice = enemyInt
+	enemyChoice = enemyInt;
+
+	// Return Void
 	return;
 }
 
-// Function for player to take turn
-// Accepts no parameters, cins an int for player choice
-// Returns void, passes data by member access
-void Game::gamePlayerTurn()
+// Function to Decide Choices for Enemy's Turn
+// Accepts no Parameters
+// Returns Void, Passes Data by Member Access
+int Game::gameEnemyAi()
 {
-	// Execute Players's choice of action for turn
-	switch (playerChoice)
+	// Initialize Variable(s) for gameEnemyAi()
+	int enemyInt = 0;	 // Initialize Int(s) for storing User Int(s)
+	bool isDone = false; // Initialize Bool(s) for storing Bool(s)
+
+	// Take Enemy's Choice while isDone != true;
+	do
 	{
-	case 1:
-		cout << "Player's Actual Choice: " << 1 << endl
-			 << endl;
-		if (Players.at(playerCurrent).personStamina >= aCOST)
-		{
-			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina -= aCOST;
-			Players.at(playerCurrent).isAttacking = true;
-			break;
-		}
-		else
-		{
-			cout << "Player: Not enough Stamina for Attack" << endl;
-			// Players.at(playerCurrent).isWaiting = true;
-			// break;
-		}
-	case 2:
-		cout << "Player's Actual Choice: " << 2 << endl
-			 << endl;
-		Players.at(playerCurrent).isBlocking = true;
-		Players.at(playerCurrent).isRecovering = false;
-		break;
-	case 3:
-		cout << "Player's Actual Choice: " << 3 << endl
-			 << endl;
-		if (Players.at(playerCurrent).personStamina >= dCOST)
-		{
-			Players.at(playerCurrent).personStamina -= dCOST;
-			Players.at(playerCurrent).isDodging = true;
-			break;
-		}
-		else
-		{
-			cout << "Player: Not enough Stamina for Dodge" << endl;
-			// Players.at(playerCurrent).isWaiting = true;
-			// break;
-		}
-	case 4:
-		cout << "Player's Actual Choice: " << 4 << endl
-			 << endl;
-		Players.at(playerCurrent).isWaiting = true;
-		Players.at(playerCurrent).isRecovering = true;
-		break;
-	default:
-		// Error Message
-		cout << "Player's Actual Choice: Invalid" << endl
-			 << endl;
-		// Players.at(playerCurrent).isWaiting = true;
-		// break;
-	}
-	return;
-}
-
-/******************************************************************************
- *                                SYSTEM FUNCTIONS                            *
- ******************************************************************************/
-
-/******************************************************************************
- *                                  GAME FUNCTIONS                            *
- ******************************************************************************/
-
-// Function for Enemy to take turn
-// Accepts int parameter to choose action for turn
-// Returns void, passes data by member access
-void Game::gameEnemyTurn()
-{
-	// Execute Enemy's choice of action for turn
-	switch (enemyChoice)
-	{
-	case 1:
-		cout << "Enemy's Actual Choice: " << 1 << endl
-			 << endl;
-		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= aCOST)
-		{
-			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina -= aCOST;
-			Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking = true;
-			break;
-		}
-		else
-		{
-			cout << "Enemy: Not enough Stamina for Attack" << endl;
-			// Floors.at(floorCurrent).Enemies.at(enemyCurrent).isWaiting = true;
-			// break;
-		}
-	case 2:
-		cout << "Enemy's Actual Choice: " << 2 << endl
-			 << endl;
-		Floors.at(floorCurrent).Enemies.at(enemyCurrent).isBlocking = true;
-		Floors.at(floorCurrent).Enemies.at(enemyCurrent).isRecovering = false;
-		break;
-	case 3:
-		cout << "Enemy's Actual Choice: " << 3 << endl
-			 << endl;
+		//
 		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= dCOST)
 		{
-			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina -= dCOST;
-			Floors.at(floorCurrent).Enemies.at(enemyCurrent).isDodging = true;
-			break;
-		}
-		else
-		{
-			cout << "Enemy: Not enough Stamina for Dodge" << endl;
-			// Floors.at(floorCurrent).Enemies.at(enemyCurrent).isWaiting = true;
-			// break;
-		}
-	case 4:
-		cout << "Enemy's Actual Choice: " << 4 << endl
-			 << endl;
-		Floors.at(floorCurrent).Enemies.at(enemyCurrent).isWaiting = true;
-		Floors.at(floorCurrent).Enemies.at(enemyCurrent).isRecovering = true;
-		break;
-	default:
-		// Error Message
-		cout << "Enemy's Actual Choice: Invalid" << endl
-			 << endl;
-		// Floors.at(floorCurrent).Enemies.at(enemyCurrent).isWaiting = true;
-		// break;
-	}
-	return;
-}
+			//
+			if (Players.at(playerCurrent).personStamina < aCOST)
+			{
+				enemyInt = 1;
+			}
 
-// Function to decide choices for Enemies
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::gameEnemyAi()
-{
-	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= dCOST)
-	{
-		if (Players.at(playerCurrent).personStamina < aCOST)
-		{
-			enemyChoice = 1;
-		}
-		else if (Players.at(playerCurrent).personStamina <= bCOST)
-		{
-			bool choice1 = rng(rndInt(4)); // Default 3
-			if (choice1 == true)
+			//
+			else if (Players.at(playerCurrent).personStamina <= bCOST)
 			{
-				enemyChoice = 1;
+				bool choice1 = rng(rndInt(4)); // Default 3
+				//
+				if (choice1 == true)
+				{
+					enemyInt = 1;
+				}
+
+				//
+				else
+				{
+					enemyInt = 3;
+				}
 			}
+
+			//
+			else if (Players.at(playerCurrent).personStamina < dCOST)
+			{
+				bool choice2 = rng(rndInt(4)); // Default 3
+				//
+				if (choice2 == true)
+				{
+					enemyInt = 3;
+				}
+
+				//
+				else
+				{
+					enemyInt = 1;
+				}
+			}
+
+			//
 			else
 			{
-				enemyChoice = 3;
+				int choice3 = rndInt((rngASIZE - 1), 0);
+				enemyInt = Floors.at(floorCurrent).Enemies.at(enemyCurrent).choiceArray[choice3];
 			}
 		}
-		else if (Players.at(playerCurrent).personStamina < dCOST)
+
+		//
+		else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina > bCOST)
 		{
-			bool choice2 = rng(rndInt(4)); // Default 3
-			if (choice2 == true)
+			//
+			if (Players.at(playerCurrent).personStamina < aCOST)
 			{
-				enemyChoice = 3;
+				enemyInt = 1;
 			}
+
+			//
+			else if (Players.at(playerCurrent).personStamina <= bCOST)
+			{
+				bool choice4 = rng(rndInt(4)); // Default 3
+				//
+				if (choice4 == true)
+				{
+					enemyInt = 1;
+				}
+
+				//
+				else
+				{
+					enemyChoice = 2;
+				}
+			}
+
+			//
+			else if (Players.at(playerCurrent).personStamina < dCOST)
+			{
+				bool choice5 = rng(rndInt(4)); // Default 3
+				//
+				if (choice5 == true)
+				{
+					enemyInt = 2;
+				}
+
+				//
+				else
+				{
+					enemyInt = 1;
+				}
+			}
+
+			//
 			else
 			{
-				enemyChoice = 1;
+				bool choice6 = rng(rndInt(4)); // Default 3
+				//
+				if (choice6 == true)
+				{
+					enemyInt = 1;
+				}
+
+				//
+				else
+				{
+					enemyInt = 2;
+				}
 			}
 		}
+
+		//
+		else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= aCOST)
+		{
+			//
+			if (Players.at(playerCurrent).personStamina >= dCOST)
+			{
+				bool choice7 = rng(rndInt(4)); // Default 3
+				//
+				if (choice7 == true)
+				{
+					enemyInt = 2;
+				}
+
+				//
+				else
+				{
+					enemyInt = 1;
+				}
+			}
+
+			//
+			else
+			{
+				enemyInt = 1;
+			}
+		}
+
+		//
 		else
 		{
-			int choice3 = rndInt((rngASIZE - 1), 0);
-			enemyChoice = Floors.at(floorCurrent).Enemies.at(enemyCurrent).choiceArray[choice3];
+			enemyInt = 4;
 		}
-	}
-	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina > bCOST)
-	{
-		if (Players.at(playerCurrent).personStamina < aCOST)
-		{
-			enemyChoice = 1;
-		}
-		else if (Players.at(playerCurrent).personStamina <= bCOST)
-		{
-			bool choice4 = rng(rndInt(4)); // Default 3
-			if (choice4 == true)
-			{
-				enemyChoice = 1;
-			}
-			else
-			{
-				enemyChoice = 2;
-			}
-		}
-		else if (Players.at(playerCurrent).personStamina < dCOST)
-		{
-			bool choice5 = rng(rndInt(4)); // Default 3
-			if (choice5 == true)
-			{
-				enemyChoice = 2;
-			}
-			else
-			{
-				enemyChoice = 1;
-			}
-		}
-		else
-		{
-			bool choice6 = rng(rndInt(4)); // Default 3
-			if (choice6 == true)
-			{
-				enemyChoice = 1;
-			}
-			else
-			{
-				enemyChoice = 2;
-			}
-		}
-	}
-	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= aCOST)
-	{
-		if (Players.at(playerCurrent).personStamina >= dCOST)
-		{
-			bool choice7 = rng(rndInt(4)); // Default 3
-			if (choice7 == true)
-			{
-				enemyChoice = 2;
-			}
-			else
-			{
-				enemyChoice = 1;
-			}
-		}
-		else
-		{
-			enemyChoice = 1;
-		}
-	}
-	else
-	{
-		enemyChoice = 4;
-	}
-	return;
+
+		// End for Testing
+		isDone = true;
+	} while (isDone != true);
+
+	// Return Enemy's Choice as Int
+	return enemyInt;
 }
 
 //// Function to execute Person Attack

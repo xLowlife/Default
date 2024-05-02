@@ -490,12 +490,13 @@ public:
 
 	// MENU FUNCTIONS
 	void gameAddData();
-	void gameMenu(int, int = 1, int = mLINES, int = 1, int = 0);
+	int gameMenu(int, int = mLINES, int = 1, int = 0);
 	void gameIntro();
 	void gameRules();
 	void gameSettings();
 	void gameFloorIntro();
 	void gameOutro();
+	void gameMenus(int, int = 1);
 
 	// UI FUNCTIONS
 	void gameUi(int, int = 1, int = mLINES, int = 1, int = 0);
@@ -508,9 +509,8 @@ public:
 	Person gameAddPlayer(int = 0);
 	void gameCombat();
 	void gameStaminaRecovery();
-	void gameCombatTurns();
-	void gamePlayerTurn();
-	void gameEnemyAi();
+	void gamePlayerTurn(int, int = 1);
+	int gameEnemyAi();
 	void gameEnemyTurn();
 
 	// GAME FUNCTIONS
