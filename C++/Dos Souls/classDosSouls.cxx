@@ -42,114 +42,9 @@ Watching Mr.Priestley's labs and stuff I learned failing other classes.
  *                              class Dos Souls .cxx                          *
  ******************************************************************************/
 #include "classDosSouls.h"
-
-// Function to Fill Menu Line Array
-// Accepts no Parameters
-// Returns Void
-void Game::gameAddData()
-{
-	// Initialize Variable(s) for gameAddData()
-	ifstream fileGame; // Initialize ifstream(s) for storing ifstream(s)
-	string lineNew;	   // Initialize Strings(s) for storing String(s)
-
-	// Open fileMenus
-	fileGame.open(fileMenus);
-	if (fileGame.is_open())
-	{
-		// Output fileMenus opened successfully to console
-		cout << "File, " << fileMenus << ", opened successfully" << endl
-			 << endl;
-
-		// Fill Menu Line Array Pages
-		for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
-		{
-			// Fill Menu Line Array Lines
-			for (int mLINE = 0; mLINE < mLINES; ++mLINE)
-			{
-				// Fill Menu Line Array Columns
-				for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
-				{
-					// Store Menu Line Array Columns at menuLines[mMENU][mLINE][mCOL]
-					getline(fileGame, menuLines[mMENU][mLINE][mCOL], ';');
-				}
-
-				// Advance to Next Menu Line
-				getline(fileGame, lineNew);
-			}
-		}
-
-		// Close fileMenus
-		fileGame.close();
-	}
-
-	// Error if fileMenus did Not Open
-	else
-	{
-		// Output fileMenus failed to open to console
-		cout << "File, " << fileMenus << ", failed to open" << endl
-			 << endl;
-	}
-
-	// Open fileUi
-	fileGame.open(fileUi);
-	if (fileGame.is_open())
-	{
-		// Output fileUi opened successfully to console
-		cout << "File, " << fileUi << ", opened successfully" << endl
-			 << endl;
-
-		// Fill Ui Line Array Pages
-		for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
-		{
-			// Fill Ui Line Array Lines
-			for (int uLINE = 0; uLINE < uLINES; ++uLINE)
-			{
-				// Fill Ui Line Array Columns
-				for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
-				{
-					// Store Ui Line Array Columns at uiLines[uMENU][uLINE][uCOL]
-					getline(fileGame, uiLines[uMENU][uLINE][uCOL], ';');
-				}
-
-				// Advance to Next Ui Line
-				getline(fileGame, lineNew);
-			}
-		}
-
-		// Close fileUi
-		fileGame.close();
-	}
-
-	// Error if fileUi did Not Open
-	else
-	{
-		// Output fileUi failed to open to console
-		cout << "File, " << fileUi << ", failed to open" << endl
-			 << endl;
-	}
-
-	// Fill menuLinesNumbers Array Lines with (-1)
-	for (int mLINE = 0; mLINE < mLINES; ++mLINE)
-	{
-		// Fill menuLinesNumbers Array Columns with (-1)
-		for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
-		{
-			menuLinesNumbers[mLINE][mCOL] = (-1);
-		}
-	}
-
-	// Fill uiLinesNumbers Array Lines with (-1)
-	for (int uLINE = 0; uLINE < uLINES; ++uLINE)
-	{
-		// Fill uiLinesNumbers Array Columns with (-1)
-		for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
-		{
-			uiLinesNumbers[uLINE][uCOL] = (-1);
-		}
-	}
-
-	return;
-}
+/******************************************************************************
+ *                              INTERACT FUNCTIONS                            *
+ ******************************************************************************/
 
 // Function to take User's Choice with Getline()
 // Accepts no Parameters
@@ -289,6 +184,122 @@ double Game::gameChoiceInt(int minInt, int maxInt)
 
 	// Return User's Choice as userDouble
 	return userDouble;
+}
+
+/******************************************************************************
+ *                              INTERACT FUNCTIONS                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                  MENU FUNCTIONS                            *
+ ******************************************************************************/
+
+// Function to Fill Menu Line Array
+// Accepts no Parameters
+// Returns Void
+void Game::gameAddData()
+{
+	// Initialize Variable(s) for gameAddData()
+	ifstream fileGame; // Initialize ifstream(s) for storing ifstream(s)
+	string lineNew;	   // Initialize Strings(s) for storing String(s)
+
+	// Open fileMenus
+	fileGame.open(fileMenus);
+	if (fileGame.is_open())
+	{
+		// Output fileMenus opened successfully to console
+		cout << "File, " << fileMenus << ", opened successfully" << endl
+			 << endl;
+
+		// Fill Menu Line Array Pages
+		for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
+		{
+			// Fill Menu Line Array Lines
+			for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+			{
+				// Fill Menu Line Array Columns
+				for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+				{
+					// Store Menu Line Array Columns at menuLines[mMENU][mLINE][mCOL]
+					getline(fileGame, menuLines[mMENU][mLINE][mCOL], ';');
+				}
+
+				// Advance to Next Menu Line
+				getline(fileGame, lineNew);
+			}
+		}
+
+		// Close fileMenus
+		fileGame.close();
+	}
+
+	// Error if fileMenus did Not Open
+	else
+	{
+		// Output fileMenus failed to open to console
+		cout << "File, " << fileMenus << ", failed to open" << endl
+			 << endl;
+	}
+
+	// Open fileUi
+	fileGame.open(fileUi);
+	if (fileGame.is_open())
+	{
+		// Output fileUi opened successfully to console
+		cout << "File, " << fileUi << ", opened successfully" << endl
+			 << endl;
+
+		// Fill Ui Line Array Pages
+		for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
+		{
+			// Fill Ui Line Array Lines
+			for (int uLINE = 0; uLINE < uLINES; ++uLINE)
+			{
+				// Fill Ui Line Array Columns
+				for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
+				{
+					// Store Ui Line Array Columns at uiLines[uMENU][uLINE][uCOL]
+					getline(fileGame, uiLines[uMENU][uLINE][uCOL], ';');
+				}
+
+				// Advance to Next Ui Line
+				getline(fileGame, lineNew);
+			}
+		}
+
+		// Close fileUi
+		fileGame.close();
+	}
+
+	// Error if fileUi did Not Open
+	else
+	{
+		// Output fileUi failed to open to console
+		cout << "File, " << fileUi << ", failed to open" << endl
+			 << endl;
+	}
+
+	// Fill menuLinesNumbers Array Lines with (-1)
+	for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+	{
+		// Fill menuLinesNumbers Array Columns with (-1)
+		for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+		{
+			menuLinesNumbers[mLINE][mCOL] = (-1);
+		}
+	}
+
+	// Fill uiLinesNumbers Array Lines with (-1)
+	for (int uLINE = 0; uLINE < uLINES; ++uLINE)
+	{
+		// Fill uiLinesNumbers Array Columns with (-1)
+		for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
+		{
+			uiLinesNumbers[uLINE][uCOL] = (-1);
+		}
+	}
+
+	return;
 }
 
 // Function to Display Game Menus
@@ -545,6 +556,105 @@ void Game::gameSettings()
 	return;
 }
 
+// Function to Display Floor Intro
+// Accepts no Parameters
+// Returns Void, passes data by member access
+void Game::gameFloorIntro()
+{
+	// Initialize Variable(s) for gameSettings()
+	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+
+	// Set Settings Values
+	menuLinesNumbers[5][0] = (floorCurrent + 1);
+
+	// Take User's Choice with gameChoiceInt() while isDone != true;
+	do
+	{
+		// Display Rules Menu
+		gameMenu(4);
+
+		// Take User Choice of (1 - 1)
+		userInt = gameChoiceInt(1, 1);
+
+		// Check User Choice
+		switch (userInt)
+		{
+		case 1: // If User Choice is 1, Continue
+			isDone = true;
+			break;
+		default: // If User Choice is Not 1, Wait
+			isDone = false;
+			break;
+		}
+	} while (isDone != true);
+
+	// Fill menuLinesNumbers Array Lines with (-1)
+	for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+	{
+		// Fill menuLinesNumbers Array Columns with (-1)
+		for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+		{
+			menuLinesNumbers[mLINE][mCOL] = (-1);
+		}
+	}
+
+	// Return Void
+	return;
+}
+
+// Function to Display Outro Menu
+// Accepts no Parameters
+// Returns Void
+void Game::gameOutro()
+{
+	// Initialize Variable(s) for Outro()
+	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+
+	// Take User's Choice with gameChoiceInt() while isDone != true;
+	do
+	{
+		// Display Rules Menu
+		gameMenu(1);
+
+		// Take User Choice of (1 - 1)
+		userInt = gameChoiceInt(1, 1);
+
+		// Check User Choice
+		switch (userInt)
+		{
+		case 1: // If User Choice is 1, Continue
+			isDone = true;
+			break;
+		default: // If User Choice is Not 1, Wait
+			isDone = false;
+			break;
+		}
+	} while (isDone != true);
+
+	// Return Void
+	return;
+}
+
+/******************************************************************************
+ *                                  MENU FUNCTIONS                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                    UI FUNCTIONS                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                    UI FUNCTIONS                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                SYSTEM FUNCTIONS                            *
+ ******************************************************************************/
+
 // Function to generate a random integer in the range [rndMax, rndMin]
 // Accepts integer parameter for max value
 // Can accept 2nd integer parameter for min value, Default min value = 1
@@ -609,51 +719,21 @@ bool Game::rng(int rngChance)
 // Returns void, passes data by member access
 Game::Floor Game::gameAddFloor(int i)
 {
-	// Open the file
-	ifstream fileGame;
-	fileGame.open(fileFloors);
-	if (fileGame.is_open())
-	{
-		// Output File opened successfully to console
-		cout << "File, " << fileFloors << ", opened successfully" << endl
-			 << endl;
+	// Create new Floor with Default items
+	Floor newFloor; // Initialize Default Floor
 
-		//// Read the file and fill Floors label array
-		// for (int i = 0; i < (gameITEMS - 1); ++i)
-		//{
-		//	getline(fileGame, weaponLabels[i], ',');
-		// }
-		// getline(fileGame, weaponLabels[-1]);
+	// Generate Floor data
+	newFloor.floorIndex = i;										// Specify Index of Floor
+	newFloor.floorNumber = floorCount;								// Specify Number of Floor
+	newFloor.floorDescription = ("Floor " + to_string(floorCount)); // Specify Default Description of Floors
 
-		// Close the file
-		fileGame.close();
+	// Generate random Floor data
+	newFloor.floorLevel = (i + rndInt((3 + floorDifficulty), (0 + floorDifficulty))); // Specify Level of Floor
+	newFloor.floorModifier = (1 + ((newFloor.floorLevel) / 10));					  // Specify Modifier of Floor
+	newFloor.floorLoot = (rndInt((fLOOT * 2), fLOOT) * newFloor.floorModifier);		  // Specify Prize for beating Floor
+	newFloor.isStore = rng(4);
 
-		// Create new Floor with Default items
-		Floor newFloor; // Initialize Default Floor
-
-		// Generate Floor data
-		newFloor.floorDescription = ("Floor " + to_string(i + 1)); // Specify Default Description of Floors
-		newFloor.floorNumber = i;								   // Specify Number of Floor
-
-		// Generate random Floor data
-		newFloor.floorLevel = (i + rndInt((3 + floorDifficulty), (0 + floorDifficulty))); // Specify Level of Floor
-		newFloor.floorModifier = (1 + ((newFloor.floorLevel) / 10));					  // Specify Modifier of Floor
-		newFloor.floorLoot = (rndInt((fLOOT * 2), fLOOT) * newFloor.floorModifier);		  // Specify Prize for beating Floor
-		newFloor.isStore = rng(4);
-
-		return newFloor;
-	}
-	else
-	{
-		// Output File failed to open to console
-		cout
-			<< "File, " << fileFloors << ", failed to open" << endl
-			<< endl;
-
-		// Return empty Floor
-		Floor noFloor;
-		return noFloor;
-	}
+	return newFloor;
 }
 
 // Function to fill Person arrays and Enemies vector with Enemy data
@@ -663,57 +743,36 @@ Game::Floor Game::gameAddFloor(int i)
 // Returns void, passes data by member access
 Game::Person Game::gameAddEnemy(int i)
 {
-	// Open the file
-	ifstream fileGame;
-	fileGame.open(fileEnemies);
-	if (fileGame.is_open())
+	// Create new Enemy with Default items
+	Weapon noWeapon;					  // Initialize Default Weapon for Enemy
+	Armor noArmor;						  // Initialize Default Armor for Enemy
+	Person newEnemy;					  // Initialize new Person for storing Enemy data
+	newEnemy.Weapons.push_back(noWeapon); // Add noWeapon to Enemy Weapons vector
+	newEnemy.Armors.push_back(noArmor);	  // Add noArmor to Enemy Armors vector
+
+	// Generate Enemy data
+	newEnemy.personIndex = i;								  // Specify Index of Enemy
+	newEnemy.personNumber = enemyCount;						  // Specify Number of Enemy
+	newEnemy.personName = ("Enemy " + to_string(enemyCount)); // Specify Default Name of Enemies
+	newEnemy.personMoney = rndInt((eLOOT * 2), eLOOT);		  // Specify Prize for killing Enemy
+
+	// Generate random Enemy items
+	newEnemy.personWeapon = 0; // Specify Weapon of Enemy
+	newEnemy.personArmor = 0;  // Specify Armor of Enemy
+
+	// Fill rngArray for RNG
+	for (int i = 0; i < rngASIZE; ++i)
 	{
-		// Output File opened successfully to console
-		cout << "File, " << fileEnemies << ", opened successfully" << endl
-			 << endl;
-
-		// Close the file
-		fileGame.close();
-
-		// Create new Enemy with Default items
-		Weapon noWeapon;					  // Initialize Default Weapon for Enemy
-		Armor noArmor;						  // Initialize Default Armor for Enemy
-		Person newEnemy;					  // Initialize new Person for storing Enemy data
-		newEnemy.Weapons.push_back(noWeapon); // Add noWeapon to Enemy Weapons vector
-		newEnemy.Armors.push_back(noArmor);	  // Add noArmor to Enemy Armors vector
-
-		// Generate Enemy data
-		newEnemy.personName = ("Enemy " + to_string(i + 1)); // Specify Default Name of Enemies
-		newEnemy.personMoney = rndInt((eLOOT * 2), eLOOT);	 // Specify Prize for killing Enemy
-
-		// Generate random Enemy items
-		newEnemy.personWeapon = 0; // Specify Weapon of Enemy
-		newEnemy.personArmor = 0;  // Specify Armor of Enemy
-
-		// Fill rngArray for RNG
-		for (int i = 0; i < rngASIZE; ++i)
-		{
-			newEnemy.rngArray[i] = (i + 1);
-		}
-
-		// Fill choiceArray for Random Choices
-		for (int i = 0; i < rngASIZE; ++i)
-		{
-			newEnemy.choiceArray[i] = rndInt(rngESIZE);
-		}
-
-		return newEnemy;
+		newEnemy.rngArray[i] = (i + 1);
 	}
-	else
+
+	// Fill choiceArray for Random Choices
+	for (int i = 0; i < rngASIZE; ++i)
 	{
-		// Output File failed to open to console
-		cout << "File, " << fileEnemies << ", failed to open" << endl
-			 << endl;
-
-		// Return empty Person
-		Person noPerson;
-		return noPerson;
+		newEnemy.choiceArray[i] = rndInt(rngESIZE);
 	}
+
+	return newEnemy;
 }
 
 // Function to fill Person arrays and Players vector with Player data
@@ -723,112 +782,43 @@ Game::Person Game::gameAddEnemy(int i)
 // Returns void, passes data by member access
 Game::Person Game::gameAddPlayer(int i)
 {
-	// Open the file
-	ifstream fileGame;
-	fileGame.open(filePlayers);
-	if (fileGame.is_open())
+	// Create new Player with Default items
+	Weapon noWeapon;					   // Initialize Default Weapon for Player
+	Armor noArmor;						   // Initialize Default Armor for Player
+	Person newPlayer;					   // Initialize new Person for storing Player data
+	newPlayer.Weapons.push_back(noWeapon); // Add noWeapon to Player Weapons vector
+	newPlayer.Armors.push_back(noArmor);   // Add noArmor to Player Armors vector
+
+	// Generate Player data
+	newPlayer.isPlayer = true;									 // Specify Person is Player
+	newPlayer.personIndex = i;									 // Specify Index of Player
+	newPlayer.personNumber = playerCount;						 // Specify Number of Player
+	newPlayer.personName = ("Player " + to_string(playerCount)); // Specify Default Name of Player
+	if (playerTotal == -1)										 // -1 For TESTING, Set Back to 1
 	{
-		// Output File opened successfully to console
-		cout << "File, " << filePlayers << ", opened successfully" << endl
-			 << endl;
-
-		// Close the file
-		fileGame.close();
-
-		// Create new Player with Default items
-		Weapon noWeapon;					   // Initialize Default Weapon for Player
-		Armor noArmor;						   // Initialize Default Armor for Player
-		Person newPlayer;					   // Initialize new Person for storing Player data
-		newPlayer.Weapons.push_back(noWeapon); // Add noWeapon to Player Weapons vector
-		newPlayer.Armors.push_back(noArmor);   // Add noArmor to Player Armors vector
-
-		// Generate Player data
-		newPlayer.isPlayer = true;
-		newPlayer.personName = ("Player " + to_string(i + 1)); // Specify Default Name of Player
-		if (playerTotal == 1)
-		{
-			cout << "Please Enter a Name: ";
-			userString = gameChoiceString();
-			cout << endl;
-			newPlayer.personName = userString; // Ask Player to enter Name
-		}
-
-		// Generate Player items
-		newPlayer.personWeapon = 0; // Specify Weapon of Player
-		newPlayer.personArmor = 0;	// Specify Armor of Player
-
-		// Fill rngArray for RNG
-		for (int i = 0; i < rngASIZE; ++i)
-		{
-			newPlayer.rngArray[i] = (i + 1);
-		}
-
-		// Fill choiceArray for Random Choices
-		for (int i = 0; i < rngASIZE; ++i)
-		{
-			newPlayer.choiceArray[i] = rndInt(rngESIZE);
-		}
-
-		return newPlayer;
-	}
-	else
-	{
-		// Output File failed to open to console
-		cout << "File, " << filePlayers << ", failed to open" << endl
-			 << endl;
-
-		// Return empty Person
-		Person noPerson;
-		return noPerson;
-	}
-}
-
-// Function to display Floor Intro
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::gameFloorIntro()
-{
-	// Initialize Variable(s) for gameSettings()
-	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
-
-	// Set Settings Values
-	menuLinesNumbers[5][0] = (floorCurrent + 1);
-
-	// Take User's Choice with gameChoiceInt() while isDone != true;
-	do
-	{
-		// Display Rules Menu
-		gameMenu(4);
-
-		// Take User Choice of (1 - 1)
-		userInt = gameChoiceInt(1, 1);
-
-		// Check User Choice
-		switch (userInt)
-		{
-		case 1: // If User Choice is 1, Continue
-			isDone = true;
-			break;
-		default: // If User Choice is Not 1, Wait
-			isDone = false;
-			break;
-		}
-	} while (isDone != true);
-
-	// Fill menuLinesNumbers Array Lines with (-1)
-	for (int mLINE = 0; mLINE < mLINES; ++mLINE)
-	{
-		// Fill menuLinesNumbers Array Columns with (-1)
-		for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
-		{
-			menuLinesNumbers[mLINE][mCOL] = (-1);
-		}
+		cout << "Please Enter a Name: ";
+		userString = gameChoiceString();
+		cout << endl;
+		newPlayer.personName = userString; // Ask Player to enter Name
 	}
 
-	// Return Void
-	return;
+	// Generate Player items
+	newPlayer.personWeapon = 0; // Specify Weapon of Player
+	newPlayer.personArmor = 0;	// Specify Armor of Player
+
+	// Fill rngArray for RNG
+	for (int i = 0; i < rngASIZE; ++i)
+	{
+		newPlayer.rngArray[i] = (i + 1);
+	}
+
+	// Fill choiceArray for Random Choices
+	for (int i = 0; i < rngASIZE; ++i)
+	{
+		newPlayer.choiceArray[i] = rndInt(rngESIZE);
+	}
+
+	return newPlayer;
 }
 
 // Function to display game progress
@@ -1121,6 +1111,9 @@ void Game::gameCombat()
 	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
 	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+
+	// Display New Floor Intro
+	gameFloorIntro();
 
 	// Take User's Choice with gameChoiceInt() while isDone != true;
 	do
@@ -1467,6 +1460,14 @@ void Game::gamePlayerTurn()
 	}
 	return;
 }
+
+/******************************************************************************
+ *                                SYSTEM FUNCTIONS                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                  GAME FUNCTIONS                            *
+ ******************************************************************************/
 
 // Function for Enemy to take turn
 // Accepts int parameter to choose action for turn
@@ -2053,3 +2054,7 @@ void Game::enemyWaitShow()
 	}
 	return;
 }
+
+/******************************************************************************
+ *                                  GAME FUNCTIONS                            *
+ ******************************************************************************/

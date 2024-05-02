@@ -119,6 +119,8 @@ public:
 			personStamina = sMAX, // Specify Stamina of Person
 			personMoney = 0;	  // Specify Money of Person
 		int
+			personIndex = 0,  // Specify Index of Person
+			personNumber = 0, // Specify Number of Person
 			personWeapon = 0, // Specify Weapon Equipped to Person
 			personArmor = 0;  // Specify Armor Equipped to Person
 		bool
@@ -382,7 +384,8 @@ public:
 			floorModifier = 1, // Specify Modifier of Floor
 			floorLoot = fLOOT; // Specify Reward of Floor
 		int
-			floorNumber = 0, // Specify Number of Floor
+			floorIndex = 0,	 // Specify Index of Floor
+			floorNumber = 1, // Specify Number of Floor
 			floorLevel = 1;	 // Specify Number of Floor
 		bool
 			isStore = true; // Specify if Store is available on Floor
@@ -406,45 +409,33 @@ public:
 	// string *floorDescriptions = new string[fSIZE]{}; // Establish a dynamic array for Floor Labels
 
 	// Constructor with Default Parameters
-	// Allows player to pass int parameters to overwrite default parameters
-	Game(int fDiff = 3, int fTotal = 10, int eTotal = 1, int pTotal = 1)
+	Game()
 	{
-		// Specify Default File Names
-		fileMenus = "fileMenus.txt";
-		fileUi = "fileUi.txt";
-		fileItems = "fileItems.txt";
-		fileFloors = "fileFloors.txt";
-		fileEnemies = "fileEnemies.txt";
-		filePlayers = "filePlayers.txt";
-
-		// Begin Intro
+		// Add Game Data to Arrays
 		gameAddData();
+
+		// Start Menus
 		gameIntro();
 		gameRules();
 		gameSettings();
 
-		// Specify Player Chosen Variables if entered
-		floorDifficulty = fDiff;
-		floorTotal = fTotal;
-		enemyTotal = eTotal;
-		playerTotal = pTotal;
-
+		// Build Game
 		// Fill Floors Vector with new Floors
 		for (int i = 0; i < floorTotal; ++i)
 		{
 			// Add new Floor to Floors Vector
+			++floorCount;
 			Floors.push_back(gameAddFloor(i));
 		}
 
-		int gameAddEnemyCount = 0;
 		// Fill Enemies Vector with new Enemies
 		for (int i = 0; i < floorTotal; ++i)
 		{
 			// Add new Enemy(s) to Floor Enemies Vector
 			for (int j = 0; j < enemyTotal; ++j)
 			{
-				Floors.at(i).Enemies.push_back(gameAddEnemy(gameAddEnemyCount));
-				++gameAddEnemyCount;
+				++enemyCount;
+				Floors.at(i).Enemies.push_back(gameAddEnemy(j));
 			}
 		}
 
@@ -452,15 +443,21 @@ public:
 		for (int i = 0; i < playerTotal; ++i)
 		{
 			// Add new Player to Players Vector
+			++playerCount;
 			Players.push_back(gameAddPlayer(i));
 		}
 
-		// Begin Game
-		gameFloorIntro();
-		gameCombat();
+		// Do Combat while Player's Characters are Not all Dead or Player has Not Won
+		do
+		{
+			gameCombat();
+		} while (Players.at(-1).personHealth > 0 && Floors.at(-1).Enemies.at(-1).personHealth > 0);
+
+		// Start End Screen
+		// gameOutro();
 	}
 
-	// Destructor
+	// Destructor with Default Parameters
 	~Game()
 	{
 		// Wrap Up
@@ -487,34 +484,39 @@ public:
 		// }
 	}
 
-	// Intros
+	// INTERACT FUNCTIONS
+	string gameChoiceString();
+	double gameChoiceInt(int minInt = 1, int maxInt = 4);
+
+	// MENU FUNCTIONS
 	void gameAddData();
 	void gameMenu(int, int = 1, int = mLINES, int = 1, int = 0);
 	void gameIntro();
 	void gameRules();
 	void gameSettings();
+	void gameFloorIntro();
+	void gameOutro();
 
-	// Interaction Functions
-	string gameChoiceString();
-	double gameChoiceInt(int minInt = 1, int maxInt = 4);
+	// UI FUNCTIONS
+	void gameUi(int, int = 1, int = mLINES, int = 1, int = 0);
+
+	// SYSTEM FUNCTIONS
 	int rndInt(int, int = 1);
 	bool rng(int = rngPSIZE);
-
-	// Game Functions
-	void gameAddItems();
 	Floor gameAddFloor(int = 0);
 	Person gameAddEnemy(int = 0);
 	Person gameAddPlayer(int = 0);
-	void gameFloorIntro();
-	void gameUi(int, int = 1, int = mLINES, int = 1, int = 0);
-	void gameProgress();
 	void gameCombat();
-	void gameCombats();
 	void gameStaminaRecovery();
 	void gameCombatTurns();
 	void gamePlayerTurn();
 	void gameEnemyAi();
 	void gameEnemyTurn();
+
+	// GAME FUNCTIONS
+	void gameAddItems();
+	void gameProgress();
+	void gameCombats();
 	void turnAttack();
 	void turnBlock();
 	void turnDodge();
@@ -538,12 +540,15 @@ private:
 	int
 		floorDifficulty = 3,
 		floorTotal = 10,
+		floorCount = 0,
 		floorCurrent = 0,
 		floorRound = 0,
 		enemyTotal = 1,
+		enemyCount = 0,
 		enemyCurrent = 0,
 		enemyChoice = 0,
 		playerTotal = 1,
+		playerCount = 0,
 		playerCurrent = 0,
 		playerChoice = 0,
 		playerKills = 0,
