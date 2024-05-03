@@ -46,14 +46,14 @@ Watching Mr.Priestley's labs and stuff I learned failing other classes.
  *                              INTERACT FUNCTIONS                            *
  ******************************************************************************/
 
-// Function to take User's Choice with Getline()
-// Accepts no Parameters
-// Returns User's Choice as String
-string Game::gameChoiceString()
+// Function to Take User's Choice as String
+// Accepts No Parameter(s)
+// Returns String, passes Data by Member Access
+string Game::dsChoiceString()
 {
-	// Initialize Variable(s) for gameChoiceString()
-	string userString = "0"; // Initialize Strings(s) for storing User String(s)
-	bool isAlnums = true;	 // Initialize Bool(s) for storing Bool(s)
+	// Initialize Variable(s) for dsChoiceString()
+	string userString = "-1"; // Initialize Strings(s) for storing User String(s)
+	bool isAlnums = true;	  // Initialize Bool(s) for storing Bool(s)
 
 	// Take User's Choice with Getline()
 	getline(cin, userString);
@@ -71,118 +71,114 @@ string Game::gameChoiceString()
 	// If isAlnums == false, Empty Variable(s)
 	if (isAlnums == false)
 	{
-		userString = "0";
+		userString = "-1";
 	}
 
-	// End gameChoiceString() with a Newline
+	// End dsChoiceString() with a Newline
 	cout << endl;
 
-	// Return User's Choice as userString
+	// Return User's Choice as String
 	return userString;
 }
 
-// Function to take User's Choice with Getline()
-// Accepts 2 Int Parameters for Minimum Range and Maximum Range of User's Choice
-// Returns User's Choice as Double
-double Game::gameChoiceInt(int minInt, int maxInt)
+// Function to Take User's Choice as Double
+// Requires 2 Int Parameter(s) for Min Value and Max Value of Choice
+// Returns Double, passes Data by Member Access
+double Game::dsChoiceNumber(int choiceMin, int choiceMax)
 {
-	// Initialize Variable(s) for gameChoiceInt()
-	string userString = "0"; // Initialize Strings(s) for storing User String(s)
-	double userDouble = 0;	 // Initialize Double(s) for storing User Double(s)
-	bool					 // Initialize Bool(s) for storing Bool(s)
+	// Initialize Variable(s) for dsChoiceNumber()
+	string userString = "-1"; // Initialize Strings(s) for storing User String(s)
+	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
+	bool					  // Initialize Bool(s) for storing Bool(s)
 		isInt = true,
 		isDigits = true;
 
 	// Take User's Choice with Getline()
 	getline(cin, userString);
 
-	// If String is 0, Return 0
+	// If User's Choice is 0, Return 0
 	if (userString[0] == '0')
 	{
 		userString = "0";
 		userDouble = 0;
 	}
 
-	// If String is Not 0, Check User's Choice
-	else
+	// If choiceMin < 0 or choiceMax > 9, Accept Multi Digit Numbers or Negative Numbers
+	else if (choiceMin < 0 || choiceMax > 9)
 	{
-		// If no Minimum Range and Maximum Range, Accept Numbers Larger than 1 Digit
-		if (minInt == 0 && maxInt == 0)
+		// If Char in userString[0] is Not a Negative Sign or NOT a Digit, Empty Variable(s)
+		if (userString[0] != '-' && !(isdigit(userString[0])))
 		{
-			// If Char in userString[0] is Not a Negative Sign or NOT a Digit, Empty Variable(s)
-			if (userString[0] != '-' && !(isdigit(userString[0])))
-			{
-				isDigits = false;
-			}
+			isDigits = false;
+		}
 
-			// If Char in userString[0] is a Negative Sign and no Digits, Empty Variable(s)
-			else if (userString[0] == '-' && userString.length() < 2)
-			{
-				isDigits = false;
-			}
+		// If Char in userString[0] is a Negative Sign and no Digits, Empty Variable(s)
+		else if (userString[0] == '-' && userString.length() < 2)
+		{
+			isDigits = false;
+		}
 
-			// If Char in userString[0] has a Negative Sign and/or has Digit(s), Continue
-			else
+		// If Char in userString[0] has a Negative Sign and/or has Digit(s), Continue
+		else
+		{
+			// Checks User's Choice for Digits
+			for (int i = 1; isDigits && i < userString.length(); ++i)
 			{
-				// Checks User's Choice for Digits
-				for (int i = 1; isDigits && i < userString.length(); ++i)
+				// If Char in String is NOT a Digit, Empty Variable(s)
+				if (!(isdigit(userString[i])))
 				{
-					// If Char in String is NOT a Digit, Empty Variable(s)
-					if (!(isdigit(userString[i])))
-					{
-						isDigits = false;
-					}
+					isDigits = false;
 				}
-			}
-
-			// If all Char(s) in String is/are Digit(s), Return String as Double
-			if (isDigits == true)
-			{
-				userDouble = stod(userString);
-			}
-
-			// If isDigits == false, Empty Variable(s)
-			else
-			{
-				userString = "0";
-				userDouble = 0;
 			}
 		}
 
-		// If Minimum Range or Maximum Range specified, Only accept Numbers with 1 Digit
+		// If all Char(s) in String is/are Digit(s), Return String as Double
+		if (isDigits == true)
+		{
+			userDouble = stod(userString);
+		}
+
+		// If isDigits == false, Empty Variable(s)
 		else
 		{
-			// If Char in userString[0] is Not 1 and NOT a Digit, Empty Variable(s)
-			if (userString.length() != 1 || !(isdigit(userString[0])))
-			{
-				isInt = false;
-			}
-
-			// If Char in userString[0] < minInt or userString[0] > maxInt, Empty Variable(s)
-			else if (stoi(userString) < minInt || stoi(userString) > maxInt)
-			{
-				isInt = false;
-			}
-
-			// If Char in String is an Int, Return String as Double
-			if (isInt == true)
-			{
-				userDouble = stod(userString);
-			}
-
-			// If isInt == false, Empty Variable(s)
-			else
-			{
-				userString = "0";
-				userDouble = 0;
-			}
+			userString = "-1";
+			userDouble = (-1);
 		}
 	}
 
-	// End gameChoiceInt() with a Newline
+	// If choiceMin >= 0 and choiceMax <= 9, Only Accept Single Digit Numbers
+	else
+	{
+		// If Char in userString[0] is Not 1 and NOT a Digit, Empty Variable(s)
+		if (userString.length() != 1 || !(isdigit(userString[0])))
+		{
+			isInt = false;
+		}
+
+		// If Char in userString[0] < choiceMin or userString[0] > choiceMax, Empty Variable(s)
+		else if (stoi(userString) < choiceMin || stoi(userString) > choiceMax)
+		{
+			isInt = false;
+		}
+
+		// If Char in String is an Int, Return String as Double
+		if (isInt == true)
+		{
+			userDouble = stod(userString);
+		}
+
+		// If isInt == false, Empty Variable(s)
+		else
+		{
+			userString = "-1";
+			userDouble = (-1);
+		}
+	}
+
+	// End dsChoiceNumber() with a Newline
 	cout << endl;
 
-	// Return User's Choice as userDouble
+	// Return User's Choice as Double
 	return userDouble;
 }
 
@@ -353,7 +349,7 @@ int Game::gameMenu(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLINE
 	}
 
 	// Take User Choice Specified by Menu
-	userInt = gameChoiceInt(menuLines[mMENU][0][1][0], menuLines[mMENU][0][1][1]);
+	userInt = dsChoiceNumber(menuLines[mMENU][0][1][0], menuLines[mMENU][0][1][1]);
 
 	// Return User Choice as Int
 	return userInt;
@@ -369,14 +365,14 @@ void Game::gameIntro()
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
 	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
-	// Take User's Choice with gameChoiceInt() while isDone != true;
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// Display Intro Menu
 		gameMenu(1);
 
 		// Take User Choice of (1 - 1)
-		userInt = gameChoiceInt(1, 1);
+		userInt = dsChoiceNumber(1, 1);
 
 		// Check User Choice
 		switch (userInt)
@@ -404,14 +400,14 @@ void Game::gameRules()
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
 	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
-	// Take User's Choice with gameChoiceInt() while isDone != true;
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// Display Rules Menu
 		gameMenu(2);
 
 		// Take User Choice of (1 - 1)
-		userInt = gameChoiceInt(1, 1);
+		userInt = dsChoiceNumber(1, 1);
 
 		// Check User Choice
 		switch (userInt)
@@ -445,7 +441,7 @@ void Game::gameSettings()
 	menuLinesNumbers[6][0] = enemyTotal;
 	menuLinesNumbers[7][0] = playerTotal;
 
-	// Take User's Choice with gameChoiceInt() while isDone != true;
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// If User is Editing, Display Settings Menu Page 2
@@ -466,7 +462,7 @@ void Game::gameSettings()
 		if (menuLinesSelected[4][0] == true)
 		{
 			// Take User Choice of any Number
-			floorDifficulty = gameChoiceInt(1, 9);
+			floorDifficulty = dsChoiceNumber(1, 9);
 			menuLinesNumbers[4][0] = floorDifficulty;
 			menuLinesSelected[4][0] = false;
 		}
@@ -475,7 +471,7 @@ void Game::gameSettings()
 		else if (menuLinesSelected[5][0] == true)
 		{
 			// Take User Choice of any Number
-			floorTotal = gameChoiceInt(1, 9);
+			floorTotal = dsChoiceNumber(1, 9);
 			menuLinesNumbers[5][0] = floorTotal;
 			menuLinesSelected[5][0] = false;
 		}
@@ -484,7 +480,7 @@ void Game::gameSettings()
 		else if (menuLinesSelected[6][0] == true)
 		{
 			// Take User Choice of any Number
-			enemyTotal = gameChoiceInt(1, 9);
+			enemyTotal = dsChoiceNumber(1, 9);
 			menuLinesNumbers[6][0] = enemyTotal;
 			menuLinesSelected[6][0] = false;
 		}
@@ -493,7 +489,7 @@ void Game::gameSettings()
 		else if (menuLinesSelected[7][0] == true)
 		{
 			// Take User Choice of any Number
-			playerTotal = gameChoiceInt(1, 9);
+			playerTotal = dsChoiceNumber(1, 9);
 			menuLinesNumbers[7][0] = playerTotal;
 			menuLinesSelected[7][0] = false;
 		}
@@ -502,7 +498,7 @@ void Game::gameSettings()
 		else
 		{
 			// Take User Choice of (1 - 5)
-			userInt = gameChoiceInt(1, 5);
+			userInt = dsChoiceNumber(1, 5);
 
 			// Check User Choice
 			switch (userInt)
@@ -560,14 +556,14 @@ void Game::gameFloorIntro()
 	// Set Settings Values
 	menuLinesNumbers[5][0] = (floorCurrent + 1);
 
-	// Take User's Choice with gameChoiceInt() while isDone != true;
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// Display Floor Intro
 		gameMenu(4);
 
 		// Take User Choice of (1 - 1)
-		userInt = gameChoiceInt(1, 1);
+		userInt = dsChoiceNumber(1, 1);
 
 		// Check User Choice
 		switch (userInt)
@@ -605,14 +601,14 @@ void Game::gameOutro()
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
 	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
-	// Take User's Choice with gameChoiceInt() while isDone != true;
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// Display Rules Menu
 		gameMenu(1);
 
 		// Take User Choice of (1 - 1)
-		userInt = gameChoiceInt(1, 1);
+		userInt = dsChoiceNumber(1, 1);
 
 		// Check User Choice
 		switch (userInt)
@@ -685,7 +681,7 @@ void Game::gameMenus(int mMENU, int mPAGE)
 			menuLinesNumbers[5][0] = (floorCurrent + 1);
 		}
 
-		// Take User's Choice with gameChoiceInt() while isDone != true;
+		// Take User's Choice with dsChoiceNumber() while isDone != true;
 		do
 		{
 			// If User is Editing, Display Settings Menu Page 2
@@ -866,7 +862,7 @@ void Game::gameMenus(int mMENU, int mPAGE)
 		// Game is Paused
 		isPaused = true;
 
-		// Take User's Choice with gameChoiceInt() while isPaused == true;
+		// Take User's Choice with dsChoiceNumber() while isPaused == true;
 		do
 		{
 			// Display Menu and Take User Choice
@@ -977,13 +973,13 @@ void Game::gameMenus(int mMENU, int mPAGE)
  ******************************************************************************/
 
 /******************************************************************************
- *                                SYSTEM FUNCTIONS                            *
+ *                                  CORE FUNCTIONS                            *
  ******************************************************************************/
 
-// Function to generate a random integer in the range [rndMax, rndMin]
-// Accepts integer parameter for max value
-// Can accept 2nd integer parameter for min value, Default min value = 1
-// Returns an integer from rndMin to rndMax, inclusive
+// Function to Generate Random Number
+// Requires 1 Int Parameter to Specify Max Value of Number by Default
+// If Entered, also Accepts 1 Int Parameter to Specify Min Value of Number
+// Returns Int, passes Data by Member Access
 int Game::rndInt(int rndMax, int rndMin)
 {
 	static bool initialized{false};
@@ -1000,12 +996,13 @@ int Game::rndInt(int rndMax, int rndMin)
 
 	uniform_int_distribution<int> distribution(rndMin, rndMax);
 
+	// Return Random Number as Int
 	return distribution(generator);
 }
 
-// Function to add game RNG
-// Accepts integer parameter to determine Maximum numbers to guess from
-// Returns bool, passes data by member access
+// Function to Generate Game RNG
+// Requires 1 Int Parameter to Specify Odds of RNG Win
+// Returns Bool, passes Data by Member Access
 bool Game::rng(int rngChance)
 {
 	// Initialize an int Vector for RNG
@@ -1034,117 +1031,198 @@ bool Game::rng(int rngChance)
 		rngWon = false;
 		cout << "- RNG Chance Failed -" << endl;
 	}
+
+	// Return RNG Win or Loss as Bool
 	return rngWon;
 }
 
-// Function to fill Floor arrays and Floors vectors with Floors data
-// Accepts no parameters if called with 0 parameters,
-// otherwise, accepts 1 int parameter for total Floor count.
-// and accepts 1 string parameter for game Floors file. Format: ("file.txt")
-// Returns void, passes data by member access
-Game::Floor Game::gameAddFloor(int i)
+// Function to Create New Floor
+// Accepts No Parameter(s) by Default
+// If Entered, also Accepts 1 Int Parameter to Specify Floor Index
+// Returns Floor, passes Data by Member Access
+Game::Floor Game::dsFloorNew(int floorIndex)
 {
-	// Create new Floor with Default items
-	Floor newFloor; // Initialize Default Floor
+	// Initialize Variable(s) for dsFloorNew()
+	Floor newFloor; // Initialize Floor(s) for storing Floor Data
 
-	// Generate Floor data
-	newFloor.floorIndex = i;										// Specify Index of Floor
-	newFloor.floorNumber = floorCount;								// Specify Number of Floor
-	newFloor.floorDescription = ("Floor " + to_string(floorCount)); // Specify Default Description of Floors
+	// Fill New Floor with Default Floor Data
+	newFloor.floorName = ("Floor " + to_string(floorCount)); // Specify Name of Floor
+	newFloor.floorIndex = floorIndex;						 // Specify Index of Floor
+	newFloor.floorNumber = floorCount;						 // Specify Number of Floor
 
-	// Generate random Floor data
-	newFloor.floorLevel = (i + rndInt((3 + floorDifficulty), (0 + floorDifficulty))); // Specify Level of Floor
-	newFloor.floorModifier = (1 + ((newFloor.floorLevel) / 10));					  // Specify Modifier of Floor
-	newFloor.floorLoot = (rndInt((fLOOT * 2), fLOOT) * newFloor.floorModifier);		  // Specify Prize for beating Floor
+	// If dsFloorNew() is Called with No Parameter, Specify Index of Floor as Next Index
+	if (floorIndex == (-1))
+	{
+		newFloor.floorIndex = (floorCount - 1); // Specify Index of Floor as Next Index
+	}
+
+	// Fill New Floor with Random Floor Data
+	newFloor.floorLevel = (floorIndex + rndInt((3 + floorDifficulty), (0 + floorDifficulty))); // Specify Level of Floor
+	newFloor.floorModifier = (1 + ((newFloor.floorLevel) / 10));							   // Specify Modifier of Floor
+	newFloor.floorMoney = (rndInt((fLOOT * 2), fLOOT) * newFloor.floorModifier);			   // Specify Reward of Floor
 	newFloor.isStore = rng(4);
 
+	// Fill New Floor's Enemy Vector with New Enemies
+	dsEnemyNew(newFloor.floorIndex);
+
+	// Return New Floor
 	return newFloor;
 }
 
-// Function to fill Person arrays and Enemies vector with Enemy data
-// Accepts no parameters if called with 0 parameters,
-// otherwise, accepts 1 int parameter for total Enemy count.
-// and accepts 1 string parameter for game Enemies file. Format: ("file.txt")
-// Returns void, passes data by member access
-Game::Person Game::gameAddEnemy(int i)
+// Function to Create New Enemy
+// Accepts No Parameter(s) by Default
+// If Entered, also Accepts 1 Int Parameter to Specify Enemy Index
+// Returns Person, passes Data by Member Access
+Game::Person Game::dsEnemyNew(int enemyIndex)
 {
-	// Create new Enemy with Default items
-	Weapon noWeapon;					  // Initialize Default Weapon for Enemy
-	Armor noArmor;						  // Initialize Default Armor for Enemy
-	Person newEnemy;					  // Initialize new Person for storing Enemy data
-	newEnemy.Weapons.push_back(noWeapon); // Add noWeapon to Enemy Weapons vector
-	newEnemy.Armors.push_back(noArmor);	  // Add noArmor to Enemy Armors vector
+	// Initialize Variable(s) for dsEnemyNew()
+	Weapon noWeapon;					  // Initialize Weapon(s) for storing Weapon Data
+	Armor noArmor;						  // Initialize Armor(s) for storing Armor Data
+	Person newEnemy;					  // Initialize Person(s) for storing Person Data
+	newEnemy.Weapons.push_back(noWeapon); // push_back() noWeapon to New Enemy's Weapon Vector
+	newEnemy.Armors.push_back(noArmor);	  // push_back() noArmor to New Enemy's Armor Vector
 
-	// Generate Enemy data
-	newEnemy.personIndex = i;								  // Specify Index of Enemy
+	// Fill New Enemy with Default Enemy Data
+	newEnemy.isPlayer = false;								  // Specify Person is Enemy
+	newEnemy.personName = ("Enemy " + to_string(enemyCount)); // Specify Name of Enemy
+	newEnemy.personIndex = enemyIndex;						  // Specify Index of Enemy
 	newEnemy.personNumber = enemyCount;						  // Specify Number of Enemy
-	newEnemy.personName = ("Enemy " + to_string(enemyCount)); // Specify Default Name of Enemies
-	newEnemy.personMoney = rndInt((eLOOT * 2), eLOOT);		  // Specify Prize for killing Enemy
 
-	// Generate random Enemy items
-	newEnemy.personWeapon = 0; // Specify Weapon of Enemy
-	newEnemy.personArmor = 0;  // Specify Armor of Enemy
+	// If dsEnemyNew() is Called with No Parameter, Specify Index of Enemy as Next Index
+	if (enemyIndex == (-1))
+	{
+		newEnemy.personIndex = (enemyCount - 1); // Specify Index of Enemy as Next Index
+	}
 
-	// Fill rngArray for RNG
+	// Fill New Enemy with Random Enemy Data
+	newEnemy.personMoney = rndInt((eLOOT * 2), eLOOT); // Specify Reward of Enemy
+
+	// Fill New Enemy with Random Weapon and Armor
+	// Weapon newWeapon;					   // Initialize Weapon(s) for storing Weapon Data
+	// Armor newArmor;						   // Initialize Armor(s) for storing Armor Data
+	// newEnemy.Weapons.push_back(newWeapon); // push_back() New Weapon to New Enemy's Weapon Vector
+	// newEnemy.Armors.push_back(newArmor);   // push_back() New Armor to New Enemy's Armor Vector
+	// newEnemy.personWeapon = 1;			   // Specify Weapon Equipped to Enemy
+	// newEnemy.personArmor = 1;			   // Specify Armor Equipped to Enemy
+
+	// Fill New Enemy's rngArray for RNG
 	for (int i = 0; i < rngASIZE; ++i)
 	{
 		newEnemy.rngArray[i] = (i + 1);
 	}
 
-	// Fill choiceArray for Random Choices
+	// Fill New Enemy's choiceArray for Random Choices
 	for (int i = 0; i < rngASIZE; ++i)
 	{
 		newEnemy.choiceArray[i] = rndInt(rngESIZE);
 	}
 
+	// Return New Enemy
 	return newEnemy;
 }
 
-// Function to fill Person arrays and Players vector with Player data
-// Accepts no parameters if called with 0 parameters,
-// otherwise, accepts 1 int parameter for total player count.
-// and accepts 1 string parameter for game Players file. Format: ("file.txt")
-// Returns void, passes data by member access
-Game::Person Game::gameAddPlayer(int i)
+// Function to Create New Player
+// Accepts No Parameter(s) by Default
+// If Entered, Accepts 1 Int Parameter to Specify Player Index
+// Returns Person, passes Data by Member Access
+Game::Person Game::dsPlayerNew(int playerIndex)
 {
-	// Create new Player with Default items
-	Weapon noWeapon;					   // Initialize Default Weapon for Player
-	Armor noArmor;						   // Initialize Default Armor for Player
-	Person newPlayer;					   // Initialize new Person for storing Player data
-	newPlayer.Weapons.push_back(noWeapon); // Add noWeapon to Player Weapons vector
-	newPlayer.Armors.push_back(noArmor);   // Add noArmor to Player Armors vector
+	// Initialize Variable(s) for dsPlayerNew()
+	Weapon noWeapon;					   // Initialize Weapon(s) for storing Weapon Data
+	Armor noArmor;						   // Initialize Armor(s) for storing Armor Data
+	Person newPlayer;					   // Initialize Person(s) for storing Person Data
+	newPlayer.Weapons.push_back(noWeapon); // push_back() noWeapon to New Player's Weapon Vector
+	newPlayer.Armors.push_back(noArmor);   // push_back() noArmor to New Player's Armor Vector
 
-	// Generate Player data
+	// Fill New Player with Default Player Data
 	newPlayer.isPlayer = true;									 // Specify Person is Player
-	newPlayer.personIndex = i;									 // Specify Index of Player
+	newPlayer.personName = ("Player " + to_string(playerCount)); // Specify Name of Player
+	newPlayer.personIndex = playerIndex;						 // Specify Index of Player
 	newPlayer.personNumber = playerCount;						 // Specify Number of Player
-	newPlayer.personName = ("Player " + to_string(playerCount)); // Specify Default Name of Player
-	if (playerTotal == -1)										 // -1 For TESTING, Set Back to 1
+
+	// If dsPlayerNew() is Called with No Parameter, Specify Index of Player as Next Index
+	if (playerIndex == (-1))
 	{
-		cout << "Please Enter a Name: ";
-		userString = gameChoiceString();
-		cout << endl;
-		newPlayer.personName = userString; // Ask Player to enter Name
+		newPlayer.personIndex = (playerCount - 1); // Specify Index of Player as Next Index
 	}
 
-	// Generate Player items
-	newPlayer.personWeapon = 0; // Specify Weapon of Player
-	newPlayer.personArmor = 0;	// Specify Armor of Player
+	// Fill New Player's Name with User Entered Name
+	if (playerCount == -1) // -1 For TESTING, Set Back to 1
+	{
+		// Ask User to Enter Name
+		cout << "Please Enter a Name: ";
+		// Take User's Name with dsChoiceString()
+		userName = dsChoiceString();
+		cout << endl;
+	}
 
-	// Fill rngArray for RNG
+	// Fill New Player with Random Weapon and Armor
+	// Weapon newWeapon;						// Initialize Weapon(s) for storing Weapon Data
+	// Armor newArmor;							// Initialize Armor(s) for storing Armor Data
+	// newPlayer.Weapons.push_back(newWeapon); // push_back() New Weapon to New Player's Weapon Vector
+	// newPlayer.Armors.push_back(newArmor);	// push_back() New Armor to New Player's Armor Vector
+	// newPlayer.personWeapon = 1;				// Specify Weapon Equipped to Player
+	// newPlayer.personArmor = 1;				// Specify Armor Equipped to Player
+
+	// Fill New Player's rngArray for RNG
 	for (int i = 0; i < rngASIZE; ++i)
 	{
 		newPlayer.rngArray[i] = (i + 1);
 	}
 
-	// Fill choiceArray for Random Choices
+	// Fill New Player's choiceArray for Random Choices
 	for (int i = 0; i < rngASIZE; ++i)
 	{
 		newPlayer.choiceArray[i] = rndInt(rngESIZE);
 	}
 
+	// Return New Player
 	return newPlayer;
 }
+
+// Function to Create New Game
+// Accepts No Parameter(s)
+// Returns Void, passes Data by Member Access
+void Game::dsGameNew()
+{
+	// Fill Floor Vector with New Floors
+	for (int i = 0; i < floorTotal; ++i)
+	{
+		// Specify Number of Floors Created
+		++floorCount;
+		// push_back() New Floor to Floors Vector
+		Floors.push_back(dsFloorNew(i));
+
+		// Fill New Floor's Enemy Vector with New Enemies
+		for (int j = 0; j < enemyTotal; ++j)
+		{
+			// Specify Number of Enemies Created
+			++enemyCount;
+			// push_back() New Enemy to Enemies Vector
+			Floors.at(i).Enemies.push_back(dsEnemyNew(j));
+		}
+	}
+
+	// Fill Player Vector with New Players
+	for (int i = 0; i < playerTotal; ++i)
+	{
+		// Specify Number of Players Created
+		++playerCount;
+		// push_back() New Player to Players Vector
+		Players.push_back(dsPlayerNew(i));
+	}
+
+	// Return Void
+	return;
+}
+
+/******************************************************************************
+ *                                  CORE FUNCTIONS                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                SYSTEM FUNCTIONS                            *
+ ******************************************************************************/
 
 // Function to display game progress
 // Accepts no parameters
@@ -1440,7 +1518,7 @@ void Game::gameCombat()
 	// Display New Floor Intro
 	gameFloorIntro();
 
-	// Take User's Choice with gameChoiceInt() while isDone != true;
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// If User is Editing, Display Settings Menu Page 2
@@ -1461,7 +1539,7 @@ void Game::gameCombat()
 		if (uiLinesSelected[4][0] == true)
 		{
 			// Take User Choice of any Number
-			floorDifficulty = gameChoiceInt(1, 4);
+			floorDifficulty = dsChoiceNumber(1, 4);
 			uiLinesNumbers[4][0] = floorDifficulty;
 			uiLinesSelected[4][0] = false;
 		}
@@ -1470,7 +1548,7 @@ void Game::gameCombat()
 		else if (uiLinesSelected[5][0] == true)
 		{
 			// Take User Choice of any Number
-			floorTotal = gameChoiceInt(1, 4);
+			floorTotal = dsChoiceNumber(1, 4);
 			uiLinesNumbers[5][0] = floorTotal;
 			uiLinesSelected[5][0] = false;
 		}
@@ -1479,7 +1557,7 @@ void Game::gameCombat()
 		else if (uiLinesSelected[6][0] == true)
 		{
 			// Take User Choice of any Number
-			enemyTotal = gameChoiceInt(1, 4);
+			enemyTotal = dsChoiceNumber(1, 4);
 			uiLinesNumbers[6][0] = enemyTotal;
 			uiLinesSelected[6][0] = false;
 		}
@@ -1488,7 +1566,7 @@ void Game::gameCombat()
 		else if (uiLinesSelected[7][0] == true)
 		{
 			// Take User Choice of any Number
-			playerTotal = gameChoiceInt(1, 4);
+			playerTotal = dsChoiceNumber(1, 4);
 			uiLinesNumbers[7][0] = playerTotal;
 			uiLinesSelected[7][0] = false;
 		}
@@ -1497,7 +1575,7 @@ void Game::gameCombat()
 		else
 		{
 			// Take User Choice of (1 - 5)
-			userInt = gameChoiceInt(1, 5);
+			userInt = dsChoiceNumber(1, 5);
 
 			// Check User Choice
 			switch (userInt)
@@ -1612,8 +1690,8 @@ void Game::gameCombats()
 			if (floorNext == 1)
 			{
 				Players.at(playerCurrent).personStamina = sMAX;
-				playerWealth += Floors.at(floorCurrent).floorLoot;
-				Players.at(playerCurrent).personMoney += Floors.at(floorCurrent).floorLoot;
+				playerWealth += Floors.at(floorCurrent).floorMoney;
+				Players.at(playerCurrent).personMoney += Floors.at(floorCurrent).floorMoney;
 				++floorCurrent;
 				floorRound = 0;
 				gameFloorIntro();
@@ -1700,14 +1778,14 @@ void Game::gamePlayerTurn(int uMENU, int uPAGE)
 	Players.at(playerCurrent).isDodging = false;
 	Players.at(playerCurrent).isWaiting = false;
 
-	// Take User's Choice with gameChoiceInt() while isDone != true;
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// Display Game Ui
 		gameUi(1);
 
 		// Take User Choice of (1 - 4)
-		userInt = gameChoiceInt(uMENU, uPAGE);
+		userInt = dsChoiceNumber(uMENU, uPAGE);
 
 		// Check User Choice
 		switch (userInt)

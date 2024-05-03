@@ -131,12 +131,12 @@ public:
 			isDodging = false,	 // Specify if Person is Dodging
 			isWaiting = false;	 // Specify if Person is Waiting
 		int
-			//*rngArray = new int[rngASIZE]{},			// Establish a Dynamic Array for RNG
+			//*rngArray = new int[rngASIZE]{},			// Establish Dynamic Array for RNG
 			rngArray[rngASIZE]{1}, // Establish an Array for RNG
-			//*choiceArray = new int[rngASIZE]{}; 		// Establish a Dynamic Array for Random Choices
-			choiceArray[rngASIZE]{1}; // Establish an Array for Random Choices
-		vector<Weapon> Weapons;		  // Initialize a Weapon Vector for Weapons
-		vector<Armor> Armors;		  // Initialize a Armor Vector for Armors
+			//*choiceArray = new int[rngASIZE]{}; 		// Establish Dynamic Array for Random Choices
+			choiceArray[rngASIZE]{1}; // Establish Array for Random Choices
+		vector<Weapon> Weapons;		  // Initialize Weapon Vector for Weapons
+		vector<Armor> Armors;		  // Initialize Armor Vector for Armors
 
 		// Operator Overload Functions
 		// Function to Evaluate for Combat Tie
@@ -379,23 +379,22 @@ public:
 	struct Floor
 	{
 		string
-			floorDescription = "Floor"; // Specify Description of Floor
+			floorName = "Floor"; // Specify Name of Floor
 		double
-			floorModifier = 1, // Specify Modifier of Floor
-			floorLoot = fLOOT; // Specify Reward of Floor
+			floorModifier = 1,	// Specify Modifier of Floor
+			floorMoney = fLOOT; // Specify Reward of Floor
 		int
 			floorIndex = 0,	 // Specify Index of Floor
 			floorNumber = 1, // Specify Number of Floor
-			floorLevel = 1;	 // Specify Number of Floor
+			floorLevel = 1;	 // Specify Level of Floor
 		bool
-			isStore = true; // Specify if Store is available on Floor
-		Person
-			Enemy;				// Specify Enemy(s) of Floor
-		vector<Person> Enemies; // Initialize a Person Vector for Enemies
+			isStore = true; // Specify if Store is Available on Floor
+
+		vector<Person> Enemies; // Initialize Person Vector for Enemies
 	};
 
-	vector<Floor> Floors;	// Initialize a Floor Vector for Floors
-	vector<Person> Players; // Initialize a Person Vector for Players
+	vector<Floor> Floors;	// Initialize Floor Vector for Floors
+	vector<Person> Players; // Initialize Person Vector for Players
 
 	string (*menuLines)[mLINES][mCOLS] = new string[mMENUS][mLINES][mCOLS]{}; // Establish a Dynamic 2D String Array for Menu Lines
 	int (*menuLinesNumbers)[mCOLS] = new int[mLINES][mCOLS]{};				  // Establish a Dynamic 2D String Array for Menu Numbers
@@ -406,7 +405,7 @@ public:
 	// string *weaponLabels = new string[wSIZE]{};		 // Establish a dynamic array for Weapon Labels
 	// string *armorLabels = new string[aSIZE]{};		 // Establish a dynamic array for Armor Labels
 	// string *personLabels = new string[pSIZE]{};		 // Establish a dynamic array for Person Labels
-	// string *floorDescriptions = new string[fSIZE]{}; // Establish a dynamic array for Floor Labels
+	// string *floorNames = new string[fSIZE]{}; // Establish a dynamic array for Floor Labels
 
 	// Constructor with Default Parameters
 	Game()
@@ -423,32 +422,7 @@ public:
 		// gameSettings();
 
 		// Build Game
-		// Fill Floors Vector with new Floors
-		for (int i = 0; i < floorTotal; ++i)
-		{
-			// Add new Floor to Floors Vector
-			++floorCount;
-			Floors.push_back(gameAddFloor(i));
-		}
-
-		// Fill Enemies Vector with new Enemies
-		for (int i = 0; i < floorTotal; ++i)
-		{
-			// Add new Enemy(s) to Floor Enemies Vector
-			for (int j = 0; j < enemyTotal; ++j)
-			{
-				++enemyCount;
-				Floors.at(i).Enemies.push_back(gameAddEnemy(j));
-			}
-		}
-
-		// Fill Players Vector with new Players
-		for (int i = 0; i < playerTotal; ++i)
-		{
-			// Add new Player to Players Vector
-			++playerCount;
-			Players.push_back(gameAddPlayer(i));
-		}
+		dsGameNew();
 
 		// Do Combat while Player's Characters are Not all Dead or Player has Not Won
 		do
@@ -472,8 +446,8 @@ public:
 		//  armorLabels = nullptr;
 		//  delete[] personsLabels;
 		//  personsLabels = nullptr;
-		//  delete[] floorDescriptions;
-		//  floorDescriptions = nullptr;
+		//  delete[] floorNames;
+		//  floorNames = nullptr;
 		//  delete[] Players.at(0).rngArray;
 		//  Players.at(0).rngArray = nullptr;
 		//  delete[] Players.at(0).choiceArray;
@@ -488,8 +462,8 @@ public:
 	}
 
 	// INTERACT FUNCTIONS
-	string gameChoiceString();
-	double gameChoiceInt(int minInt = 1, int maxInt = 4);
+	string dsChoiceString();
+	double dsChoiceNumber(int = 0, int = 9);
 
 	// MENU FUNCTIONS
 	void gameAddData();
@@ -507,9 +481,10 @@ public:
 	// SYSTEM FUNCTIONS
 	int rndInt(int, int = 1);
 	bool rng(int = rngPSIZE);
-	Floor gameAddFloor(int = 0);
-	Person gameAddEnemy(int = 0);
-	Person gameAddPlayer(int = 0);
+	Floor dsFloorNew(int = -1);
+	Person dsEnemyNew(int = -1);
+	Person dsPlayerNew(int = -1);
+	void dsGameNew();
 	void gameCombat();
 	void gameStaminaRecovery();
 	void gamePlayerTurn(int, int = 1);
@@ -540,31 +515,52 @@ public:
 	void enemyWaitShow();
 
 private:
+	// Initialize Private Int(s) for Class
 	int
+		// Game Settings
 		floorDifficulty = 3,
 		floorTotal = 10,
+		enemyTotal = 1,
+		playerTotal = 1,
+
+		// Floor/Person Count
 		floorCount = 0,
+		enemyCount = 0,
+		playerCount = 0,
+
+		// Game Progress
 		floorCurrent = 0,
 		floorRound = 0,
-		enemyTotal = 1,
-		enemyCount = 0,
 		enemyCurrent = 0,
-		enemyChoice = 0,
-		playerTotal = 1,
-		playerCount = 0,
 		playerCurrent = 0,
+
+		// Game Choices
+		enemyChoice = 0,
 		playerChoice = 0,
+
+		// Game Stats
+		playerFloors = 0,
 		playerKills = 0,
 		playerWealth = 0,
+
+		// User Int
 		userInt = 0;
+	// Initialize Private String(s) for Class
 	string
+		// Game Files
 		fileMenus = "fileMenus.txt",
 		fileUi = "fileUi.txt",
 		fileItems = "fileItems.txt",
 		fileFloors = "fileFloors.txt",
 		fileEnemies = "fileEnemies.txt",
 		filePlayers = "filePlayers.txt",
+
+		// User Name
+		userName = "Player",
+
+		// User String
 		userString = "0";
+	// Initialize Private Bool(s) for Class
 	bool
 		userIntisInt = false,
 		userStringisString = false;

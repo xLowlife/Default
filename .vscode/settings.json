@@ -3,7 +3,10 @@
 		"xstring": "cpp",
 		"vector": "cpp",
 		"iostream": "cpp",
-		"string": "cpp"
+		"string": "cpp",
+		"format": "cpp",
+		"ostream": "cpp",
+		"random": "cpp"
 	},
 	"cmake.configureOnOpen": true
 }
