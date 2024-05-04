@@ -53,23 +53,23 @@ string Game::dsChoiceString()
 {
 	// Initialize Variable(s) for dsChoiceString()
 	string userString = "-1"; // Initialize Strings(s) for storing User String(s)
-	bool isAlnums = true;	  // Initialize Bool(s) for storing Bool(s)
+	bool isChoice = true;	  // Initialize Bool(s) for storing Bool(s)
 
 	// Take User's Choice with Getline()
 	getline(cin, userString);
 
 	// Checks User's Choice for Alnums
-	for (int i = 0; isAlnums && i < userString.length(); ++i)
+	for (int i = 0; isChoice && i < userString.length(); ++i)
 	{
 		// If Char in String is NOT an Alnum, Empty Variable(s)
 		if (!(isalnum(userString[i])))
 		{
-			isAlnums = false;
+			isChoice = false;
 		}
 	}
 
-	// If isAlnums == false, Empty Variable(s)
-	if (isAlnums == false)
+	// If isChoice == false, Empty Variable(s)
+	if (isChoice == false)
 	{
 		userString = "-1";
 	}
@@ -89,90 +89,102 @@ double Game::dsChoiceNumber(int choiceMin, int choiceMax)
 	// Initialize Variable(s) for dsChoiceNumber()
 	string userString = "-1"; // Initialize Strings(s) for storing User String(s)
 	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
-	bool					  // Initialize Bool(s) for storing Bool(s)
-		isInt = true,
-		isDigits = true;
+	bool isChoice = true;	  // Initialize Bool(s) for storing Bool(s)
 
 	// Take User's Choice with Getline()
 	getline(cin, userString);
 
-	// If User's Choice is 0, Return 0
-	if (userString[0] == '0')
-	{
-		userString = "0";
-		userDouble = 0;
-	}
-
-	// If choiceMin < 0 or choiceMax > 9, Accept Multi Digit Numbers or Negative Numbers
-	else if (choiceMin < 0 || choiceMax > 9)
-	{
-		// If Char in userString[0] is Not a Negative Sign or NOT a Digit, Empty Variable(s)
-		if (userString[0] != '-' && !(isdigit(userString[0])))
-		{
-			isDigits = false;
-		}
-
-		// If Char in userString[0] is a Negative Sign and no Digits, Empty Variable(s)
-		else if (userString[0] == '-' && userString.length() < 2)
-		{
-			isDigits = false;
-		}
-
-		// If Char in userString[0] has a Negative Sign and/or has Digit(s), Continue
-		else
-		{
-			// Checks User's Choice for Digits
-			for (int i = 1; isDigits && i < userString.length(); ++i)
-			{
-				// If Char in String is NOT a Digit, Empty Variable(s)
-				if (!(isdigit(userString[i])))
-				{
-					isDigits = false;
-				}
-			}
-		}
-
-		// If all Char(s) in String is/are Digit(s), Return String as Double
-		if (isDigits == true)
-		{
-			userDouble = stod(userString);
-		}
-
-		// If isDigits == false, Empty Variable(s)
-		else
-		{
-			userString = "-1";
-			userDouble = (-1);
-		}
-	}
-
 	// If choiceMin >= 0 and choiceMax <= 9, Only Accept Single Digit Numbers
-	else
+	if (choiceMin >= 0 && choiceMax <= 9)
 	{
-		// If Char in userString[0] is Not 1 and NOT a Digit, Empty Variable(s)
+		// If is Not Single Char or Not a Digit, Empty Variable(s)
 		if (userString.length() != 1 || !(isdigit(userString[0])))
 		{
-			isInt = false;
+			isChoice = false;
 		}
 
 		// If Char in userString[0] < choiceMin or userString[0] > choiceMax, Empty Variable(s)
 		else if (stoi(userString) < choiceMin || stoi(userString) > choiceMax)
 		{
-			isInt = false;
+			isChoice = false;
 		}
+	}
 
-		// If Char in String is an Int, Return String as Double
-		if (isInt == true)
+	// If choiceMin >= 0 and choiceMax > 9, Only Accept Positive Multi Digit Numbers
+	else if (choiceMin >= 0 && choiceMax > 9)
+	{
+		// Checks User's Choice for Digits
+		for (int i = 0; isChoice && i < userString.length(); ++i)
 		{
-			userDouble = stod(userString);
+			// If Char in String is NOT a Digit, Empty Variable(s)
+			if (!(isdigit(userString[i])))
+			{
+				isChoice = false;
+			}
+		}
+	}
+
+	// If choiceMin < 0 and choiceMax <= 0, Only Accept Negative Multi Digit Numbers
+	else if (choiceMin < 0 && choiceMax <= 0)
+	{
+		// If Char in userString[0] is Not a Negative Sign, Empty Variable(s)
+		if (userString[0] != '-')
+		{
+			isChoice = false;
 		}
 
-		// If isInt == false, Empty Variable(s)
+		// Checks User's Choice for Digits
+		for (int i = 1; isChoice && i < userString.length(); ++i)
+		{
+			// If Char in String is NOT a Digit, Empty Variable(s)
+			if (!(isdigit(userString[i])))
+			{
+				isChoice = false;
+			}
+		}
+	}
+
+	// Else, Accept any Multi Digit Number
+	else
+	{
+		// If Char in userString[0] is Not a Negative Sign and Not a Digit, Empty Variable(s)
+		if (userString[0] != '-' && !(isdigit(userString[0])))
+		{
+			isChoice = false;
+		}
+
+		// If Char in userString[0] is a Negative Sign and Length Less than 2, Empty Variable(s)
+		else if (userString[0] == '-' && userString.length() < 2)
+		{
+			isChoice = false;
+		}
+
+		// If Char in userString[0] has a Negative Sign and/or has Digit(s), Check the rest
 		else
 		{
-			userString = "-1";
-			userDouble = (-1);
+			// Checks User's Choice for Digits
+			for (int i = 1; isChoice && i < userString.length(); ++i)
+			{
+				// If Char in String is NOT a Digit, Empty Variable(s)
+				if (!(isdigit(userString[i])))
+				{
+					isChoice = false;
+				}
+			}
 		}
+	}
+
+	// If all Char(s) in String is/are Valid, Return String as Double
+	if (isChoice == true)
+	{
+		userDouble = stod(userString);
+	}
+
+	// If isChoice == false, Empty Variable(s)
+	else
+	{
+		userString = "-1";
+		userDouble = (-1);
 	}
 
 	// End dsChoiceNumber() with a Newline
@@ -187,49 +199,92 @@ double Game::dsChoiceNumber(int choiceMin, int choiceMax)
  ******************************************************************************/
 
 /******************************************************************************
- *                                  MENU FUNCTIONS                            *
+ *                                  FILE FUNCTIONS                            *
  ******************************************************************************/
 
-// Function to Fill Menu Line Array
-// Accepts no Parameters
-// Returns Void
-void Game::gameAddData()
+// Function to Access Game Files for Game Data
+// Accepts No Parameter(s)
+// Returns Void, passes Data by Member Access
+void Game::dsFiles()
 {
-	// Initialize Variable(s) for gameAddData()
-	ifstream fileGame; // Initialize ifstream(s) for storing ifstream(s)
-	string lineNew;	   // Initialize Strings(s) for storing String(s)
+	// Initialize Variable(s) for dsFiles()
+	ifstream dsFile; // Initialize ifstream(s) for storing ifstream(s)
+	string			 // Initialize Strings(s) for storing String(s)
+		lineTrash,
+		labelName,
+		labelPage;
 
 	// Open fileMenus
-	fileGame.open(fileMenus);
-	if (fileGame.is_open())
+	dsFile.open(fileMenus);
+	// If fileMenus did Open, Continue
+	if (dsFile.is_open())
 	{
 		// Output fileMenus opened successfully to console
 		cout << "File, " << fileMenus << ", opened successfully" << endl
 			 << endl;
 
-		// Fill Menu Line Array Pages
+		// Fill menuLinesNumbers Array
 		for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
 		{
-			// Fill Menu Line Array Lines
+			// Fill menuLinesNumbers Array Lines
 			for (int mLINE = 0; mLINE < mLINES; ++mLINE)
 			{
-				// Fill Menu Line Array Columns
+				// Fill menuLinesNumbers Array Columns
 				for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
 				{
-					// Store Menu Line Array Columns at menuLines[mMENU][mLINE][mCOL]
-					getline(fileGame, menuLines[mMENU][mLINE][mCOL], ';');
+					// Fill menuLinesNumbers Array Columns with (-1)
+					menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
+				}
+			}
+		}
+
+		// Fill menuLines Array
+		for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
+		{
+			// Advance to Next Menu Label Column
+			getline(dsFile, lineTrash, ';');
+			// Store Menu Name in labelName
+			getline(dsFile, labelName, ';');
+			// Store Menu Page in labelPage
+			getline(dsFile, labelPage, ';');
+			// Advance to Next Menu Line
+			getline(dsFile, lineTrash);
+
+			// Fill menuLines Array Lines
+			for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+			{
+				// Fill menuLines Array Columns
+				for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+				{
+					// Store Menu Line Column at menuLines[mMENU][mLINE][mCOL]
+					getline(dsFile, menuLines[mMENU][mLINE][mCOL], ';');
 				}
 
 				// Advance to Next Menu Line
-				getline(fileGame, lineNew);
+				getline(dsFile, lineTrash);
+			}
+
+			// Fill menuLabels Array, If Menu Page == Page 1
+			if (menuLines[mMENU][0][1] == "0")
+			{
+				// Specify Index of menuLabels is menuLines[mMENU][0][0]
+				int mLABEL = stoi(menuLines[mMENU][0][0]);
+
+				// Store menuLines Index at menuLabels[mLABEL][0]
+				menuLabels[mLABEL][0] = mMENU;
+
+				// Store Menu Name at menuLabels[mLABEL][1]
+				menuLabels[mLABEL][1] = labelName;
+
+				// Store Menu Page at menuLabels[mLABEL][2]
+				menuLabels[mLABEL][2] = labelPage;
 			}
 		}
 
 		// Close fileMenus
-		fileGame.close();
+		dsFile.close();
 	}
-
-	// Error if fileMenus did Not Open
+	// If fileMenus did Not Open, Error
 	else
 	{
 		// Output fileMenus failed to open to console
@@ -238,36 +293,76 @@ void Game::gameAddData()
 	}
 
 	// Open fileUi
-	fileGame.open(fileUi);
-	if (fileGame.is_open())
+	dsFile.open(fileUi);
+	// If fileUi did Open, Continue
+	if (dsFile.is_open())
 	{
 		// Output fileUi opened successfully to console
 		cout << "File, " << fileUi << ", opened successfully" << endl
 			 << endl;
 
-		// Fill Ui Line Array Pages
+		// Fill uiLinesNumbers Array
 		for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
 		{
-			// Fill Ui Line Array Lines
+			// Fill uiLinesNumbers Array Lines
 			for (int uLINE = 0; uLINE < uLINES; ++uLINE)
 			{
-				// Fill Ui Line Array Columns
+				// Fill uiLinesNumbers Array Columns
 				for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
 				{
-					// Store Ui Line Array Columns at uiLines[uMENU][uLINE][uCOL]
-					getline(fileGame, uiLines[uMENU][uLINE][uCOL], ';');
+					// Fill uiLinesNumbers Array Columns with (-1)
+					uiLinesNumbers[uMENU][uLINE][uCOL] = (-1);
+				}
+			}
+		}
+
+		// Fill Ui Arrays
+		for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
+		{
+			// Advance to Next Ui Label Column
+			getline(dsFile, lineTrash, ';');
+			// Store Ui Name in labelName
+			getline(dsFile, labelName, ';');
+			// Store Ui Page in labelPage
+			getline(dsFile, labelPage, ';');
+			// Advance to Next Ui Line
+			getline(dsFile, lineTrash);
+
+			// Fill uiLines Array Lines
+			for (int uLINE = 0; uLINE < uLINES; ++uLINE)
+			{
+				// Fill uiLines Array Columns
+				for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
+				{
+					// Store Ui Line Column at uiLines[uMENU][uLINE][uCOL]
+					getline(dsFile, uiLines[uMENU][uLINE][uCOL], ';');
 				}
 
 				// Advance to Next Ui Line
-				getline(fileGame, lineNew);
+				getline(dsFile, lineTrash);
+			}
+
+			// Fill uiLabels Array, If Ui Page == Page 1
+			if (uiLines[uMENU][0][1] == "0")
+			{
+				// Specify Index of uiLabels is uiLines[uMENU][0][0]
+				int mLABEL = stoi(uiLines[uMENU][0][0]);
+
+				// Store uiLines Index at uiLabels[mLABEL][0]
+				uiLabels[mLABEL][0] = uMENU;
+
+				// Store Ui Name at uiLabels[mLABEL][1]
+				uiLabels[mLABEL][1] = labelName;
+
+				// Store Ui Page at uiLabels[mLABEL][2]
+				uiLabels[mLABEL][2] = labelPage;
 			}
 		}
 
 		// Close fileUi
-		fileGame.close();
+		dsFile.close();
 	}
-
-	// Error if fileUi did Not Open
+	// If fileUi did Not Open, Error
 	else
 	{
 		// Output fileUi failed to open to console
@@ -275,35 +370,24 @@ void Game::gameAddData()
 			 << endl;
 	}
 
-	// Fill menuLinesNumbers Array Lines with (-1)
-	for (int mLINE = 0; mLINE < mLINES; ++mLINE)
-	{
-		// Fill menuLinesNumbers Array Columns with (-1)
-		for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
-		{
-			menuLinesNumbers[mLINE][mCOL] = (-1);
-		}
-	}
-
-	// Fill uiLinesNumbers Array Lines with (-1)
-	for (int uLINE = 0; uLINE < uLINES; ++uLINE)
-	{
-		// Fill uiLinesNumbers Array Columns with (-1)
-		for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
-		{
-			uiLinesNumbers[uLINE][uCOL] = (-1);
-		}
-	}
-
+	// Return Void
 	return;
 }
 
+/******************************************************************************
+ *                                  FILE FUNCTIONS                            *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                  MENU FUNCTIONS                            *
+ ******************************************************************************/
+
 // Function to Display Game Menus
-// Accepts 5 Int Parameters for adjusting output of Menu Lines
-// Returns Void
-int Game::gameMenu(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLINEMAX)
+// Accepts 5 Int Parameter(s) for Adjusting Menus
+// Returns Void, passes Data by Member Access
+int Game::dsMenuDisplay(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLINEMAX)
 {
-	// Initialize Variable(s) for gameMenu()
+	// Initialize Variable(s) for dsMenuDisplay()
 	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
 	bool				   // Initialize Bool(s) for storing Bool(s)
@@ -369,7 +453,7 @@ void Game::gameIntro()
 	do
 	{
 		// Display Intro Menu
-		gameMenu(1);
+		dsMenuDisplay(1);
 
 		// Take User Choice of (1 - 1)
 		userInt = dsChoiceNumber(1, 1);
@@ -404,7 +488,7 @@ void Game::gameRules()
 	do
 	{
 		// Display Rules Menu
-		gameMenu(2);
+		dsMenuDisplay(2);
 
 		// Take User Choice of (1 - 1)
 		userInt = dsChoiceNumber(1, 1);
@@ -436,10 +520,10 @@ void Game::gameSettings()
 	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
 	// Set Settings Values
-	menuLinesNumbers[4][0] = floorDifficulty;
-	menuLinesNumbers[5][0] = floorTotal;
-	menuLinesNumbers[6][0] = enemyTotal;
-	menuLinesNumbers[7][0] = playerTotal;
+	menuLinesNumbers[2][4][0] = floorDifficulty;
+	menuLinesNumbers[2][5][0] = floorTotal;
+	menuLinesNumbers[2][6][0] = enemyTotal;
+	menuLinesNumbers[2][7][0] = playerTotal;
 
 	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
@@ -448,14 +532,14 @@ void Game::gameSettings()
 		if (menuLinesSelected[4][0] == true || menuLinesSelected[5][0] == true || menuLinesSelected[6][0] == true || menuLinesSelected[7][0] == true)
 		{
 			// Display Settings Menu Page 2
-			gameMenu(3, 2);
+			dsMenuDisplay(3, 2);
 		}
 
 		// If User is Not Editing a Setting, Display Settings Menu Page 1
 		else
 		{
 			// Display Settings Menu Page 1
-			gameMenu(3);
+			dsMenuDisplay(3);
 		}
 
 		// Check if User is Editing floorDifficulty
@@ -463,7 +547,7 @@ void Game::gameSettings()
 		{
 			// Take User Choice of any Number
 			floorDifficulty = dsChoiceNumber(1, 9);
-			menuLinesNumbers[4][0] = floorDifficulty;
+			menuLinesNumbers[2][4][0] = floorDifficulty;
 			menuLinesSelected[4][0] = false;
 		}
 
@@ -472,7 +556,7 @@ void Game::gameSettings()
 		{
 			// Take User Choice of any Number
 			floorTotal = dsChoiceNumber(1, 9);
-			menuLinesNumbers[5][0] = floorTotal;
+			menuLinesNumbers[2][5][0] = floorTotal;
 			menuLinesSelected[5][0] = false;
 		}
 
@@ -481,7 +565,7 @@ void Game::gameSettings()
 		{
 			// Take User Choice of any Number
 			enemyTotal = dsChoiceNumber(1, 9);
-			menuLinesNumbers[6][0] = enemyTotal;
+			menuLinesNumbers[2][6][0] = enemyTotal;
 			menuLinesSelected[6][0] = false;
 		}
 
@@ -490,7 +574,7 @@ void Game::gameSettings()
 		{
 			// Take User Choice of any Number
 			playerTotal = dsChoiceNumber(1, 9);
-			menuLinesNumbers[7][0] = playerTotal;
+			menuLinesNumbers[2][7][0] = playerTotal;
 			menuLinesSelected[7][0] = false;
 		}
 
@@ -529,13 +613,18 @@ void Game::gameSettings()
 		}
 	} while (isDone != true);
 
-	// Fill menuLinesNumbers Array Lines with (-1)
-	for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+	// Fill menuLinesNumbers Array
+	for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
 	{
-		// Fill menuLinesNumbers Array Columns with (-1)
-		for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+		// Fill menuLinesNumbers Array Lines
+		for (int mLINE = 0; mLINE < mLINES; ++mLINE)
 		{
-			menuLinesNumbers[mLINE][mCOL] = (-1);
+			// Fill menuLinesNumbers Array Columns
+			for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+			{
+				// Fill menuLinesNumbers Array Columns with (-1)
+				menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
+			}
 		}
 	}
 
@@ -554,13 +643,13 @@ void Game::gameFloorIntro()
 	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
 	// Set Settings Values
-	menuLinesNumbers[5][0] = (floorCurrent + 1);
+	menuLinesNumbers[3][5][0] = (floorCurrent + 1);
 
 	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// Display Floor Intro
-		gameMenu(4);
+		dsMenuDisplay(4);
 
 		// Take User Choice of (1 - 1)
 		userInt = dsChoiceNumber(1, 1);
@@ -577,13 +666,18 @@ void Game::gameFloorIntro()
 		}
 	} while (isDone != true);
 
-	// Fill menuLinesNumbers Array Lines with (-1)
-	for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+	// Fill menuLinesNumbers Array
+	for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
 	{
-		// Fill menuLinesNumbers Array Columns with (-1)
-		for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+		// Fill menuLinesNumbers Array Lines
+		for (int mLINE = 0; mLINE < mLINES; ++mLINE)
 		{
-			menuLinesNumbers[mLINE][mCOL] = (-1);
+			// Fill menuLinesNumbers Array Columns
+			for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+			{
+				// Fill menuLinesNumbers Array Columns with (-1)
+				menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
+			}
 		}
 	}
 
@@ -605,7 +699,7 @@ void Game::gameOutro()
 	do
 	{
 		// Display Rules Menu
-		gameMenu(1);
+		dsMenuDisplay(1);
 
 		// Take User Choice of (1 - 1)
 		userInt = dsChoiceNumber(1, 1);
@@ -626,12 +720,12 @@ void Game::gameOutro()
 	return;
 }
 
-// Function to Display Game Menus
-// Accepts no Parameters
-// Returns Void
-void Game::gameMenus(int mMENU, int mPAGE)
+// Function to Access Game Menus
+// Accepts 2 Int Parameter(s)
+// Returns Void, passes Data by Member Access
+void Game::dsMenus(int mMENU, int mPAGE)
 {
-	// Initialize Variable(s) for gameMenus()
+	// Initialize Variable(s) for dsMenus()
 	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
 	bool				   // Initialize Bool(s) for storing Bool(s)
@@ -669,16 +763,16 @@ void Game::gameMenus(int mMENU, int mPAGE)
 		if (isSettings == true)
 		{
 			// Set Settings Values
-			menuLinesNumbers[4][0] = floorDifficulty;
-			menuLinesNumbers[5][0] = floorTotal;
-			menuLinesNumbers[6][0] = enemyTotal;
-			menuLinesNumbers[7][0] = playerTotal;
+			menuLinesNumbers[2][4][0] = floorDifficulty;
+			menuLinesNumbers[2][5][0] = floorTotal;
+			menuLinesNumbers[2][6][0] = enemyTotal;
+			menuLinesNumbers[2][7][0] = playerTotal;
 		}
 
 		else if (isFloorIntro == true)
 		{
 			// Set Settings Values
-			menuLinesNumbers[5][0] = (floorCurrent + 1);
+			menuLinesNumbers[2][5][0] = (floorCurrent + 1);
 		}
 
 		// Take User's Choice with dsChoiceNumber() while isDone != true;
@@ -699,14 +793,14 @@ void Game::gameMenus(int mMENU, int mPAGE)
 			}
 
 			// Display Menu and Take User Choice
-			userInt = gameMenu(mMENU, mPAGE);
+			userInt = dsMenuDisplay(mMENU, mPAGE);
 
 			// Check if User is Editing floorDifficulty
 			if (menuLinesSelected[4][0] == true)
 			{
 				// Take User Choice of any Number
 				floorDifficulty = userInt;
-				menuLinesNumbers[4][0] = floorDifficulty;
+				menuLinesNumbers[2][4][0] = floorDifficulty;
 				menuLinesSelected[4][0] = false;
 			}
 
@@ -715,7 +809,7 @@ void Game::gameMenus(int mMENU, int mPAGE)
 			{
 				// Take User Choice of any Number
 				floorTotal = userInt;
-				menuLinesNumbers[5][0] = floorTotal;
+				menuLinesNumbers[2][5][0] = floorTotal;
 				menuLinesSelected[5][0] = false;
 			}
 
@@ -724,7 +818,7 @@ void Game::gameMenus(int mMENU, int mPAGE)
 			{
 				// Take User Choice of any Number
 				enemyTotal = userInt;
-				menuLinesNumbers[6][0] = enemyTotal;
+				menuLinesNumbers[2][6][0] = enemyTotal;
 				menuLinesSelected[6][0] = false;
 			}
 
@@ -733,7 +827,7 @@ void Game::gameMenus(int mMENU, int mPAGE)
 			{
 				// Take User Choice of any Number
 				playerTotal = userInt;
-				menuLinesNumbers[7][0] = playerTotal;
+				menuLinesNumbers[2][7][0] = playerTotal;
 				menuLinesSelected[7][0] = false;
 			}
 
@@ -845,13 +939,18 @@ void Game::gameMenus(int mMENU, int mPAGE)
 			}
 		} while (isDone != true);
 
-		// Fill menuLinesNumbers Array Lines with (-1)
-		for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+		// Fill menuLinesNumbers Array
+		for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
 		{
-			// Fill menuLinesNumbers Array Columns with (-1)
-			for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+			// Fill menuLinesNumbers Array Lines
+			for (int mLINE = 0; mLINE < mLINES; ++mLINE)
 			{
-				menuLinesNumbers[mLINE][mCOL] = (-1);
+				// Fill menuLinesNumbers Array Columns
+				for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+				{
+					// Fill menuLinesNumbers Array Columns with (-1)
+					menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
+				}
 			}
 		}
 	}
@@ -866,7 +965,7 @@ void Game::gameMenus(int mMENU, int mPAGE)
 		do
 		{
 			// Display Menu and Take User Choice
-			userInt = gameMenu(mMENU);
+			userInt = dsMenuDisplay(mMENU);
 
 			// Fill isChoice[] with false
 			for (int i = 0; i < 10; ++i)
@@ -1409,14 +1508,14 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 		isDone = false;
 
 	// Set Settings Values
-	uiLinesNumbers[1][0] = (floorCurrent + 1);
-	uiLinesNumbers[1][1] = (floorRound + 1);
-	uiLinesNumbers[2][0] = Players.at(playerCurrent).personHealth;
-	uiLinesNumbers[2][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth;
-	uiLinesNumbers[3][0] = Players.at(playerCurrent).personStamina;
-	uiLinesNumbers[3][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina;
-	uiLinesNumbers[4][0] = Players.at(playerCurrent).personMoney;
-	uiLinesNumbers[4][1] = (enemyTotal - enemyCurrent);
+	uiLinesNumbers[0][1][0] = (floorCurrent + 1);
+	uiLinesNumbers[0][1][1] = (floorRound + 1);
+	uiLinesNumbers[0][2][0] = Players.at(playerCurrent).personHealth;
+	uiLinesNumbers[0][2][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth;
+	uiLinesNumbers[0][3][0] = Players.at(playerCurrent).personStamina;
+	uiLinesNumbers[0][3][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina;
+	uiLinesNumbers[0][4][0] = Players.at(playerCurrent).personMoney;
+	uiLinesNumbers[0][4][1] = (enemyTotal - enemyCurrent);
 
 	// Find uMENU in uiLines[i][0][0]
 	for (int i = 0; !(isUi) && i < uMENUS; ++i)
@@ -1443,8 +1542,8 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 1; uLINE < uiHud; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << left << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
-			 << right << setw(40) << (to_string(uiLinesNumbers[uLINE][1]) + uiLines[uMENU][uLINE][2]);
+		cout << left << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
+			 << right << setw(40) << (to_string(uiLinesNumbers[0][uLINE][1]) + uiLines[uMENU][uLINE][2]);
 
 		// cout New Line
 		cout << endl;
@@ -1454,13 +1553,13 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 5; uLINE < uiChoices; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << right << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
-			 << left << setw(40) << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
+		cout << right << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
+			 << left << setw(40) << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
 
 		// If Line Has Value, cout Value Message
-		if (uiLinesNumbers[uLINE][0] >= 0)
+		if (uiLinesNumbers[0][uLINE][0] >= 0)
 		{
-			cout << uiLinesNumbers[uLINE][0];
+			cout << uiLinesNumbers[0][uLINE][0];
 		}
 
 		// cout uiLines[uMENU][uLINE] lineRight
@@ -1480,8 +1579,8 @@ void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEM
 	for (int uLINE = 8; uLINE < uiCombat; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << right << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[uLINE][0]))
-			 << left << setw(40) << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[uLINE][1]));
+		cout << right << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
+			 << left << setw(40) << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
 
 		// cout New Line
 		cout << endl;
@@ -1540,7 +1639,7 @@ void Game::gameCombat()
 		{
 			// Take User Choice of any Number
 			floorDifficulty = dsChoiceNumber(1, 4);
-			uiLinesNumbers[4][0] = floorDifficulty;
+			uiLinesNumbers[2][4][0] = floorDifficulty;
 			uiLinesSelected[4][0] = false;
 		}
 
@@ -1549,7 +1648,7 @@ void Game::gameCombat()
 		{
 			// Take User Choice of any Number
 			floorTotal = dsChoiceNumber(1, 4);
-			uiLinesNumbers[5][0] = floorTotal;
+			uiLinesNumbers[2][5][0] = floorTotal;
 			uiLinesSelected[5][0] = false;
 		}
 
@@ -1558,7 +1657,7 @@ void Game::gameCombat()
 		{
 			// Take User Choice of any Number
 			enemyTotal = dsChoiceNumber(1, 4);
-			uiLinesNumbers[6][0] = enemyTotal;
+			uiLinesNumbers[2][6][0] = enemyTotal;
 			uiLinesSelected[6][0] = false;
 		}
 
@@ -1567,7 +1666,7 @@ void Game::gameCombat()
 		{
 			// Take User Choice of any Number
 			playerTotal = dsChoiceNumber(1, 4);
-			uiLinesNumbers[7][0] = playerTotal;
+			uiLinesNumbers[2][7][0] = playerTotal;
 			uiLinesSelected[7][0] = false;
 		}
 
@@ -1606,13 +1705,18 @@ void Game::gameCombat()
 		}
 	} while (isDone != true);
 
-	// Fill uiLinesNumbers Array Lines with (-1)
-	for (int uLINE = 0; uLINE < uLINES; ++uLINE)
+	// Fill menuLinesNumbers Array
+	for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
 	{
-		// Fill uiLinesNumbers Array Columns with (-1)
-		for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
+		// Fill uiLinesNumbers Array Lines
+		for (int uLINE = 0; uLINE < uLINES; ++uLINE)
 		{
-			uiLinesNumbers[uLINE][uCOL] = (-1);
+			// Fill uiLinesNumbers Array Columns
+			for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
+			{
+				// Fill uiLinesNumbers Array Columns with (-1)
+				uiLinesNumbers[uMENU][uLINE][uCOL] = (-1);
+			}
 		}
 	}
 

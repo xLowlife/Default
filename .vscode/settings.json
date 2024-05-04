@@ -6,7 +6,9 @@
 		"string": "cpp",
 		"format": "cpp",
 		"ostream": "cpp",
-		"random": "cpp"
+		"random": "cpp",
+		"fstream": "cpp",
+		"iosfwd": "cpp"
 	},
 	"cmake.configureOnOpen": true
 }
