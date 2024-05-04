@@ -1734,7 +1734,7 @@ void Game::gameCombats()
 		do
 		{
 			// Progress Combat and Excute combat choices
-			gamePlayerTurn(playerChoice, enemyChoice);
+			gamePlayerTurn(playerChoice);
 			gameEnemyTurn();
 
 			// Move to next round
@@ -1864,18 +1864,18 @@ void Game::gameStaminaRecovery()
  *                                  GAME FUNCTIONS                            *
  ******************************************************************************/
 
-// Function to Take Player's Turn
-// Accepts no Parameters
-// Returns Void, Passes Data by Member Access
-void Game::gamePlayerTurn(int uMENU, int uPAGE)
+// Function to Take User's Choice in Combat
+// Requires 1 Int Parameter(s) for Current Ui Index
+// Returns Void, passes Data by Member Access
+void Game::gamePlayerTurn(int uMENU)
 {
 	// Initialize Variable(s) for gamePlayerTurn()
-	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+	int userInt = (-1);		  // Initialize Int(s) for storing User Int(s)
+	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
 
 	// Reset Player
-	// playerChoice = 0;
+	// playerChoice = (-1);
 	Players.at(playerCurrent).isRecovering = true;
 	Players.at(playerCurrent).isAttacking = false;
 	Players.at(playerCurrent).isBlocking = false;
@@ -1886,10 +1886,10 @@ void Game::gamePlayerTurn(int uMENU, int uPAGE)
 	do
 	{
 		// Display Game Ui
-		gameUi(1);
+		gameUi(uMENU);
 
 		// Take User Choice of (1 - 4)
-		userInt = dsChoiceNumber(uMENU, uPAGE);
+		userInt = dsChoiceNumber(uiLines[uMENU][0][3][0], uiLines[uMENU][0][3][1]);
 
 		// Check User Choice
 		switch (userInt)
@@ -1898,7 +1898,6 @@ void Game::gamePlayerTurn(int uMENU, int uPAGE)
 			// If User has enough Stamina, Attack
 			if (Players.at(playerCurrent).personStamina >= aCOST)
 			{
-				Players.at(playerCurrent).personStamina -= aCOST;
 				Players.at(playerCurrent).isAttacking = true;
 				isDone = true;
 			}
@@ -1918,7 +1917,6 @@ void Game::gamePlayerTurn(int uMENU, int uPAGE)
 			// If User has enough Stamina, Dodge
 			if (Players.at(playerCurrent).personStamina >= dCOST)
 			{
-				Players.at(playerCurrent).personStamina -= dCOST;
 				Players.at(playerCurrent).isDodging = true;
 				isDone = true;
 			}
@@ -1943,21 +1941,24 @@ void Game::gamePlayerTurn(int uMENU, int uPAGE)
 		}
 	} while (isDone != true);
 
+	// playerChoice = userInt
+	playerChoice = userInt;
+
 	// Return Void
 	return;
 }
 
-// Function to Take Enemy's Turn
-// Accepts no Parameters
-// Returns Void, Passes Data by Member Access
+// Function to Take Enemy's Choice in Combat
+// Accepts No Parameter(s)
+// Returns Void, passes Data by Member Access
 void Game::gameEnemyTurn()
 {
 	// Initialize Variable(s) for gameEnemyTurn()
-	int enemyInt = 0;	 // Initialize Int(s) for storing User Int(s)
+	int enemyInt = (-1); // Initialize Int(s) for storing Enemy Int(s)
 	bool isDone = false; // Initialize Bool(s) for storing Bool(s)
 
 	// Reset Enemy
-	// enemyChoice = 0;
+	// enemyChoice = (-1);
 	Floors.at(floorCurrent).Enemies.at(enemyCurrent).isRecovering = true;
 	Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking = false;
 	Floors.at(floorCurrent).Enemies.at(enemyCurrent).isBlocking = false;
@@ -1977,7 +1978,6 @@ void Game::gameEnemyTurn()
 			// If Enemy has enough Stamina, Attack
 			if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= aCOST)
 			{
-				Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina -= aCOST;
 				Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking = true;
 				isDone = true;
 			}
@@ -1997,7 +1997,6 @@ void Game::gameEnemyTurn()
 			// If Enemy has enough Stamina, Dodge
 			if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= dCOST)
 			{
-				Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina -= dCOST;
 				Floors.at(floorCurrent).Enemies.at(enemyCurrent).isDodging = true;
 				isDone = true;
 			}
@@ -2026,148 +2025,49 @@ void Game::gameEnemyTurn()
 	return;
 }
 
-// Function to Decide Choices for Enemy's Turn
-// Accepts no Parameters
-// Returns Void, Passes Data by Member Access
+// Function to Decide Enemy's Choice in Combat
+// Accepts No Parameter(s)
+// Returns Void, passes Data by Member Access
 int Game::gameEnemyAi()
 {
 	// Initialize Variable(s) for gameEnemyAi()
-	int enemyInt = 0;	 // Initialize Int(s) for storing User Int(s)
-	bool isDone = false; // Initialize Bool(s) for storing Bool(s)
+	int enemyInt = (-1); // Initialize Int(s) for storing Enemy Int(s)
 
 	// Take Enemy's Choice while isDone != true;
-	do
+	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= dCOST)
 	{
-		//
-		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= dCOST)
+		// If Player's Stamina is too Low to Act, Attack
+		if (Players.at(playerCurrent).personStamina < aCOST)
 		{
-			//
-			if (Players.at(playerCurrent).personStamina < aCOST)
+			enemyInt = 1;
+		}
+
+		// If Player Can't Block without Stun, Prefer Dodge with Change to Attack
+		else if (Players.at(playerCurrent).personStamina <= bCOST)
+		{
+			bool choice1 = rng(rndInt(4)); // Default 3
+
+			// Chance to Attack
+			if (choice1 == true)
 			{
 				enemyInt = 1;
 			}
 
-			//
-			else if (Players.at(playerCurrent).personStamina <= bCOST)
-			{
-				bool choice1 = rng(rndInt(4)); // Default 3
-				//
-				if (choice1 == true)
-				{
-					enemyInt = 1;
-				}
-
-				//
-				else
-				{
-					enemyInt = 3;
-				}
-			}
-
-			//
-			else if (Players.at(playerCurrent).personStamina < dCOST)
-			{
-				bool choice2 = rng(rndInt(4)); // Default 3
-				//
-				if (choice2 == true)
-				{
-					enemyInt = 3;
-				}
-
-				//
-				else
-				{
-					enemyInt = 1;
-				}
-			}
-
-			//
+			// Prefer Dodge
 			else
 			{
-				int choice3 = rndInt((rngASIZE - 1), 0);
-				enemyInt = Floors.at(floorCurrent).Enemies.at(enemyCurrent).choiceArray[choice3];
+				enemyInt = 3;
 			}
 		}
 
 		//
-		else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina > bCOST)
+		else if (Players.at(playerCurrent).personStamina < dCOST)
 		{
+			bool choice2 = rng(rndInt(4)); // Default 3
 			//
-			if (Players.at(playerCurrent).personStamina < aCOST)
+			if (choice2 == true)
 			{
-				enemyInt = 1;
-			}
-
-			//
-			else if (Players.at(playerCurrent).personStamina <= bCOST)
-			{
-				bool choice4 = rng(rndInt(4)); // Default 3
-				//
-				if (choice4 == true)
-				{
-					enemyInt = 1;
-				}
-
-				//
-				else
-				{
-					enemyChoice = 2;
-				}
-			}
-
-			//
-			else if (Players.at(playerCurrent).personStamina < dCOST)
-			{
-				bool choice5 = rng(rndInt(4)); // Default 3
-				//
-				if (choice5 == true)
-				{
-					enemyInt = 2;
-				}
-
-				//
-				else
-				{
-					enemyInt = 1;
-				}
-			}
-
-			//
-			else
-			{
-				bool choice6 = rng(rndInt(4)); // Default 3
-				//
-				if (choice6 == true)
-				{
-					enemyInt = 1;
-				}
-
-				//
-				else
-				{
-					enemyInt = 2;
-				}
-			}
-		}
-
-		//
-		else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= aCOST)
-		{
-			//
-			if (Players.at(playerCurrent).personStamina >= dCOST)
-			{
-				bool choice7 = rng(rndInt(4)); // Default 3
-				//
-				if (choice7 == true)
-				{
-					enemyInt = 2;
-				}
-
-				//
-				else
-				{
-					enemyInt = 1;
-				}
+				enemyInt = 3;
 			}
 
 			//
@@ -2180,248 +2080,112 @@ int Game::gameEnemyAi()
 		//
 		else
 		{
-			enemyInt = 4;
+			int choice3 = rndInt((rngASIZE - 1), 0);
+			enemyInt = Floors.at(floorCurrent).Enemies.at(enemyCurrent).choiceArray[choice3];
+		}
+	}
+
+	//
+	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina > bCOST)
+	{
+		//
+		if (Players.at(playerCurrent).personStamina < aCOST)
+		{
+			enemyInt = 1;
 		}
 
-		// End for Testing
-		isDone = true;
-	} while (isDone != true);
+		//
+		else if (Players.at(playerCurrent).personStamina <= bCOST)
+		{
+			bool choice4 = rng(rndInt(4)); // Default 3
+			//
+			if (choice4 == true)
+			{
+				enemyInt = 1;
+			}
+
+			//
+			else
+			{
+				enemyChoice = 2;
+			}
+		}
+
+		//
+		else if (Players.at(playerCurrent).personStamina < dCOST)
+		{
+			bool choice5 = rng(rndInt(4)); // Default 3
+			//
+			if (choice5 == true)
+			{
+				enemyInt = 2;
+			}
+
+			//
+			else
+			{
+				enemyInt = 1;
+			}
+		}
+
+		//
+		else
+		{
+			bool choice6 = rng(rndInt(4)); // Default 3
+			//
+			if (choice6 == true)
+			{
+				enemyInt = 1;
+			}
+
+			//
+			else
+			{
+				enemyInt = 2;
+			}
+		}
+	}
+
+	//
+	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= aCOST)
+	{
+		//
+		if (Players.at(playerCurrent).personStamina >= dCOST)
+		{
+			bool choice7 = rng(rndInt(4)); // Default 3
+			//
+			if (choice7 == true)
+			{
+				enemyInt = 2;
+			}
+
+			//
+			else
+			{
+				enemyInt = 1;
+			}
+		}
+
+		//
+		else
+		{
+			enemyInt = 1;
+		}
+	}
+
+	//
+	else
+	{
+		enemyInt = 4;
+	}
 
 	// Return Enemy's Choice as Int
 	return enemyInt;
 }
 
-//// Function to execute Person Attack
-//// Accepts no parameters
-//// Returns void, passes data by member access
-// void Game::turnAttack()
-//{
-//	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking == true)
-//	{
-//		if (Players.at(playerCurrent).personHealth - (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) <= 0)
-//		{
-//			Players.at(playerCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Players.at(playerCurrent).personHealth -= (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense);
-//		}
-//	}
-//	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isDodging == true)
-//	{
-//		if (Players.at(playerCurrent).personHealth - (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) <= 0)
-//		{
-//			Players.at(playerCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Players.at(playerCurrent).personHealth -= (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense);
-//		}
-//	}
-//	return;
-// }
-//
-//// Function to execute Person Block
-//// Accepts no parameters
-//// Returns void, passes data by member access
-// void Game::turnBlock()
-//{
-//	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking == true)
-//	{
-//		if (Players.at(playerCurrent).personHealth - ((Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) / bBUFF) <= 0)
-//		{
-//			Players.at(playerCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Players.at(playerCurrent).personHealth -= ((Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) / bBUFF);
-//			if ((Players.at(playerCurrent).personStamina - bCOST) <= 0)
-//			{
-//				Players.at(playerCurrent).personStamina = 0;
-//				Players.at(playerCurrent).personHealth -= (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense);
-//			}
-//			else
-//			{
-//				Players.at(playerCurrent).personStamina -= bCOST;
-//			}
-//		}
-//	}
-//	return;
-// }
-//
-//// Function to execute Person Dodge
-//// Accepts no parameters
-//// Returns void, passes data by member access
-// void Game::turnDodge()
-//{
-//	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isBlocking == true)
-//	{
-//		if (Players.at(playerCurrent).personHealth - (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) <= 0)
-//		{
-//			Players.at(playerCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Players.at(playerCurrent).personHealth -= (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense);
-//		}
-//	}
-//	return;
-// }
-//
-//// Function to execute Person Wait
-//// Accepts no parameters
-//// Returns void, passes data by member access
-// void Game::turnWait()
-//{
-//	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking == true)
-//	{
-//		if (Players.at(playerCurrent).personHealth - (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) <= 0)
-//		{
-//			Players.at(playerCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Players.at(playerCurrent).personHealth -= (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense);
-//		}
-//	}
-//	return;
-// }
-//
-//// Function to execute Person Attack
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::turnRun()
-{
-	if (floorRound == 0)
-	{
-		// gameNewFloor(); // Execute turnRun
-		cout << "gameNewFloor()" << endl
-			 << endl;
-	}
-	else
-	{
-		cout << "It's too late. You made your choice." << endl
-			 << endl;
-	}
-	return;
-}
-
 // Function to execute Person Attack
 // Accepts no parameters
 // Returns void, passes data by member access
-void Game::turnExitGame()
-{
-	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= dCOST)
-	{
-		// turnExitGame(); // Execute turnRun
-		cout << "turnExitGame()" << endl
-			 << endl;
-	}
-	else
-	{
-		cout << "Are you sure you want to exit the game?" << endl
-			 << endl;
-		cout << "Goodbye" << endl;
-	}
-	return;
-}
-
-//// Function to execute Person Attack
-//// Accepts no parameters
-//// Returns void, passes data by member access
-// void Game::enemyAttack()
-//{
-//	if (Players.at(playerCurrent).isAttacking == true)
-//	{
-//		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth - (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) <= 0)
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth -= (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense);
-//		}
-//	}
-//	if (Players.at(playerCurrent).isDodging == true)
-//	{
-//		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth - (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) <= 0)
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth -= (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense);
-//		}
-//	}
-//	return;
-// }
-//
-//// Function to execute Person Block
-//// Accepts no parameters
-//// Returns void, passes data by member access
-// void Game::enemyBlock()
-//{
-//	if (Players.at(playerCurrent).isAttacking == true)
-//	{
-//		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth - ((Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) / bBUFF) <= 0)
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth -= ((Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) / bBUFF);
-//			if ((Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina - bCOST) <= 0)
-//			{
-//				Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina = 0;
-//				Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth -= (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense);
-//			}
-//			else
-//			{
-//				Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina -= bCOST;
-//			}
-//		}
-//	}
-//	return;
-// }
-//
-//// Function to execute Person Dodge
-//// Accepts no parameters
-//// Returns void, passes data by member access
-// void Game::enemyDodge()
-//{
-//	if (Players.at(playerCurrent).isBlocking == true)
-//	{
-//		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth - (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) <= 0)
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth -= (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense);
-//		}
-//	}
-//	return;
-// }
-//
-//// Function to execute Person Wait
-//// Accepts no parameters
-//// Returns void, passes data by member access
-// void Game::enemyWait()
-//{
-//	if (Players.at(playerCurrent).isAttacking == true)
-//	{
-//		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth - (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) <= 0)
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth = 0;
-//		}
-//		else
-//		{
-//			Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth -= (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense);
-//		}
-//	}
-//	return;
-// }
-
 void Game::turnAttackShow()
 {
 	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking == true)

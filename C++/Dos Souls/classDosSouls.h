@@ -156,7 +156,8 @@ public:
 		// Function to Overload Operator '==' for Person to Evaluate for Combat Tie
 		// Accepts 1 Person Parameter
 		// Returns Bool, passes Data by Member Access
-		bool operator==(Person &Person2)
+		bool
+		operator==(Person &Person2)
 		{
 			// Initialize Variable(s) for Person's operator==()
 			bool combatTie = false; // Initialize Bool(s) for storing Bool Data
@@ -321,64 +322,108 @@ public:
 			return combatWin;
 		}
 
-		// Function to Overload Operator '+=' for Person to Deal Damage to Person 2
+		// Function to Overload Operator '+=' for Damaging Health in Combat
 		// Accepts 1 Person Parameter
 		// Returns Void, passes Data by Member Access
 		void operator+=(Person &Person2)
 		{
-			// Check if Person 2 is Blocking
-			if (Person2.isBlocking == true)
+			// If Person 1 Wins Combat, Deal Damage to Person 2
+			if (*this >= Person2)
 			{
-				// If Person 2 is Blocking, Deal Full Damage divided by bBUFF
-				Person2.personHealth -= ((this->Weapons.at(this->personWeapon).weaponDamage - Person2.Armors.at(Person2.personArmor).armorDefense) / bBUFF);
-
-				// If Person 2 Blocks the Attack, Take Stamina Cost of Blocking from Person 2
-				Person2.personStamina -= bCOST;
-
-				// If Person 2 Blocks the Attack and Person 2's Stamina Drops to 0, Person 1 Attacks Person 2 again, Deal Full Damage
-				if (Person2.personStamina <= 0)
+				// Check if Person 2 is Blocking
+				if (Person2.isBlocking == true)
 				{
-					Person2.personStamina = 0; // Don't let Person 2's Stamina go Below 0
+					// If Person 2 is Blocking, Deal Full Damage divided by bBUFF
+					Person2.personHealth -= ((this->Weapons.at(this->personWeapon).weaponDamage - Person2.Armors.at(Person2.personArmor).armorDefense) / bBUFF);
+
+					// If Person 2 Blocks the Attack, Take Stamina Cost of Blocking from Person 2
+					Person2.personStamina -= bCOST;
+
+					// If Person 2 Blocks the Attack and Person 2's Stamina Drops to 0, Person 1 Attacks Person 2 again, Deal Full Damage
+					if (Person2.personStamina <= 0)
+					{
+						Person2.personStamina = 0; // Don't let Person 2's Stamina go Below 0
+						Person2.personHealth -= (this->Weapons.at(this->personWeapon).weaponDamage - Person2.Armors.at(Person2.personArmor).armorDefense);
+					}
+				}
+
+				// If Person 2 is Not Blocking, Deal Full Damage
+				else
+				{
 					Person2.personHealth -= (this->Weapons.at(this->personWeapon).weaponDamage - Person2.Armors.at(Person2.personArmor).armorDefense);
 				}
 			}
 
-			// If Person 2 is Not Blocking, Deal Full Damage
-			else
+			// If Person 2 Wins Combat, Deal Damage to Person 1
+			else if (*this <= Person2)
 			{
-				Person2.personHealth -= (this->Weapons.at(this->personWeapon).weaponDamage - Person2.Armors.at(Person2.personArmor).armorDefense);
+				// Check if Person 1 is Blocking
+				if (this->isBlocking == true)
+				{
+					// If Person 1 is Blocking, Deal Full Damage divided by bBUFF
+					this->personHealth -= ((Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense) / bBUFF);
+
+					// If Person 1 Blocks the Attack, Take Stamina Cost of Blocking from Person 1
+					this->personStamina -= bCOST;
+
+					// If Person 1 Blocks the Attack and Person 1's Stamina Drops to 0, Person 2 Attacks Person 1 again, Deal Full Damage
+					if (this->personStamina <= 0)
+					{
+						this->personStamina = 0; // Don't let Person 1's Stamina go Below 0
+						this->personHealth -= (Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense);
+					}
+				}
+
+				// If Person 1 is Not Blocking, Deal Full Damage
+				else
+				{
+					this->personHealth -= (Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense);
+				}
 			}
 
 			// Return Void
 			return;
 		}
 
-		// Function to Overload Operator '-=' for Person to Take Damage from Person 2
+		// Function to Overload Operator '-=' for Consuming Stamina in Combat
 		// Accepts 1 Person Parameter
 		// Returns Void, passes Data by Member Access
 		void operator-=(Person &Person2)
 		{
-			// Check if Person 1 is Blocking
-			if (this->isBlocking == true)
+			// If Person 1 is Attacking, Take Stamina Cost of Attacking from Person 1
+			if (this->isAttacking == true)
 			{
-				// If Person 1 is Blocking, Deal Full Damage divided by bBUFF
-				this->personHealth -= ((Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense) / bBUFF);
-
-				// If Person 1 Blocks the Attack, Take Stamina Cost of Blocking from Person 1
-				this->personStamina -= bCOST;
-
-				// If Person 1 Blocks the Attack and Person 1's Stamina Drops to 0, Person 2 Attacks Person 1 again, Deal Full Damage
-				if (this->personStamina <= 0)
-				{
-					this->personStamina = 0; // Don't let Person 1's Stamina go Below 0
-					this->personHealth -= (Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense);
-				}
+				this->personStamina -= aCOST;
 			}
 
-			// If Person 1 is Not Blocking, Deal Full Damage
-			else
+			// If Person 1 is Dodging, Take Stamina Cost of Dodging from Person 1
+			else if (this->isDodging == true)
 			{
-				this->personHealth -= (Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense);
+				this->personStamina -= dCOST;
+			}
+
+			// Don't let Person 1's Stamina go Below 0
+			if (this->personStamina <= 0)
+			{
+				this->personStamina = 0;
+			}
+
+			// If Person 2 is Attacking, Take Stamina Cost of Attacking from Person 2
+			if (Person2.isAttacking == true)
+			{
+				Person2.personStamina -= aCOST;
+			}
+
+			// If Person 2 is Dodging, Take Stamina Cost of Dodging from Person 2
+			else if (Person2.isDodging == true)
+			{
+				Person2.personStamina -= dCOST;
+			}
+
+			// Don't let Person 2's Stamina go Below 0
+			if (Person2.personStamina <= 0)
+			{
+				Person2.personStamina = 0;
 			}
 
 			// Return Void
@@ -643,7 +688,7 @@ public:
 	void dsGameNew();
 	void gameCombat();
 	void gameStaminaRecovery();
-	void gamePlayerTurn(int, int = 1);
+	void gamePlayerTurn(int);
 	int gameEnemyAi();
 	void gameEnemyTurn();
 
