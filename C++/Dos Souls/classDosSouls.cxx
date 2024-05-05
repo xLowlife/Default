@@ -434,217 +434,6 @@ int Game::dsMenuDisplay(int mMENU, int mPAGE)
 	return userInt;
 }
 
-// Function to Display Settings Menu
-// Accepts no Parameters
-// Returns Void
-void Game::gameSettings()
-{
-	// Initialize Variable(s) for gameSettings()
-	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
-
-	// Set Settings Values
-	menuLinesNumbers[2][4][0] = floorDifficulty;
-	menuLinesNumbers[2][5][0] = floorTotal;
-	menuLinesNumbers[2][6][0] = enemyTotal;
-	menuLinesNumbers[2][7][0] = playerTotal;
-
-	// Take User's Choice with dsChoiceNumber() while isDone != true;
-	do
-	{
-		// If User is Editing, Display Settings Menu Page 2
-		if (menuLinesSelected[4][0] == true || menuLinesSelected[5][0] == true || menuLinesSelected[6][0] == true || menuLinesSelected[7][0] == true)
-		{
-			// Display Settings Menu Page 2
-			dsMenuDisplay(3, 2);
-		}
-
-		// If User is Not Editing a Setting, Display Settings Menu Page 1
-		else
-		{
-			// Display Settings Menu Page 1
-			dsMenuDisplay(3);
-		}
-
-		// Check if User is Editing floorDifficulty
-		if (menuLinesSelected[4][0] == true)
-		{
-			// Take User Choice of any Number
-			floorDifficulty = dsChoiceNumber(1, 9);
-			menuLinesNumbers[2][4][0] = floorDifficulty;
-			menuLinesSelected[4][0] = false;
-		}
-
-		// Check if User is Editing floorTotal
-		else if (menuLinesSelected[5][0] == true)
-		{
-			// Take User Choice of any Number
-			floorTotal = dsChoiceNumber(1, 9);
-			menuLinesNumbers[2][5][0] = floorTotal;
-			menuLinesSelected[5][0] = false;
-		}
-
-		// Check if User is Editing enemyTotal
-		else if (menuLinesSelected[6][0] == true)
-		{
-			// Take User Choice of any Number
-			enemyTotal = dsChoiceNumber(1, 9);
-			menuLinesNumbers[2][6][0] = enemyTotal;
-			menuLinesSelected[6][0] = false;
-		}
-
-		// Check if User is Editing playerTotal
-		else if (menuLinesSelected[7][0] == true)
-		{
-			// Take User Choice of any Number
-			playerTotal = dsChoiceNumber(1, 9);
-			menuLinesNumbers[2][7][0] = playerTotal;
-			menuLinesSelected[7][0] = false;
-		}
-
-		// If User is Not Editing Settings, Display Settings Menu Page 1
-		else
-		{
-			// Take User Choice of (1 - 5)
-			userInt = dsChoiceNumber(1, 5);
-
-			// Check User Choice
-			switch (userInt)
-			{
-			case 1: // If User Choice is 1, Continue
-				isDone = true;
-				break;
-			case 2:								// If User Choice is within range, Open Setting
-				menuLinesSelected[4][0] = true; // Set Menu Line 4 to Selected
-				isDone = false;
-				break;
-			case 3:								// If User Choice is within range, Open Setting
-				menuLinesSelected[5][0] = true; // Set Menu Line 5 to Selected
-				isDone = false;
-				break;
-			case 4:								// If User Choice is within range, Open Setting
-				menuLinesSelected[6][0] = true; // Set Menu Line 6 to Selected
-				isDone = false;
-				break;
-			case 5:								// If User Choice is within range, Open Setting
-				menuLinesSelected[7][0] = true; // Set Menu Line 7 to Selected
-				isDone = false;
-				break;
-			default: // If User Choice is Not within range, Wait
-				isDone = false;
-				break;
-			}
-		}
-	} while (isDone != true);
-
-	// Fill menuLinesNumbers Array
-	for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
-	{
-		// Fill menuLinesNumbers Array Lines
-		for (int mLINE = 0; mLINE < mLINES; ++mLINE)
-		{
-			// Fill menuLinesNumbers Array Columns
-			for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
-			{
-				// Fill menuLinesNumbers Array Columns with (-1)
-				menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
-			}
-		}
-	}
-
-	// Return Void
-	return;
-}
-
-// Function to Display Floor Intro
-// Accepts no Parameters
-// Returns Void, passes data by member access
-void Game::gameFloorIntro()
-{
-	// Initialize Variable(s) for gameSettings()
-	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
-
-	// Set Settings Values
-	menuLinesNumbers[3][5][0] = (floorCurrent + 1);
-
-	// Take User's Choice with dsChoiceNumber() while isDone != true;
-	do
-	{
-		// Display Floor Intro
-		dsMenuDisplay(4);
-
-		// Take User Choice of (1 - 1)
-		userInt = dsChoiceNumber(1, 1);
-
-		// Check User Choice
-		switch (userInt)
-		{
-		case 1: // If User Choice is 1, Continue
-			isDone = true;
-			break;
-		default: // If User Choice is Not 1, Wait
-			isDone = false;
-			break;
-		}
-	} while (isDone != true);
-
-	// Fill menuLinesNumbers Array
-	for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
-	{
-		// Fill menuLinesNumbers Array Lines
-		for (int mLINE = 0; mLINE < mLINES; ++mLINE)
-		{
-			// Fill menuLinesNumbers Array Columns
-			for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
-			{
-				// Fill menuLinesNumbers Array Columns with (-1)
-				menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
-			}
-		}
-	}
-
-	// Return Void
-	return;
-}
-
-// Function to Display Outro Menu
-// Accepts no Parameters
-// Returns Void
-void Game::gameOutro()
-{
-	// Initialize Variable(s) for Outro()
-	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
-
-	// Take User's Choice with dsChoiceNumber() while isDone != true;
-	do
-	{
-		// Display Rules Menu
-		dsMenuDisplay(1);
-
-		// Take User Choice of (1 - 1)
-		userInt = dsChoiceNumber(1, 1);
-
-		// Check User Choice
-		switch (userInt)
-		{
-		case 1: // If User Choice is 1, Continue
-			isDone = true;
-			break;
-		default: // If User Choice is Not 1, Wait
-			isDone = false;
-			break;
-		}
-	} while (isDone != true);
-
-	// Return Void
-	return;
-}
-
 // Function to Access Game Menus
 // Accepts 2 Int Parameter(s)
 // Returns Void, passes Data by Member Access
@@ -932,6 +721,217 @@ void Game::dsMenus(int mMENU, int mPAGE)
 			}
 		} while (isPaused == true);
 	}
+
+	// Return Void
+	return;
+}
+
+// Function to Display Settings Menu
+// Accepts no Parameters
+// Returns Void
+void Game::gameSettings()
+{
+	// Initialize Variable(s) for gameSettings()
+	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+
+	// Set Settings Values
+	menuLinesNumbers[2][4][0] = floorDifficulty;
+	menuLinesNumbers[2][5][0] = floorTotal;
+	menuLinesNumbers[2][6][0] = enemyTotal;
+	menuLinesNumbers[2][7][0] = playerTotal;
+
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
+	do
+	{
+		// If User is Editing, Display Settings Menu Page 2
+		if (menuLinesSelected[4][0] == true || menuLinesSelected[5][0] == true || menuLinesSelected[6][0] == true || menuLinesSelected[7][0] == true)
+		{
+			// Display Settings Menu Page 2
+			dsMenuDisplay(3, 2);
+		}
+
+		// If User is Not Editing a Setting, Display Settings Menu Page 1
+		else
+		{
+			// Display Settings Menu Page 1
+			dsMenuDisplay(3);
+		}
+
+		// Check if User is Editing floorDifficulty
+		if (menuLinesSelected[4][0] == true)
+		{
+			// Take User Choice of any Number
+			floorDifficulty = dsChoiceNumber(1, 9);
+			menuLinesNumbers[2][4][0] = floorDifficulty;
+			menuLinesSelected[4][0] = false;
+		}
+
+		// Check if User is Editing floorTotal
+		else if (menuLinesSelected[5][0] == true)
+		{
+			// Take User Choice of any Number
+			floorTotal = dsChoiceNumber(1, 9);
+			menuLinesNumbers[2][5][0] = floorTotal;
+			menuLinesSelected[5][0] = false;
+		}
+
+		// Check if User is Editing enemyTotal
+		else if (menuLinesSelected[6][0] == true)
+		{
+			// Take User Choice of any Number
+			enemyTotal = dsChoiceNumber(1, 9);
+			menuLinesNumbers[2][6][0] = enemyTotal;
+			menuLinesSelected[6][0] = false;
+		}
+
+		// Check if User is Editing playerTotal
+		else if (menuLinesSelected[7][0] == true)
+		{
+			// Take User Choice of any Number
+			playerTotal = dsChoiceNumber(1, 9);
+			menuLinesNumbers[2][7][0] = playerTotal;
+			menuLinesSelected[7][0] = false;
+		}
+
+		// If User is Not Editing Settings, Display Settings Menu Page 1
+		else
+		{
+			// Take User Choice of (1 - 5)
+			userInt = dsChoiceNumber(1, 5);
+
+			// Check User Choice
+			switch (userInt)
+			{
+			case 1: // If User Choice is 1, Continue
+				isDone = true;
+				break;
+			case 2:								// If User Choice is within range, Open Setting
+				menuLinesSelected[4][0] = true; // Set Menu Line 4 to Selected
+				isDone = false;
+				break;
+			case 3:								// If User Choice is within range, Open Setting
+				menuLinesSelected[5][0] = true; // Set Menu Line 5 to Selected
+				isDone = false;
+				break;
+			case 4:								// If User Choice is within range, Open Setting
+				menuLinesSelected[6][0] = true; // Set Menu Line 6 to Selected
+				isDone = false;
+				break;
+			case 5:								// If User Choice is within range, Open Setting
+				menuLinesSelected[7][0] = true; // Set Menu Line 7 to Selected
+				isDone = false;
+				break;
+			default: // If User Choice is Not within range, Wait
+				isDone = false;
+				break;
+			}
+		}
+	} while (isDone != true);
+
+	// Fill menuLinesNumbers Array
+	for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
+	{
+		// Fill menuLinesNumbers Array Lines
+		for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+		{
+			// Fill menuLinesNumbers Array Columns
+			for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+			{
+				// Fill menuLinesNumbers Array Columns with (-1)
+				menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
+			}
+		}
+	}
+
+	// Return Void
+	return;
+}
+
+// Function to Display Floor Intro
+// Accepts no Parameters
+// Returns Void, passes data by member access
+void Game::gameFloorIntro()
+{
+	// Initialize Variable(s) for gameSettings()
+	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+
+	// Set Settings Values
+	menuLinesNumbers[3][5][0] = (floorCurrent + 1);
+
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
+	do
+	{
+		// Display Floor Intro
+		dsMenuDisplay(4);
+
+		// Take User Choice of (1 - 1)
+		userInt = dsChoiceNumber(1, 1);
+
+		// Check User Choice
+		switch (userInt)
+		{
+		case 1: // If User Choice is 1, Continue
+			isDone = true;
+			break;
+		default: // If User Choice is Not 1, Wait
+			isDone = false;
+			break;
+		}
+	} while (isDone != true);
+
+	// Fill menuLinesNumbers Array
+	for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
+	{
+		// Fill menuLinesNumbers Array Lines
+		for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+		{
+			// Fill menuLinesNumbers Array Columns
+			for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
+			{
+				// Fill menuLinesNumbers Array Columns with (-1)
+				menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
+			}
+		}
+	}
+
+	// Return Void
+	return;
+}
+
+// Function to Display Outro Menu
+// Accepts no Parameters
+// Returns Void
+void Game::gameOutro()
+{
+	// Initialize Variable(s) for Outro()
+	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
+	do
+	{
+		// Display Rules Menu
+		dsMenuDisplay(1);
+
+		// Take User Choice of (1 - 1)
+		userInt = dsChoiceNumber(1, 1);
+
+		// Check User Choice
+		switch (userInt)
+		{
+		case 1: // If User Choice is 1, Continue
+			isDone = true;
+			break;
+		default: // If User Choice is Not 1, Wait
+			isDone = false;
+			break;
+		}
+	} while (isDone != true);
 
 	// Return Void
 	return;
