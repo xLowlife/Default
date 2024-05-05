@@ -433,7 +433,7 @@ int Game::dsMenuDisplay(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int 
 	}
 
 	// Take User Choice Specified by Menu
-	userInt = dsChoiceNumber(menuLines[mMENU][0][1][0], menuLines[mMENU][0][1][1]);
+	userInt = dsChoiceNumber(menuLines[mMENU][0][3][0], menuLines[mMENU][0][3][1]);
 
 	// Return User Choice as Int
 	return userInt;
@@ -1323,173 +1323,6 @@ void Game::dsGameNew()
  *                                SYSTEM FUNCTIONS                            *
  ******************************************************************************/
 
-// Function to display game progress
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::gameProgress()
-{
-	// Clear terminal to display progress
-	// system("CLS");
-
-	// Display Health
-	cout << "Player Health: " << Players.at(playerCurrent).personHealth << endl;
-	cout << "Enemy Health: " << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth << endl
-		 << endl;
-
-	// Excute Combat Turns
-	if (Players.at(playerCurrent) >= Floors.at(floorCurrent).Enemies.at(enemyCurrent))
-	{
-		cout << "Player Wins." << endl
-			 << endl;
-		Players.at(playerCurrent) += Floors.at(floorCurrent).Enemies.at(enemyCurrent);
-	}
-	else if (Players.at(playerCurrent) <= Floors.at(floorCurrent).Enemies.at(enemyCurrent))
-	{
-		cout << "Player Loses." << endl
-			 << endl;
-		Players.at(playerCurrent) -= Floors.at(floorCurrent).Enemies.at(enemyCurrent);
-	}
-	else if (Players.at(playerCurrent) == Floors.at(floorCurrent).Enemies.at(enemyCurrent))
-	{
-		cout << "Round Tie." << endl
-			 << endl;
-	}
-	else
-	{
-		cout << "Round Failed." << endl
-			 << endl;
-	}
-
-	// Display Health
-	cout << "Player Health: " << Players.at(playerCurrent).personHealth << endl;
-	cout << "Enemy Health: " << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth << endl
-		 << endl;
-
-	// Display floor progress
-	cout << setw(16) << left << "Current Floor:"
-		 << setw(5) << left << (floorCurrent + 1)
-		 << setw(2) << left << ' '
-		 << setw(18) << left << "Floors Remaining:"
-		 << setw(5) << left << (floorTotal - (floorCurrent + 1)) << endl;
-	for (int i = 0; i < floorCurrent; ++i)
-	{
-		cout << "[ ] ";
-	}
-	cout << " [ x ]  ";
-	for (int i = 0; i < (floorTotal - (floorCurrent + 1)); ++i)
-	{
-		cout << "[ ] ";
-	}
-	cout << endl
-		 << endl;
-
-	// Display health and money
-	cout << setw(16) << left << "Player Health:"
-		 << setw(5) << left << Players.at(playerCurrent).personHealth
-		 << setw(2) << left << ' '
-		 << setw(17) << left << "Enemy Health:"
-		 << setw(5) << left << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth << endl
-		 << setw(16) << left << "Player Stamina:"
-		 << setw(5) << left << Players.at(playerCurrent).personStamina
-		 << setw(2) << left << ' '
-		 << setw(17) << left << "Enemy Stamina:"
-		 << setw(5) << left << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina << endl
-		 << setw(16) << left << "Player Money:"
-		 << setw(5) << left << Players.at(playerCurrent).personMoney
-		 << setw(2) << left << ' '
-		 << setw(17) << left << "Combat Round:"
-		 << setw(5) << left << (floorRound + 1) << endl
-		 << endl;
-
-	// Display Player and Enemy chosen options
-	if (floorRound > 0)
-	{
-		switch (playerChoice) // Display Players's choice of action for turn
-		{
-		case 1:
-			cout << "Player's Choice: Attack" << endl;
-			break;
-		case 2:
-			cout << "Player's Choice: Block" << endl;
-			break;
-		case 3:
-			cout << "Player's Choice: Dodge" << endl;
-			break;
-		case 4:
-			cout << "Player's Choice: Wait" << endl;
-			break;
-		default:
-			// Error Message
-			cout << "Player's Choice: Invalid (gameProgress())" << endl
-				 << endl;
-			break;
-		}
-
-		switch (enemyChoice) // Display Enemy's choice of action for turn
-		{
-		case 1:
-			cout << "Enemy's Choice: Attack" << endl
-				 << endl;
-			break;
-		case 2:
-			cout << "Enemy's Choice: Block" << endl
-				 << endl;
-			break;
-		case 3:
-			cout << "Enemy's Choice: Dodge" << endl
-				 << endl;
-			break;
-		case 4:
-			cout << "Enemy's Choice: Wait" << endl
-				 << endl;
-			break;
-		default:
-			// Error Message
-			cout << "Enemy's Choice: Invalid" << endl
-				 << endl;
-			break;
-		}
-	}
-
-	// Excute Enemy combat turns
-	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking == true)
-	{
-		enemyAttackShow(); // Execute enemy Attack;
-	}
-	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isBlocking == true)
-	{
-		enemyBlockShow(); // Execute enemy Block;
-	}
-	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isDodging == true)
-	{
-		enemyDodgeShow(); // Execute enemy Dodge;
-	}
-	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isWaiting == true)
-	{
-		enemyWaitShow(); // Execute enemy Wait;
-	}
-
-	// Excute Player combat turns
-	if (Players.at(playerCurrent).isAttacking == true)
-	{
-		turnAttackShow(); // Execute user Attack;
-	}
-	else if (Players.at(playerCurrent).isBlocking == true)
-	{
-		turnBlockShow(); // Execute user Block;
-	}
-	else if (Players.at(playerCurrent).isDodging == true)
-	{
-		turnDodgeShow(); // Execute user Dodge;
-	}
-	else if (Players.at(playerCurrent).isWaiting == true)
-	{
-		turnWaitShow(); // Execute user Wait;
-	}
-
-	return;
-}
-
 // Function to Display Game Ui
 // Accepts 5 Int Parameters for adjusting output of Ui Lines
 // Returns Void
@@ -1616,6 +1449,23 @@ void Game::gameCombat()
 
 	// Display New Floor Intro
 	gameFloorIntro();
+
+	for (int i = 0; i < enemyTotal; ++i)
+	{
+		do
+		{
+			// Progress Combat and Excute combat choices
+			gamePlayerTurn(playerChoice);
+			gameEnemyTurn();
+
+			// Move to next round
+			++floorRound;
+
+			// Stamina Recovery System
+			gameStaminaRecovery();
+		} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
+		++enemyCurrent;
+	}
 
 	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
@@ -2033,21 +1883,21 @@ int Game::gameEnemyAi()
 	// Initialize Variable(s) for gameEnemyAi()
 	int enemyInt = (-1); // Initialize Int(s) for storing Enemy Int(s)
 
-	// Take Enemy's Choice while isDone != true;
+	// If Enemy has enough Stamina to Dodge, Decide
 	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= dCOST)
 	{
-		// If Player's Stamina is too Low to Act, Attack
+		// If Player's Stamina is too Low to Act, Decide Attack
 		if (Players.at(playerCurrent).personStamina < aCOST)
 		{
 			enemyInt = 1;
 		}
 
-		// If Player Can't Block without Stun, Prefer Dodge with Change to Attack
+		// If Player has too Little Stamina to Block Safely, Decide Dodge or Attack
 		else if (Players.at(playerCurrent).personStamina <= bCOST)
 		{
 			bool choice1 = rng(rndInt(4)); // Default 3
 
-			// Chance to Attack
+			// Chance of Attack
 			if (choice1 == true)
 			{
 				enemyInt = 1;
@@ -2060,24 +1910,24 @@ int Game::gameEnemyAi()
 			}
 		}
 
-		//
+		// If Player has too Little Stamina to Dodge, Decide Attack or Dodge
 		else if (Players.at(playerCurrent).personStamina < dCOST)
 		{
 			bool choice2 = rng(rndInt(4)); // Default 3
-			//
+			// Chance of Dodge
 			if (choice2 == true)
 			{
 				enemyInt = 3;
 			}
 
-			//
+			// Prefer Attack
 			else
 			{
 				enemyInt = 1;
 			}
 		}
 
-		//
+		// If Player has enough Stamina to Dodge, Decide Attack Block or Dodge
 		else
 		{
 			int choice3 = rndInt((rngASIZE - 1), 0);
@@ -2085,60 +1935,60 @@ int Game::gameEnemyAi()
 		}
 	}
 
-	//
+	// If Enemy has enough Stamina to Block Safely, Decide
 	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina > bCOST)
 	{
-		//
+		// If Player has too Little Stamina to Act, Decide Attack
 		if (Players.at(playerCurrent).personStamina < aCOST)
 		{
 			enemyInt = 1;
 		}
 
-		//
+		// If Player has too Little Stamina to Block Safely, Decide Block or Attack
 		else if (Players.at(playerCurrent).personStamina <= bCOST)
 		{
 			bool choice4 = rng(rndInt(4)); // Default 3
-			//
+			// Chance of Attack
 			if (choice4 == true)
 			{
 				enemyInt = 1;
 			}
 
-			//
+			// Prefer Block
 			else
 			{
 				enemyChoice = 2;
 			}
 		}
 
-		//
+		// If Player has too Little Stamina to Dodge, Decide Attack or Block
 		else if (Players.at(playerCurrent).personStamina < dCOST)
 		{
 			bool choice5 = rng(rndInt(4)); // Default 3
-			//
+			// Chance of Block
 			if (choice5 == true)
 			{
 				enemyInt = 2;
 			}
 
-			//
+			// Prefer Attack
 			else
 			{
 				enemyInt = 1;
 			}
 		}
 
-		//
+		// If Player has enough Stamina to Dodge, Decide Block or Attack
 		else
 		{
 			bool choice6 = rng(rndInt(4)); // Default 3
-			//
+			// Chance of Attack
 			if (choice6 == true)
 			{
 				enemyInt = 1;
 			}
 
-			//
+			// Prefer Block
 			else
 			{
 				enemyInt = 2;
@@ -2146,42 +1996,46 @@ int Game::gameEnemyAi()
 		}
 	}
 
-	//
+	// If Enemy only has enough Stamina to Attack, Decide Attack or Block
 	else if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina >= aCOST)
 	{
-		//
+		// If Player has enough Stamina to Dodge, Decide Attack or Block
 		if (Players.at(playerCurrent).personStamina >= dCOST)
 		{
-			bool choice7 = rng(rndInt(4)); // Default 3
-			//
+			bool choice7 = rng(rndInt(4));
+			// Chance of Block
 			if (choice7 == true)
 			{
 				enemyInt = 2;
 			}
 
-			//
+			// Prefer Attack
 			else
 			{
 				enemyInt = 1;
 			}
 		}
 
-		//
+		// If Player has too Little Stamina to Dodge, Decide Attack
 		else
 		{
 			enemyInt = 1;
 		}
 	}
 
-	//
+	// If Enemy has too Little Stamina to Act, Wait
 	else
 	{
 		enemyInt = 4;
 	}
 
-	// Return Enemy's Choice as Int
+	// Return Enemy's Decision as Int
 	return enemyInt;
 }
+
+/******************************************************************************
+ *                                  GAME FUNCTIONS                            *
+ ******************************************************************************/
 
 // Function to execute Person Attack
 // Accepts no parameters
@@ -2370,7 +2224,3 @@ void Game::enemyWaitShow()
 	}
 	return;
 }
-
-/******************************************************************************
- *                                  GAME FUNCTIONS                            *
- ******************************************************************************/
