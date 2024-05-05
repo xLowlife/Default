@@ -599,9 +599,9 @@ public:
 		dsFiles();
 
 		// Start Menus
-		dsMenus(1);
-		dsMenus(2);
-		dsMenus(3);
+		dsMenus(0, 0);
+		dsMenus(1, 0);
+		dsMenus(2, 0);
 		// gameIntro();
 		// gameRules();
 		// gameSettings();
@@ -668,16 +668,16 @@ public:
 	void dsFiles();
 
 	// MENU FUNCTIONS
-	int dsMenuDisplay(int, int = 1, int = mLINES, int = 1, int = 0);
+	int dsMenuDisplay(int, int = 0);
 	void gameIntro();
 	void gameRules();
 	void gameSettings();
 	void gameFloorIntro();
 	void gameOutro();
-	void dsMenus(int, int = 1);
+	void dsMenus(int, int = 0);
 
 	// UI FUNCTIONS
-	void gameUi(int, int = 1, int = mLINES, int = 1, int = 0);
+	void gameUi();
 
 	// SYSTEM FUNCTIONS
 	int rndInt(int, int = 1);
@@ -696,16 +696,7 @@ public:
 	void gameAddItems();
 	void gameProgress();
 	void gameCombats();
-	void turnAttack();
-	void turnBlock();
-	void turnDodge();
-	void turnWait();
-	void turnRun();
-	void turnExitGame();
-	void enemyAttack();
-	void enemyBlock();
-	void enemyDodge();
-	void enemyWait();
+
 	void turnAttackShow();
 	void turnBlockShow();
 	void turnDodgeShow();

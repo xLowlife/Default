@@ -271,7 +271,7 @@ void Game::dsFiles()
 				int mLABEL = stoi(menuLines[mMENU][0][0]);
 
 				// Store menuLines Index at menuLabels[mLABEL][0]
-				menuLabels[mLABEL][0] = mMENU;
+				menuLabels[mLABEL][0] = to_string(mMENU);
 
 				// Store Menu Name at menuLabels[mLABEL][1]
 				menuLabels[mLABEL][1] = labelName;
@@ -349,7 +349,7 @@ void Game::dsFiles()
 				int mLABEL = stoi(uiLines[uMENU][0][0]);
 
 				// Store uiLines Index at uiLabels[mLABEL][0]
-				uiLabels[mLABEL][0] = uMENU;
+				uiLabels[mLABEL][0] = to_string(uMENU);
 
 				// Store Ui Name at uiLabels[mLABEL][1]
 				uiLabels[mLABEL][1] = labelName;
@@ -385,42 +385,37 @@ void Game::dsFiles()
 // Function to Display Game Menus
 // Accepts 5 Int Parameter(s) for Adjusting Menus
 // Returns Void, passes Data by Member Access
-int Game::dsMenuDisplay(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int sLINEMAX)
+int Game::dsMenuDisplay(int mMENU, int mPAGE)
 {
 	// Initialize Variable(s) for dsMenuDisplay()
 	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool				   // Initialize Bool(s) for storing Bool(s)
-		isMenu = false,
-		isDone = false;
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
-	// Set Any menuLinesSelected[sLINE][0] == true
-	for (int sLINE = sLINEMIN; sLINE < (sLINEMIN + sLINEMAX); ++sLINE)
-	{
-		menuLinesSelected[sLINE][0] = true;
-	}
+	// Display Game Menu with Correct Menu Index from menuLabels[mMENU][0]
+	mMENU = (stoi(menuLabels[mMENU][0]) + mPAGE);
 
 	// Clear Terminal to Display Game Menu
 	system("CLS");
 
 	// Display Game Menu
-	for (int mLINE = 1; mLINE < mLINETOTAL; ++mLINE)
+	for (int mLINE = 1; mLINE < mLINES; ++mLINE)
 	{
 		// cout menuLines[mMENU][mLINE] lineLeft, then menuLines[mMENU][mLINE] lineRight, Centered to setw(40)
 		cout << setw(40) << right << menuLines[mMENU][mLINE][1]
 			 << left;
 
 		// If Line Has Value, cout Value Message
-		if (menuLinesNumbers[mLINE][0] >= 0)
+		if (menuLines[mMENU][mLINE][3] != "-1")
 		{
-			cout << menuLinesNumbers[mLINE][0];
+			cout << menuLinesNumbers[mMENU][mLINE][3];
 		}
 
 		// cout menuLines[mMENU][mLINE] lineRight
 		cout << menuLines[mMENU][mLINE][2];
 
 		// If Line is Selected, cout Selected Message
-		if (menuLinesSelected[mLINE][0] == true)
+		if (playerChoice == stoi(menuLines[mMENU][mLINE][3]))
 		{
 			cout << menuLines[mMENU][11][3];
 		}
@@ -437,76 +432,6 @@ int Game::dsMenuDisplay(int mMENU, int mPAGE, int mLINETOTAL, int sLINEMIN, int 
 
 	// Return User Choice as Int
 	return userInt;
-}
-
-// Function to Display Intro Menu
-// Accepts no Parameters
-// Returns Void
-void Game::gameIntro()
-{
-	// Initialize Variable(s) for Intro()
-	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
-
-	// Take User's Choice with dsChoiceNumber() while isDone != true;
-	do
-	{
-		// Display Intro Menu
-		dsMenuDisplay(1);
-
-		// Take User Choice of (1 - 1)
-		userInt = dsChoiceNumber(1, 1);
-
-		// Check User Choice
-		switch (userInt)
-		{
-		case 1: // If User Choice is 1, Continue
-			isDone = true;
-			break;
-		default: // If User Choice is Not 1, Wait
-			isDone = false;
-			break;
-		}
-	} while (isDone != true);
-
-	// Return Void
-	return;
-}
-
-// Function to Display Rules Menu
-// Accepts no Parameters
-// Returns Void
-void Game::gameRules()
-{
-	// Initialize Variable(s) for gameRules()
-	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
-
-	// Take User's Choice with dsChoiceNumber() while isDone != true;
-	do
-	{
-		// Display Rules Menu
-		dsMenuDisplay(2);
-
-		// Take User Choice of (1 - 1)
-		userInt = dsChoiceNumber(1, 1);
-
-		// Check User Choice
-		switch (userInt)
-		{
-		case 1: // If User Choice is 1, Continue
-			isDone = true;
-			break;
-		default: // If User Choice is Not 1, Wait
-			isDone = false;
-			break;
-		}
-	} while (isDone != true);
-
-	// Return Void
-	return;
 }
 
 // Function to Display Settings Menu
@@ -736,29 +661,10 @@ void Game::dsMenus(int mMENU, int mPAGE)
 		isFloorIntro = false,
 		isOutro = false,
 		isDone = false,
-		isPaused = false,
-		isChoice[10];
-
-	// Find mMENU in menuLines[i][0][0]
-	for (int i = 0; !(isMenu) && i < mMENUS; ++i)
-	{
-		// If Menu Index is found, Correct mMENU with Menu Index
-		if (stoi(menuLines[i][0][0]) == mMENU)
-		{
-			// Correct mMENU with Menu Page Index
-			mMENU = i + (mPAGE - 1);
-			isMenu = true;
-		}
-	}
-
-	// Fill isChoice[] with false
-	for (int i = 0; i < 10; ++i)
-	{
-		isChoice[i] = false;
-	}
+		isPaused = false;
 
 	// If mMENU != 0, Open Selected Menu
-	if (mMENU != 0)
+	if (1 != 0)
 	{
 		if (isSettings == true)
 		{
@@ -774,7 +680,6 @@ void Game::dsMenus(int mMENU, int mPAGE)
 			// Set Settings Values
 			menuLinesNumbers[2][5][0] = (floorCurrent + 1);
 		}
-
 		// Take User's Choice with dsChoiceNumber() while isDone != true;
 		do
 		{
@@ -839,14 +744,12 @@ void Game::dsMenus(int mMENU, int mPAGE)
 				{
 				case 1: // If User Choice is 1, Continue
 					// Send Choice 1 to Menu
-					isChoice[1] = true;
 
 					// Close the Menus
 					isDone = true;
 					break;
 				case 2: // If User Choice is 2, Continue
 					// Send Choice 2 to Menu
-					isChoice[2] = true;
 
 					// If Settings
 					if (isSettings == true)
@@ -859,7 +762,6 @@ void Game::dsMenus(int mMENU, int mPAGE)
 					break;
 				case 3: // If User Choice is 3, Continue
 					// Send Choice 3 to Menu
-					isChoice[3] = true;
 
 					// If Settings
 					if (isSettings == true)
@@ -872,7 +774,6 @@ void Game::dsMenus(int mMENU, int mPAGE)
 					break;
 				case 4: // If User Choice is 4, Continue
 					// Send Choice 4 to Menu
-					isChoice[4] = true;
 
 					// If Settings
 					if (isSettings == true)
@@ -885,7 +786,6 @@ void Game::dsMenus(int mMENU, int mPAGE)
 					break;
 				case 5: // If User Choice is 5, Continue
 					// Send Choice 5 to Menu
-					isChoice[5] = true;
 
 					// If Settings
 					if (isSettings == true)
@@ -898,35 +798,30 @@ void Game::dsMenus(int mMENU, int mPAGE)
 					break;
 				case 6: // If User Choice is 6, Continue
 					// Send Choice 6 to Menu
-					isChoice[6] = true;
 
 					// Keep Menus Running until Closed
 					isDone = false;
 					break;
 				case 7: // If User Choice is 7, Continue
 					// Send Choice 7 to Menu
-					isChoice[7] = true;
 
 					// Keep Menus Running until Closed
 					isDone = false;
 					break;
 				case 8: // If User Choice is 8, Continue
 					// Send Choice 8 to Menu
-					isChoice[8] = true;
 
 					// Keep Menus Running until Closed
 					isDone = false;
 					break;
 				case 9: // If User Choice is 9, Continue
 					// Send Choice 9 to Menu
-					isChoice[9] = true;
 
 					// Keep Menus Running until Closed
 					isDone = false;
 					break;
 				case 0: // If User Choice is 0, Continue
 					// Send Choice 0 to Menu
-					isChoice[0] = true;
 
 					// Keep Menus Running until Closed
 					isDone = false;
@@ -967,18 +862,11 @@ void Game::dsMenus(int mMENU, int mPAGE)
 			// Display Menu and Take User Choice
 			userInt = dsMenuDisplay(mMENU);
 
-			// Fill isChoice[] with false
-			for (int i = 0; i < 10; ++i)
-			{
-				isChoice[i] = false;
-			}
-
 			// Check User Choice
 			switch (userInt)
 			{
 			case 1: // If User Choice is 1, Continue
 				// Send Choice 1 to Menu
-				isChoice[1] = true;
 				isDone = true;
 
 				// Keep Menus Running until Closed
@@ -986,64 +874,54 @@ void Game::dsMenus(int mMENU, int mPAGE)
 				break;
 			case 2: // If User Choice is 2, Continue
 				// Send Choice 2 to Menu
-				isChoice[2] = true;
 
 				// Keep Menus Running until Closed
 				isPaused = false;
 				break;
 			case 3: // If User Choice is 3, Continue
 				// Send Choice 3 to Menu
-				isChoice[3] = true;
 
 				// Keep Menus Running until Closed
 				isPaused = false;
 				break;
 			case 4: // If User Choice is 4, Continue
 				// Send Choice 4 to Menu
-				isChoice[4] = true;
 
 				// Keep Menus Running until Closed
 				isPaused = false;
 				break;
 			case 5: // If User Choice is 5, Continue
 				// Send Choice 5 to Menu
-				isChoice[5] = true;
 
 				// Keep Menus Running until Closed
 				isPaused = false;
 				break;
 			case 6: // If User Choice is 6, Continue
 				// Send Choice 6 to Menu
-				isChoice[6] = true;
 
 				// Keep Menus Running until Closed
 				isPaused = false;
 				break;
 			case 7: // If User Choice is 7, Continue
 				// Send Choice 7 to Menu
-				isChoice[7] = true;
 
 				// Keep Menus Running until Closed
 				isPaused = false;
 				break;
 			case 8: // If User Choice is 8, Continue
 				// Send Choice 8 to Menu
-				isChoice[8] = true;
 
 				// Keep Menus Running until Closed
 				isPaused = false;
 				break;
 			case 9: // If User Choice is 9, Continue
 				// Send Choice 9 to Menu
-				isChoice[9] = true;
 
 				// Close the Menus
 				isPaused = true;
 				break;
 			case 0: // If User Choice is 0, Continue
 				// Send Choice 0 to Menu
-				isChoice[0] = true;
-
 				// Keep Menus Running until Closed
 				isPaused = false;
 				break;
@@ -1326,47 +1204,21 @@ void Game::dsGameNew()
 // Function to Display Game Ui
 // Accepts 5 Int Parameters for adjusting output of Ui Lines
 // Returns Void
-void Game::gameUi(int uMENU, int uPAGE, int uLINETOTAL, int sLINEMIN, int sLINEMAX)
+void Game::gameUi()
 {
 	// Initialize Variable(s) for gameUi()
-	int // Initialize Int(s) for storing User Int(s)
+	int // Initialize Int(s) for storing Int(s)
 		userInt = 0,
+		uMENU = 0,
 		uiHud = 4,
 		uiChoices = 3,
 		uiCombat = 2,
 		uiOptions = 2;
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool				   // Initialize Bool(s) for storing Bool(s)
-		isUi = false,
-		isDone = false;
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
-	// Set Settings Values
-	uiLinesNumbers[0][1][0] = (floorCurrent + 1);
-	uiLinesNumbers[0][1][1] = (floorRound + 1);
-	uiLinesNumbers[0][2][0] = Players.at(playerCurrent).personHealth;
-	uiLinesNumbers[0][2][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth;
-	uiLinesNumbers[0][3][0] = Players.at(playerCurrent).personStamina;
-	uiLinesNumbers[0][3][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina;
-	uiLinesNumbers[0][4][0] = Players.at(playerCurrent).personMoney;
-	uiLinesNumbers[0][4][1] = (enemyTotal - enemyCurrent);
-
-	// Find uMENU in uiLines[i][0][0]
-	for (int i = 0; !(isUi) && i < uMENUS; ++i)
-	{
-		// If Ui Index is found, Correct uMENU with Ui Index
-		if (stoi(uiLines[i][0][0]) == uMENU)
-		{
-			// Correct uMENU with Ui Page Index
-			uMENU = i + (uPAGE - 1);
-			isUi = true;
-		}
-	}
-
-	// Set Any uiLinesSelected[sLINE][0] == true
-	for (int sLINE = sLINEMIN; sLINE < (sLINEMIN + sLINEMAX); ++sLINE)
-	{
-		uiLinesSelected[sLINE][0] = true;
-	}
+	// Display Game Ui with Correct Ui Index from uiLabels[playerChoice][0]
+	uMENU = (stoi(uiLabels[playerChoice][0]) + (enemyChoice - 1));
 
 	// Clear Terminal to Display Game Ui
 	system("CLS");
@@ -1447,24 +1299,38 @@ void Game::gameCombat()
 	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
 	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
-	// Display New Floor Intro
-	gameFloorIntro();
-
-	for (int i = 0; i < enemyTotal; ++i)
+	for (int i = 0; i < floorTotal; ++i)
 	{
-		do
+		// Display New Floor Intro
+		// dsMenus(3);
+
+		for (int j = 0; j < enemyTotal; ++j)
 		{
-			// Progress Combat and Excute combat choices
-			gamePlayerTurn(playerChoice);
-			gameEnemyTurn();
+			do
+			{
+				// Move to Next Round
+				++floorRound;
 
-			// Move to next round
-			++floorRound;
+				// Take Player's Combat Choice
+				gamePlayerTurn(stoi(uiLabels[playerChoice][0]));
 
-			// Stamina Recovery System
-			gameStaminaRecovery();
-		} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
-		++enemyCurrent;
+				// Take Enemy's Combat Choice
+				gameEnemyTurn();
+
+				// Consume Stamina for Actions in Combat
+				Players.at(playerCurrent) -= Floors.at(floorCurrent).Enemies.at(enemyCurrent);
+
+				// Deal Damage to Loser in Combat
+				Players.at(playerCurrent) += Floors.at(floorCurrent).Enemies.at(enemyCurrent);
+
+				// Stamina Recovery System
+				gameStaminaRecovery();
+			} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
+			// Move to Next Enemy
+			++enemyCurrent;
+		}
+		// Move to Next Floor
+		++floorCurrent;
 	}
 
 	// Take User's Choice with dsChoiceNumber() while isDone != true;
@@ -1474,14 +1340,14 @@ void Game::gameCombat()
 		if (uiLinesSelected[4][0] == true || uiLinesSelected[5][0] == true || uiLinesSelected[6][0] == true || uiLinesSelected[7][0] == true)
 		{
 			// Display Settings Menu Page 2
-			gameUi(1);
+			// gameUi(1);
 		}
 
 		// If User is Not Editing a Setting, Display Settings Menu Page 1
 		else
 		{
 			// Display Settings Menu Page 1
-			gameUi(1);
+			// gameUi(1);
 		}
 
 		// Check if User is Editing floorDifficulty
@@ -1735,8 +1601,8 @@ void Game::gamePlayerTurn(int uMENU)
 	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
-		// Display Game Ui
-		gameUi(uMENU);
+		// Display Game Ui with Correct Ui Index
+		gameUi();
 
 		// Take User Choice of (1 - 4)
 		userInt = dsChoiceNumber(uiLines[uMENU][0][3][0], uiLines[uMENU][0][3][1]);
