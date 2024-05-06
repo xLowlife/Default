@@ -632,6 +632,127 @@ void Game::dsMenus(int mMENU, int mPAGE)
  *                                    UI FUNCTIONS                            *
  ******************************************************************************/
 
+// Function to Display Game Ui
+// Accepts 2 Int Parameter(s) for Adjusting Ui
+// Returns Double, passes Data by Member Access
+double Game::gameUi(int uMENU, int uPAGE)
+{
+	// Initialize Variable(s) for gameUi()
+	int // Initialize Int(s) for storing Int(s)
+		uiHud = 5,
+		uiChoices = 8,
+		uiCombat = 10,
+		dsChoiceMin = 1,
+		dsChoiceMax = 4;
+	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
+
+	// Clear Terminal to Display Game Ui
+	system("CLS");
+
+	// cout Top Border, Each Corner Spaced by setw(40)
+	cout << setw(40) << left << "+- - - - - - - - - - - - -"
+		 << setw(40) << right << "- - - - - - - - - - - - -+"
+		 << endl
+		 << endl;
+
+	// Display Game Ui HUD Line 1 - 4
+	for (int uLINE = 1; uLINE < uiHud; ++uLINE)
+	{
+		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
+		cout << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
+			 << setw(40) << right << (to_string(uiLinesNumbers[0][uLINE][1]) + uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2]);
+
+		// cout New Line
+		cout << endl;
+	}
+
+	// Display Game Ui Combat Display Line 5 - 7
+	for (int uLINE = 5; uLINE < uiChoices; ++uLINE)
+	{
+		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
+		cout << setw(40) << right << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
+			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
+
+		// If Line Has Value, cout Value Message
+		if (uiLinesNumbers[0][uLINE][0] >= 0)
+		{
+			cout << uiLinesNumbers[0][uLINE][0];
+		}
+
+		// cout uiLines[uMENU][uLINE] lineRight
+		cout << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2];
+
+		// If Line is Selected, cout Selected Message
+		if (uiLinesSelected[uLINE][0] == true)
+		{
+			cout << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][11][3];
+		}
+
+		// cout New Line
+		cout << endl;
+	}
+
+	// Display Game Ui Recap Line 8 - 9
+	for (int uLINE = 8; uLINE < uiCombat; ++uLINE)
+	{
+		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
+		cout << setw(40) << right << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
+			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
+
+		// cout New Line
+		cout << endl;
+	}
+
+	// Display Game Ui Choices Line 10 - 11
+	for (int uLINE = 10; uLINE < uLINES; ++uLINE)
+	{
+		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
+		cout << setw(40) << right << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1]
+			 << left << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2];
+
+		// cout New Line for All Lines, Except Last Line
+		if (uLINE <= (uLINES - 2))
+		{
+			cout << endl;
+		}
+	}
+
+	// Correct choiceMin
+	if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1) == "+")
+	{
+		dsChoiceMin = (1000 * 1000);
+	}
+	else if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1) == "-")
+	{
+		dsChoiceMin = ((-1000) * (1000));
+	}
+	else
+	{
+		dsChoiceMin = stoi(uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1));
+	}
+
+	// Correct choiceMax
+	if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1) == "+")
+	{
+		dsChoiceMax = (1000 * 1000);
+	}
+	else if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1) == "-")
+	{
+		dsChoiceMax = ((-1000) * (1000));
+	}
+	else
+	{
+		dsChoiceMax = stoi(uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1));
+	}
+
+	// Take User Choice Specified by Ui
+	userDouble = dsChoiceNumber(dsChoiceMin, dsChoiceMax);
+
+	// Return User Choice as Double
+	return userDouble;
+}
+
 /******************************************************************************
  *                                    UI FUNCTIONS                            *
  ******************************************************************************/
@@ -888,94 +1009,6 @@ void Game::dsGameNew()
  *                                SYSTEM FUNCTIONS                            *
  ******************************************************************************/
 
-// Function to Display Game Ui
-// Accepts 5 Int Parameters for adjusting output of Ui Lines
-// Returns Void
-void Game::gameUi()
-{
-	// Initialize Variable(s) for gameUi()
-	int // Initialize Int(s) for storing Int(s)
-		userInt = 0,
-		uMENU = 0,
-		uiHud = 4,
-		uiChoices = 3,
-		uiCombat = 2,
-		uiOptions = 2;
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
-
-	// Display Game Ui with Correct Ui Index from uiLabels[playerChoice][0]
-	uMENU = (stoi(uiLabels[playerChoice][0]) + (enemyChoice - 1));
-
-	// Clear Terminal to Display Game Ui
-	system("CLS");
-
-	// Display Game Ui HUD Line 1 - 4
-	for (int uLINE = 1; uLINE < uiHud; ++uLINE)
-	{
-		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << left << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
-			 << right << setw(40) << (to_string(uiLinesNumbers[0][uLINE][1]) + uiLines[uMENU][uLINE][2]);
-
-		// cout New Line
-		cout << endl;
-	}
-
-	// Display Game Ui Combat Display Line 5 - 7
-	for (int uLINE = 5; uLINE < uiChoices; ++uLINE)
-	{
-		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << right << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
-			 << left << setw(40) << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
-
-		// If Line Has Value, cout Value Message
-		if (uiLinesNumbers[0][uLINE][0] >= 0)
-		{
-			cout << uiLinesNumbers[0][uLINE][0];
-		}
-
-		// cout uiLines[uMENU][uLINE] lineRight
-		cout << uiLines[uMENU][uLINE][2];
-
-		// If Line is Selected, cout Selected Message
-		if (uiLinesSelected[uLINE][0] == true)
-		{
-			cout << uiLines[uMENU][0][3];
-		}
-
-		// cout New Line
-		cout << endl;
-	}
-
-	// Display Game Ui Recap Line 8 - 9
-	for (int uLINE = 8; uLINE < uiCombat; ++uLINE)
-	{
-		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << right << setw(40) << (uiLines[uMENU][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
-			 << left << setw(40) << (uiLines[uMENU][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
-
-		// cout New Line
-		cout << endl;
-	}
-
-	// Display Game Ui Choices Line 10 - 11
-	for (int uLINE = 10; uLINE < uLINES; ++uLINE)
-	{
-		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << right << setw(40) << uiLines[uMENU][uLINE][1]
-			 << left << uiLines[uMENU][uLINE][2];
-
-		// cout New Line for All Lines, Except Last Line
-		if (uLINE <= (uiOptions - 1))
-		{
-			cout << endl;
-		}
-	}
-
-	// Return Void
-	return;
-}
-
 // Function to Engage in Combat
 // Accepts no Parameters
 // Returns Void
@@ -989,7 +1022,7 @@ void Game::gameCombat()
 	for (int i = 0; i < floorTotal; ++i)
 	{
 		// Display New Floor Intro
-		// dsMenus(3);
+		dsMenus(3);
 
 		for (int j = 0; j < enemyTotal; ++j)
 		{
@@ -999,7 +1032,7 @@ void Game::gameCombat()
 				++floorRound;
 
 				// Take Player's Combat Choice
-				gamePlayerTurn(stoi(uiLabels[playerChoice][0]));
+				gamePlayerTurn(playerChoice, (enemyChoice - 1));
 
 				// Take Enemy's Combat Choice
 				gameEnemyTurn();
@@ -1269,7 +1302,7 @@ void Game::gameStaminaRecovery()
 // Function to Take User's Choice in Combat
 // Requires 1 Int Parameter(s) for Current Ui Index
 // Returns Void, passes Data by Member Access
-void Game::gamePlayerTurn(int uMENU)
+void Game::gamePlayerTurn(int uMENU, int uPAGE)
 {
 	// Initialize Variable(s) for gamePlayerTurn()
 	int userInt = (-1);		  // Initialize Int(s) for storing User Int(s)
@@ -1284,14 +1317,20 @@ void Game::gamePlayerTurn(int uMENU)
 	Players.at(playerCurrent).isDodging = false;
 	Players.at(playerCurrent).isWaiting = false;
 
+	// Set Ui Values
+	uiLinesNumbers[0][0][0] = Players.at(playerCurrent).personHealth;
+	uiLinesNumbers[0][0][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth;
+	uiLinesNumbers[0][1][0] = Players.at(playerCurrent).personStamina;
+	uiLinesNumbers[0][1][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina;
+	uiLinesNumbers[0][2][0] = Players.at(playerCurrent).personMoney;
+	uiLinesNumbers[0][2][1] = (enemyTotal - enemyCurrent);
+
 	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// Display Game Ui with Correct Ui Index
-		gameUi();
-
-		// Take User Choice of (1 - 4)
-		userInt = dsChoiceNumber(uiLines[uMENU][0][3][0], uiLines[uMENU][0][3][1]);
+		userDouble = gameUi(uMENU, uPAGE);
+		userInt = userDouble;
 
 		// Check User Choice
 		switch (userInt)

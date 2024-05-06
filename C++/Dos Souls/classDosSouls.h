@@ -667,10 +667,9 @@ public:
 	// MENU FUNCTIONS
 	double dsMenuDisplay(int, int = 0);
 	void dsMenus(int, int = 0);
-	void gameSettings();
 
 	// UI FUNCTIONS
-	void gameUi();
+	double gameUi(int, int = 0);
 
 	// SYSTEM FUNCTIONS
 	int rndInt(int, int = 1);
@@ -681,7 +680,7 @@ public:
 	void dsGameNew();
 	void gameCombat();
 	void gameStaminaRecovery();
-	void gamePlayerTurn(int);
+	void gamePlayerTurn(int, int = 0);
 	int gameEnemyAi();
 	void gameEnemyTurn();
 
