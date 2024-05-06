@@ -538,12 +538,12 @@ public:
 		string					 // Initialize String(s) for storing String(s)
 			floorName = "Floor"; // Specify Name of Floor
 		double					 // Initialize Double(s) for storing Double(s)
+			floorLevel = 1,		 // Specify Level of Floor
 			floorModifier = 1,	 // Specify Modifier of Floor
 			floorMoney = fLOOT;	 // Specify Reward of Floor
 		int						 // Initialize Int(s) for storing Int(s)
 			floorIndex = 0,		 // Specify Index of Floor
-			floorNumber = 1,	 // Specify Number of Floor
-			floorLevel = 1;		 // Specify Level of Floor
+			floorNumber = 1;	 // Specify Number of Floor
 		bool					 // Initialize Bool(s) for storing Bool(s)
 			isStore = true;		 // Specify if Store is Available on Floor
 
@@ -599,12 +599,9 @@ public:
 		dsFiles();
 
 		// Start Menus
-		dsMenus(0, 0);
-		dsMenus(1, 0);
-		dsMenus(2, 0);
-		// gameIntro();
-		// gameRules();
-		// gameSettings();
+		dsMenus(0);
+		dsMenus(1);
+		dsMenus(2);
 
 		// Build Game
 		dsGameNew();
@@ -616,7 +613,7 @@ public:
 		} while (Players.at(-1).personHealth > 0 && Floors.at(-1).Enemies.at(-1).personHealth > 0);
 
 		// Start End Screen
-		// gameOutro();
+		// dsMenus(4);
 	}
 
 	// Destructor with Default Parameters
@@ -668,13 +665,9 @@ public:
 	void dsFiles();
 
 	// MENU FUNCTIONS
-	int dsMenuDisplay(int, int = 0);
-	void gameIntro();
-	void gameRules();
-	void gameSettings();
-	void gameFloorIntro();
-	void gameOutro();
+	double dsMenuDisplay(int, int = 0);
 	void dsMenus(int, int = 0);
+	void gameSettings();
 
 	// UI FUNCTIONS
 	void gameUi();
