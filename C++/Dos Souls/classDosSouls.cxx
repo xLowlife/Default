@@ -825,7 +825,7 @@ bool Game::rng(int rngChance)
 // Accepts No Parameter(s) by Default
 // If Entered, also Accepts 1 Int Parameter to Specify Floor Index
 // Returns Floor, passes Data by Member Access
-Game::Floor &Game::dsFloorNew(int floorIndex)
+Game::Floor Game::dsFloorNew(int floorIndex)
 {
 	// Initialize Variable(s) for dsFloorNew()
 	Floor newFloor; // Initialize Floor(s) for storing Floor Data
@@ -855,7 +855,7 @@ Game::Floor &Game::dsFloorNew(int floorIndex)
 // Accepts No Parameter(s) by Default
 // If Entered, also Accepts 1 Int Parameter to Specify Enemy Index
 // Returns Person, passes Data by Member Access
-Game::Person &Game::dsEnemyNew(int floorIndex, int enemyIndex)
+Game::Person Game::dsEnemyNew(int floorIndex, int enemyIndex)
 {
 	// Initialize Variable(s) for dsEnemyNew()
 	Weapon noWeapon;					  // Initialize Weapon(s) for storing Weapon Data
@@ -910,7 +910,7 @@ Game::Person &Game::dsEnemyNew(int floorIndex, int enemyIndex)
 // Accepts No Parameter(s) by Default
 // If Entered, Accepts 1 Int Parameter to Specify Player Index
 // Returns Person, passes Data by Member Access
-Game::Person &Game::dsPlayerNew(int playerIndex)
+Game::Person Game::dsPlayerNew(int playerIndex)
 {
 	// Initialize Variable(s) for dsPlayerNew()
 	Weapon noWeapon;					   // Initialize Weapon(s) for storing Weapon Data

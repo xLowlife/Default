@@ -56,22 +56,22 @@ Watching Mr.Priestley's labs and stuff I learned failing other classes.
 using namespace std;
 
 //
-const int dsMax[] = {
-	100,
-	100,
-};
+// const int dsMax[] = {
+//	100,
+//	100,
+//};
 // dsMax[hMAX]
-enum dsMaxes
-{
-	hMAX,
-	ORANGE,
-	YELLOW,
-	GREEN,
-	BLUE,
-	INDIGO,
-	VIOLET,
-	PINK
-};
+// enum dsMaxes
+//{
+//	haMAX,
+//	ORANGE,
+//	YELLOW,
+//	GREEN,
+//	BLUE,
+//	INDIGO,
+//	VIOLET,
+//	PINK
+//};
 
 // Initialize Const Variable(s) for Game
 const int
@@ -688,9 +688,9 @@ public:
 	// SYSTEM FUNCTIONS
 	int rndInt(int, int = 1);
 	bool rng(int = rngPSIZE);
-	Floor &dsFloorNew(int = -1);
-	Person &dsEnemyNew(int = -1, int = -1);
-	Person &dsPlayerNew(int = -1);
+	Floor dsFloorNew(int = -1);
+	Person dsEnemyNew(int = -1, int = -1);
+	Person dsPlayerNew(int = -1);
 	void dsGameNew();
 	void gameCombat();
 	void gameStaminaRecovery();
