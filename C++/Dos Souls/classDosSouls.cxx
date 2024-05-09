@@ -326,7 +326,7 @@ void Game::dsFiles()
 			// Store Ui Page in labelPage
 			getline(dsFile, labelPage, ';');
 			// Advance to Next Ui Line
-			getline(dsFile, lineTrash);
+			getline(dsFile, lineTrash, ';');
 
 			// Fill uiLines Array Lines
 			for (int uLINE = 0; uLINE < uLINES; ++uLINE)
