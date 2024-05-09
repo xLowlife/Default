@@ -55,9 +55,28 @@ Watching Mr.Priestley's labs and stuff I learned failing other classes.
 #include <vector>
 using namespace std;
 
+//
+const int dsMax[] = {
+	100,
+	100,
+};
+// dsMax[hMAX]
+enum dsMaxes
+{
+	hMAX,
+	ORANGE,
+	YELLOW,
+	GREEN,
+	BLUE,
+	INDIGO,
+	VIOLET,
+	PINK
+};
+
 // Initialize Const Variable(s) for Game
 const int
 	hMAX{100},	  // Specify Maximum amount of Health
+	hBUFF{1},	  // Specify Maximum Health Multiplier of Enemies
 	hSTEAL{2},	  // Specify Maximum amount of Life Steal
 	sMAX{100},	  // Specify Maximum amount of Stamina
 	sGAIN{10},	  // Specify Base amount of Stamina Recovery
@@ -125,6 +144,7 @@ public:
 		string					   // Initialize String(s) for storing String(s)
 			personName = "Person"; // Specify Name of Person
 		double					   // Initialize Double(s) for storing Double(s)
+			personhMAX = hMAX,	   // Specify Maximum amount of Health of Person
 			personHealth = hMAX,   // Specify Health of Person
 			personStamina = sMAX,  // Specify Stamina of Person
 			personMoney = 0;	   // Specify Money of Person
@@ -484,7 +504,7 @@ public:
 		void operator+(Person &Person2)
 		{
 			// Recover Person 1's Health and Stamina after Kill
-			this->personHealth += (hMAX / hSTEAL);
+			this->personHealth += (Person2.personhMAX / hSTEAL);
 			if (this->personHealth >= hMAX)
 			{
 				this->personHealth = hMAX; // Don't let Person 1's Health go Above hMAX
@@ -575,16 +595,14 @@ public:
 	vector<Person> Players; // Initialize Person Vector for Players
 
 	// Initialize Array(s) for Menus
-	string (*menuLabels)[mLCOLS] = new string[mLABELS][mLCOLS]{};			   // Establish a Dynamic 2D String Array for Menu Labels
-	string (*menuLines)[mLINES][mCOLS] = new string[mMENUS][mLINES][mCOLS]{};  // Establish a Dynamic 2D String Array for Menu Lines
-	int (*menuLinesNumbers)[mLINES][mCOLS] = new int[mMENUS][mLINES][mCOLS]{}; // Establish a Dynamic 2D String Array for Menu Numbers
-	bool (*menuLinesSelected)[mCOLS] = new bool[mLINES][mCOLS]{};			   // Establish a Dynamic 2D String Array for Menu Selections
+	string (*menuLines)[mLINES][mCOLS] = new string[mMENUS][mLINES][mCOLS]{};	// Establish a Dynamic 3D String Array for Menu Lines
+	string (*menuLabels)[mLCOLS] = new string[mLABELS][mLCOLS]{};				// Establish a Dynamic 2D String Array for Menu Labels
+	int (*menuLinesNumbers)[mLINES][mCOLS] = new int[mLABELS][mLINES][mCOLS]{}; // Establish a Dynamic 3D String Array for Menu Numbers
 
 	// Initialize Array(s) for Ui
-	string (*uiLabels)[uLCOLS] = new string[uLABELS][uLCOLS]{};				 // Establish a Dynamic 2D String Array for Menu Labels
-	string (*uiLines)[uLINES][uCOLS] = new string[uMENUS][uLINES][uCOLS]{};	 // Establish a Dynamic 2D String Array for Menu Lines
-	int (*uiLinesNumbers)[uLINES][uCOLS] = new int[uMENUS][uLINES][uCOLS]{}; // Establish a Dynamic 2D String Array for Menu Numbers
-	bool (*uiLinesSelected)[uCOLS] = new bool[uLINES][uCOLS]{};				 // Establish a Dynamic 2D String Array for Menu Numbers
+	string (*uiLines)[uLINES][uCOLS] = new string[uMENUS][uLINES][uCOLS]{};	  // Establish a Dynamic 3D String Array for Menu Lines
+	string (*uiLabels)[uLCOLS] = new string[uLABELS][uLCOLS]{};				  // Establish a Dynamic 2D String Array for Menu Labels
+	int (*uiLinesNumbers)[uLINES][uCOLS] = new int[uLABELS][uLINES][uCOLS]{}; // Establish a Dynamic 3D String Array for Menu Numbers
 
 	// Initialize Array(s) for Items
 	// string *weaponLabels = new string[wSIZE]{};		 // Establish a dynamic array for Weapon Labels
@@ -626,16 +644,12 @@ public:
 		menuLines = nullptr;
 		delete[] menuLinesNumbers;
 		menuLinesNumbers = nullptr;
-		delete[] menuLinesSelected;
-		menuLinesSelected = nullptr;
 		delete[] uiLabels;
 		uiLabels = nullptr;
 		delete[] uiLines;
 		uiLines = nullptr;
 		delete[] uiLinesNumbers;
 		uiLinesNumbers = nullptr;
-		delete[] uiLinesSelected;
-		uiLinesSelected = nullptr;
 		//  delete[] weaponLabels;
 		//  weaponLabels = nullptr;
 		//  delete[] armorLabels;
@@ -674,9 +688,9 @@ public:
 	// SYSTEM FUNCTIONS
 	int rndInt(int, int = 1);
 	bool rng(int = rngPSIZE);
-	Floor dsFloorNew(int = -1);
-	Person dsEnemyNew(int = -1);
-	Person dsPlayerNew(int = -1);
+	Floor &dsFloorNew(int = -1);
+	Person &dsEnemyNew(int = -1, int = -1);
+	Person &dsPlayerNew(int = -1);
 	void dsGameNew();
 	void gameCombat();
 	void gameStaminaRecovery();

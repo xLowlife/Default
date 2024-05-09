@@ -675,16 +675,16 @@ double Game::gameUi(int uMENU, int uPAGE)
 			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
 
 		// If Line Has Value, cout Value Message
-		if (uiLinesNumbers[0][uLINE][0] >= 0)
+		if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][3] != "-1")
 		{
-			cout << uiLinesNumbers[0][uLINE][0];
+			cout << uiLinesNumbers[uMENU][uLINE][2];
 		}
 
 		// cout uiLines[uMENU][uLINE] lineRight
 		cout << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2];
 
 		// If Line is Selected, cout Selected Message
-		if (uiLinesSelected[uLINE][0] == true)
+		if (uiLinesNumbers[uMENU][uLINE][3] == 1)
 		{
 			cout << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][11][3];
 		}
@@ -697,8 +697,8 @@ double Game::gameUi(int uMENU, int uPAGE)
 	for (int uLINE = 8; uLINE < uiCombat; ++uLINE)
 	{
 		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << right << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
-			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
+		cout << setw(40) << right << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(Players.at(playerCurrent).personHealth))
+			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(Players.at(playerCurrent).personHealth));
 
 		// cout New Line
 		cout << endl;
@@ -825,7 +825,7 @@ bool Game::rng(int rngChance)
 // Accepts No Parameter(s) by Default
 // If Entered, also Accepts 1 Int Parameter to Specify Floor Index
 // Returns Floor, passes Data by Member Access
-Game::Floor Game::dsFloorNew(int floorIndex)
+Game::Floor &Game::dsFloorNew(int floorIndex)
 {
 	// Initialize Variable(s) for dsFloorNew()
 	Floor newFloor; // Initialize Floor(s) for storing Floor Data
@@ -847,9 +847,6 @@ Game::Floor Game::dsFloorNew(int floorIndex)
 	newFloor.floorMoney = (rndInt((fLOOT * 2), fLOOT) * newFloor.floorModifier); // Specify Reward of Floor
 	newFloor.isStore = rng(2);
 
-	// Fill New Floor's Enemy Vector with New Enemies
-	dsEnemyNew(newFloor.floorIndex);
-
 	// Return New Floor
 	return newFloor;
 }
@@ -858,7 +855,7 @@ Game::Floor Game::dsFloorNew(int floorIndex)
 // Accepts No Parameter(s) by Default
 // If Entered, also Accepts 1 Int Parameter to Specify Enemy Index
 // Returns Person, passes Data by Member Access
-Game::Person Game::dsEnemyNew(int enemyIndex)
+Game::Person &Game::dsEnemyNew(int floorIndex, int enemyIndex)
 {
 	// Initialize Variable(s) for dsEnemyNew()
 	Weapon noWeapon;					  // Initialize Weapon(s) for storing Weapon Data
@@ -870,17 +867,20 @@ Game::Person Game::dsEnemyNew(int enemyIndex)
 	// Fill New Enemy with Default Enemy Data
 	newEnemy.isPlayer = false;								  // Specify Person is Enemy
 	newEnemy.personName = ("Enemy " + to_string(enemyCount)); // Specify Name of Enemy
-	newEnemy.personIndex = enemyIndex;						  // Specify Index of Enemy
-	newEnemy.personNumber = enemyCount;						  // Specify Number of Enemy
+	// Specify Maximum amount of Health of Enemy, hBUFF used to create an upper limit in the future
+	newEnemy.personhMAX = (newEnemy.personHealth * (Floors.at(floorIndex).floorModifier / hBUFF));
+	newEnemy.personHealth = newEnemy.personhMAX; // Specify Health of Enemy
+	newEnemy.personIndex = enemyIndex;			 // Specify Index of Enemy
+	newEnemy.personNumber = enemyCount;			 // Specify Number of Enemy
 
 	// If dsEnemyNew() is Called with No Parameter, Specify Index of Enemy as Next Index
 	if (enemyIndex == (-1))
 	{
-		newEnemy.personIndex = (enemyCount - 1); // Specify Index of Enemy as Next Index
+		newEnemy.personIndex = (enemyTotal - 1); // Specify Index of Enemy as Next Index
 	}
 
 	// Fill New Enemy with Random Enemy Data
-	newEnemy.personMoney = rndInt((eLOOT * 2), eLOOT); // Specify Reward of Enemy
+	newEnemy.personMoney = (rndInt((eLOOT * 2), eLOOT) * Floors.at(floorIndex).floorModifier); // Specify Reward of Enemy
 
 	// Fill New Enemy with Random Weapon and Armor
 	// Weapon newWeapon;					   // Initialize Weapon(s) for storing Weapon Data
@@ -910,7 +910,7 @@ Game::Person Game::dsEnemyNew(int enemyIndex)
 // Accepts No Parameter(s) by Default
 // If Entered, Accepts 1 Int Parameter to Specify Player Index
 // Returns Person, passes Data by Member Access
-Game::Person Game::dsPlayerNew(int playerIndex)
+Game::Person &Game::dsPlayerNew(int playerIndex)
 {
 	// Initialize Variable(s) for dsPlayerNew()
 	Weapon noWeapon;					   // Initialize Weapon(s) for storing Weapon Data
@@ -984,7 +984,7 @@ void Game::dsGameNew()
 			// Specify Number of Enemies Created
 			++enemyCount;
 			// push_back() New Enemy to Enemies Vector
-			Floors.at(i).Enemies.push_back(dsEnemyNew(j));
+			Floors.at(i).Enemies.push_back(dsEnemyNew(i, j));
 		}
 	}
 
@@ -1053,108 +1053,50 @@ void Game::gameCombat()
 		++floorCurrent;
 	}
 
-	// Take User's Choice with dsChoiceNumber() while isDone != true;
-	do
-	{
-		// If User is Editing, Display Settings Menu Page 2
-		if (uiLinesSelected[4][0] == true || uiLinesSelected[5][0] == true || uiLinesSelected[6][0] == true || uiLinesSelected[7][0] == true)
-		{
-			// Display Settings Menu Page 2
-			// gameUi(1);
-		}
+	// Take User Choice of (1 - 5)
+	// userInt = dsChoiceNumber(1, 5);
 
-		// If User is Not Editing a Setting, Display Settings Menu Page 1
-		else
-		{
-			// Display Settings Menu Page 1
-			// gameUi(1);
-		}
+	// Check User Choice
+	// switch (userInt)
+	//{
+	// case 1: // If User Choice is 1, Continue
+	//	isDone = true;
+	//	break;
+	// case 2: // If User Choice is within range, Continue
+	//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 4 to Selected
+	//	isDone = false;
+	//	break;
+	// case 3: // If User Choice is within range, Continue
+	//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 5 to Selected
+	//	isDone = false;
+	//	break;
+	// case 4: // If User Choice is within range, Continue
+	//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 6 to Selected
+	//	isDone = false;
+	//	break;
+	// case 5: // If User Choice is within range, Continue
+	//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 7 to Selected
+	//	isDone = false;
+	//	break;
+	// default: // If User Choice is Not within range, Wait
+	//	isDone = false;
+	//	break;
+	//}
 
-		// Check if User is Editing floorDifficulty
-		if (uiLinesSelected[4][0] == true)
-		{
-			// Take User Choice of any Number
-			floorDifficulty = dsChoiceNumber(1, 4);
-			uiLinesNumbers[2][4][0] = floorDifficulty;
-			uiLinesSelected[4][0] = false;
-		}
-
-		// Check if User is Editing floorTotal
-		else if (uiLinesSelected[5][0] == true)
-		{
-			// Take User Choice of any Number
-			floorTotal = dsChoiceNumber(1, 4);
-			uiLinesNumbers[2][5][0] = floorTotal;
-			uiLinesSelected[5][0] = false;
-		}
-
-		// Check if User is Editing enemyTotal
-		else if (uiLinesSelected[6][0] == true)
-		{
-			// Take User Choice of any Number
-			enemyTotal = dsChoiceNumber(1, 4);
-			uiLinesNumbers[2][6][0] = enemyTotal;
-			uiLinesSelected[6][0] = false;
-		}
-
-		// Check if User is Editing playerTotal
-		else if (uiLinesSelected[7][0] == true)
-		{
-			// Take User Choice of any Number
-			playerTotal = dsChoiceNumber(1, 4);
-			uiLinesNumbers[2][7][0] = playerTotal;
-			uiLinesSelected[7][0] = false;
-		}
-
-		// If User is Not Editing Settings, Display Ui 1
-		else
-		{
-			// Take User Choice of (1 - 5)
-			userInt = dsChoiceNumber(1, 5);
-
-			// Check User Choice
-			switch (userInt)
-			{
-			case 1: // If User Choice is 1, Continue
-				isDone = true;
-				break;
-			case 2:							  // If User Choice is within range, Continue
-				uiLinesSelected[4][0] = true; // Set Menu Line 4 to Selected
-				isDone = false;
-				break;
-			case 3:							  // If User Choice is within range, Continue
-				uiLinesSelected[5][0] = true; // Set Menu Line 5 to Selected
-				isDone = false;
-				break;
-			case 4:							  // If User Choice is within range, Continue
-				uiLinesSelected[6][0] = true; // Set Menu Line 6 to Selected
-				isDone = false;
-				break;
-			case 5:							  // If User Choice is within range, Continue
-				uiLinesSelected[7][0] = true; // Set Menu Line 7 to Selected
-				isDone = false;
-				break;
-			default: // If User Choice is Not within range, Wait
-				isDone = false;
-				break;
-			}
-		}
-	} while (isDone != true);
-
-	// Fill menuLinesNumbers Array
-	for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
-	{
-		// Fill uiLinesNumbers Array Lines
-		for (int uLINE = 0; uLINE < uLINES; ++uLINE)
-		{
-			// Fill uiLinesNumbers Array Columns
-			for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
-			{
-				// Fill uiLinesNumbers Array Columns with (-1)
-				uiLinesNumbers[uMENU][uLINE][uCOL] = (-1);
-			}
-		}
-	}
+	// Fill uiLinesNumbers Array
+	// for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
+	//{
+	//	// Fill uiLinesNumbers Array Lines
+	//	for (int uLINE = 0; uLINE < uLINES; ++uLINE)
+	//	{
+	//		// Fill uiLinesNumbers Array Columns
+	//		for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
+	//		{
+	//			// Fill uiLinesNumbers Array Columns with (-1)
+	//			uiLinesNumbers[uMENU][uLINE][uCOL] = (-1);
+	//		}
+	//	}
+	//}
 
 	// Return Void
 	return;
