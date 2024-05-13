@@ -102,12 +102,6 @@ double Game::dsChoiceNumber(int choiceMin, int choiceMax)
 		{
 			isChoice = false;
 		}
-
-		// If Char in userString[0] < choiceMin or userString[0] > choiceMax, Empty Variable(s)
-		else if (stoi(userString) < choiceMin || stoi(userString) > choiceMax)
-		{
-			isChoice = false;
-		}
 	}
 
 	// If choiceMin >= 0 and choiceMax > 9, Only Accept Positive Multi Digit Numbers
@@ -178,6 +172,11 @@ double Game::dsChoiceNumber(int choiceMin, int choiceMax)
 	if (isChoice == true)
 	{
 		userDouble = stod(userString);
+		// If userString < choiceMin or userString > choiceMax, Empty Variable(s)
+		if (stod(userString) < choiceMin || stod(userString) > choiceMax)
+		{
+			isChoice = false;
+		}
 	}
 
 	// If isChoice == false, Empty Variable(s)
@@ -209,10 +208,23 @@ void Game::dsFiles()
 {
 	// Initialize Variable(s) for dsFiles()
 	ifstream dsFile; // Initialize ifstream(s) for storing ifstream(s)
-	string			 // Initialize Strings(s) for storing String(s)
-		lineTrash,
-		labelName,
-		labelPage;
+	string			 // Initialize Strings(s) for storing String(s), In Order of getline Use Order
+		pageRows,	 // Specify sPage's Line Rows
+		pageCols,	 // Specify sPage's Line Columns
+		chapIndex,	 // Specify sChapter's Chapter Index
+		pageIndex,	 // Specify sPage's Page Index
+		pageMin,	 // Specify sPage's Min Choice
+		pageMax,	 // Specify sPage's Max Choice
+		isLastChap,	 // Specify if sChapter is Last in Screen
+		isLastPage,	 // Specify if sPage is Last in Screen
+		chapName,	 // Specify sChapter's Name
+		pageName,	 // Specify sPage's Name
+		lineEmpty,	 // Specify sLine's Empty State
+		lineIndex,	 // Specify sLine's Line Index
+		lineInfo,	 // Specify sLine's Variable States
+		lineString,	 // Specify sLine's Variable String
+		lineSel,	 // If sLine is Selectable, Specify Number to Select Line
+		lineTrash;	 // Specify Trash Variable
 
 	// Open fileMenus
 	dsFile.open(fileMenus);
@@ -223,64 +235,212 @@ void Game::dsFiles()
 		cout << "File, " << fileMenus << ", opened successfully" << endl
 			 << endl;
 
-		// Fill menuLinesNumbers Array
-		for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
+		// Fill New Chapter's Data and Vectors
+		do
 		{
-			// Fill menuLinesNumbers Array Lines
-			for (int mLINE = 0; mLINE < mLINES; ++mLINE)
+			// Initialize New sChapter(s) for storing New Chapter Data
+			sChapter newChapter;
+
+			// Fill New Pages's Data and Vectors
+			do
 			{
-				// Fill menuLinesNumbers Array Columns
-				for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
-				{
-					// Fill menuLinesNumbers Array Columns with (-1)
-					menuLinesNumbers[mMENU][mLINE][mCOL] = (-1);
-				}
-			}
-		}
+				// Initialize New sPage(s) for storing New Page Data
+				sPage newPage;
 
-		// Fill menuLines Array
-		for (int mMENU = 0; mMENU < mMENUS; ++mMENU)
-		{
-			// Advance to Next Menu Label Column
-			getline(dsFile, lineTrash, ';');
-			// Store Menu Name in labelName
-			getline(dsFile, labelName, ';');
-			// Store Menu Page in labelPage
-			getline(dsFile, labelPage, ';');
-			// Advance to Next Menu Line
-			getline(dsFile, lineTrash);
+				// PAGE DIMENSIONS
+				// Store New Page's Line Row Amount in pageRows
+				getline(dsFile, pageRows, '-');
+				// Specify New Page's Line Row Amount
+				newPage.pageRows = stoi(pageRows);
 
-			// Fill menuLines Array Lines
-			for (int mLINE = 0; mLINE < mLINES; ++mLINE)
-			{
-				// Fill menuLines Array Columns
-				for (int mCOL = 0; mCOL < mCOLS; ++mCOL)
-				{
-					// Store Menu Line Column at menuLines[mMENU][mLINE][mCOL]
-					getline(dsFile, menuLines[mMENU][mLINE][mCOL], ';');
-				}
+				// Store New Page's Line Column Amount in pageCols
+				getline(dsFile, pageCols, '-');
+				// Specify New Page's Line Column Amount
+				newPage.pageCols = stoi(pageCols);
 
-				// Advance to Next Menu Line
+				// Advance to Next Line in dsFile
 				getline(dsFile, lineTrash);
-			}
 
-			// Fill menuLabels Array, If Menu Page == Page 1
-			if (menuLines[mMENU][0][1] == "0")
-			{
-				// Specify Index of menuLabels is menuLines[mMENU][0][0]
-				int mLABEL = stoi(menuLines[mMENU][0][0]);
+				// PAGE INFO
+				// Store New Chapter's Chapter Index in chapIndex
+				getline(dsFile, chapIndex, ';');
+				// Specify New Chapter's Chapter Index
+				newChapter.chapIndex = stoi(chapIndex);
 
-				// Store menuLines Index at menuLabels[mLABEL][0]
-				menuLabels[mLABEL][0] = to_string(mMENU);
+				// Store New Page's Page Index in chapIndex
+				getline(dsFile, pageIndex, ';');
+				// Specify New Page's Page Index
+				newPage.pageIndex = stoi(pageIndex);
 
-				// Store Menu Name at menuLabels[mLABEL][1]
-				menuLabels[mLABEL][1] = labelName;
+				// Store New Page's Minimum User Choice in pageMin
+				getline(dsFile, pageMin, ';');
+				// If pageMin == "+", Specify "Infinite" Positive Minimum User Choice
+				if (pageMin == "+")
+				{
+					newPage.pageMin = (1000 * 1000);
+				}
+				// If pageMin == "-", Specify "Infinite" Negative Minimum User Choice
+				else if (pageMin == "-")
+				{
+					newPage.pageMin = ((-1000) * 1000);
+				}
+				// If pageMin == Number, Specify Minimum User Choice
+				else
+				{
+					// Specify New Page's Minimum User Choice
+					newPage.pageMin = stoi(pageMin);
+				}
 
-				// Store Menu Page at menuLabels[mLABEL][2]
-				menuLabels[mLABEL][2] = labelPage;
-			}
-		}
+				// Store New Page's Maximum User Choice in pageMax
+				getline(dsFile, pageMax, ';');
+				// If pageMax == "+", Specify "Infinite" Positive Maximum User Choice
+				if (pageMax == "+")
+				{
+					newPage.pageMax = (1000 * 1000);
+				}
+				// If pageMax == "-", Specify "Infinite" Negative Maximum User Choice
+				else if (pageMax == "-")
+				{
+					newPage.pageMax = ((-1000) * 1000);
+				}
+				// If pageMax == Number, Specify Maximum User Choice
+				else
+				{
+					// Specify New Page's Maximum User Choice
+					newPage.pageMax = stoi(pageMax);
+				}
 
+				// Store Note of if New Chapter is Last in Screen
+				getline(dsFile, isLastChap, ';');
+				// Store Note of if New Page is Last in Screen
+				getline(dsFile, isLastPage, ';');
+
+				// Store New Chapter's Name in chapName
+				getline(dsFile, chapName, ';');
+				// Specify New Chapter's Name
+				newChapter.chapName = chapName;
+
+				// Store New Page's Name in pageName
+				getline(dsFile, pageName, ';');
+				// Specify New Page's Name
+				newPage.pageName = pageName;
+
+				// Advance to Next Line in dsFile
+				getline(dsFile, lineTrash);
+
+				// PAGE LINES
+				// Fill New Lines's Data and Vectors
+				for (int pageRow = 1; pageRow < (newPage.pageRows + 2); ++pageRow)
+				{
+					// Initialize New sLine(s) for storing New Line Data
+					sLine newLine;
+
+					// Store Note of if New Line is Empty
+					getline(dsFile, lineEmpty, ';');
+
+					// Store New Line's Line Index in lineIndex
+					getline(dsFile, lineIndex, ';');
+					// Specify New Line's Line Index
+					newLine.lineIndex = stoi(lineIndex);
+					// Add New Line's Line Index to newLine.lSTRS.at(0)
+					newLine.lSTRS.at(0).append(lineIndex);
+
+					// Store Note of if New Line can be Selected
+					getline(dsFile, lineInfo, ';');
+					// If New Line CAN be Selected, Add Data on How to New Line's Vectors
+					if (lineInfo[0] == '+')
+					{
+						// Add true to newLine.lINFO.at(0)
+						newLine.lINFO.at(0) = true;
+						// Store New Line's Required Choice for Select in lineIndex
+						getline(dsFile, lineSel, ';');
+						// Add Required User Choice to newLine.lNUMS.at(0)
+						newLine.lNUMS.at(0) = stoi(lineSel);
+					}
+					// If New Line CANNOT be Selected, Advance to Next Line Column
+					else
+					{
+						// Advance to Next Line Column in dsFile
+						getline(dsFile, lineTrash, ';');
+						// If New Line is Line 0, Do NOT Trash String
+						if (pageRow == 0)
+						{
+							// Specify New Page's Selected Message
+							newPage.pageSel = lineTrash;
+						}
+					}
+
+					// Fill New Lines's lSTRS Vector with String(s)
+					for (int pageCol = 1; pageCol < (newPage.pageCols + 1); ++pageCol)
+					{
+						// Add Number Slot to New Line's newLine.lNUMS
+						newLine.lNUMS.push_back(newLine.lineEmptyNum);
+
+						// Store Note of if New Lines's Line Column needs Input
+						getline(dsFile, lineInfo, ';');
+						// If New Lines's Line Column needs Input, Add true to newLine.lINFO
+						if (lineInfo[0] == '+')
+						{
+							// Add true to newLine.lINFO
+							newLine.lINFO.push_back(true);
+						}
+						// If New Lines's Line Column needs Input, Add false to newLine.lINFO
+						else
+						{
+							// Add false to newLine.lINFO
+							newLine.lINFO.push_back(false);
+						}
+
+						// If New Line is NOT Marked Empty, Add String to newLine.lSTRS
+						if (lineEmpty[0] == '+')
+						{
+							// Store New Line's Line Column String in lineString
+							getline(dsFile, lineString, ';');
+							// If New Line's Line Column String is "sLine/", Split Next Line in Half
+							if (lineString == "sLine/")
+							{
+								// Advance to Next Line Column in Loop
+								++pageCol;
+								// Store Note of if Next Line's Line Column needs Input
+								getline(dsFile, lineInfo, ';');
+								// Store Next Line's Line Column String in lineString
+								getline(dsFile, lineString, ';');
+								// Split Next Line in Half, and Add Both Halves to newLine.lSTRS
+								(newLine / lineString);
+								// If Next Lines's Line Column needs Input, Add true to newLine.lINFO.at(pageCol)
+								if (lineInfo[0] == '+')
+								{
+									// Add true to newLine.lINFO.at(pageCol)
+									newLine.lINFO.at(pageCol) = true;
+								}
+							}
+							// If New Line's Line Column String is NOT "sLine/", Add Line Column String
+							else
+							{
+								// Add New Line's Line Column String to New Line's newLine.lSTRS
+								newLine.lSTRS.push_back(lineString);
+							}
+						}
+						// If New Line is Marked Empty, Trash All Strings
+						else
+						{
+							// Advance to Next Line Column in dsFile
+							getline(dsFile, lineTrash, ';');
+							// Add String Slot to New Line's newLine.lSTRS
+							newLine.lSTRS.push_back(newLine.lineEmptyStr);
+						}
+					}
+					// Add New Line to New Page's newPage.sLines
+					newPage.sLines.push_back(newLine);
+					// Advance to Next Line in dsFile
+					getline(dsFile, lineTrash);
+				}
+				// Add New Page to New Chapter's newChapter.sPages
+				newChapter.sPages.push_back(newPage);
+			} while (isLastPage[0] == '+');
+			// Add New Chapter to screenMenu Vector
+			screenMenu.push_back(newChapter);
+		} while (isLastChap[0] == '+');
 		// Close fileMenus
 		dsFile.close();
 	}
@@ -300,64 +460,6 @@ void Game::dsFiles()
 		// Output fileUi opened successfully to console
 		cout << "File, " << fileUi << ", opened successfully" << endl
 			 << endl;
-
-		// Fill uiLinesNumbers Array
-		for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
-		{
-			// Fill uiLinesNumbers Array Lines
-			for (int uLINE = 0; uLINE < uLINES; ++uLINE)
-			{
-				// Fill uiLinesNumbers Array Columns
-				for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
-				{
-					// Fill uiLinesNumbers Array Columns with (-1)
-					uiLinesNumbers[uMENU][uLINE][uCOL] = (-1);
-				}
-			}
-		}
-
-		// Fill Ui Arrays
-		for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
-		{
-			// Advance to Next Ui Label Column
-			getline(dsFile, lineTrash, ';');
-			// Store Ui Name in labelName
-			getline(dsFile, labelName, ';');
-			// Store Ui Page in labelPage
-			getline(dsFile, labelPage, ';');
-			// Advance to Next Ui Line
-			getline(dsFile, lineTrash, ';');
-
-			// Fill uiLines Array Lines
-			for (int uLINE = 0; uLINE < uLINES; ++uLINE)
-			{
-				// Fill uiLines Array Columns
-				for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
-				{
-					// Store Ui Line Column at uiLines[uMENU][uLINE][uCOL]
-					getline(dsFile, uiLines[uMENU][uLINE][uCOL], ';');
-				}
-
-				// Advance to Next Ui Line
-				getline(dsFile, lineTrash);
-			}
-
-			// Fill uiLabels Array, If Ui Page == Page 1
-			if (uiLines[uMENU][0][1] == "0")
-			{
-				// Specify Index of uiLabels is uiLines[uMENU][0][0]
-				int mLABEL = stoi(uiLines[uMENU][0][0]);
-
-				// Store uiLines Index at uiLabels[mLABEL][0]
-				uiLabels[mLABEL][0] = to_string(uMENU);
-
-				// Store Ui Name at uiLabels[mLABEL][1]
-				uiLabels[mLABEL][1] = labelName;
-
-				// Store Ui Page at uiLabels[mLABEL][2]
-				uiLabels[mLABEL][2] = labelPage;
-			}
-		}
 
 		// Close fileUi
 		dsFile.close();
@@ -385,12 +487,9 @@ void Game::dsFiles()
 // Function to Display Game Menus
 // Accepts 2 Int Parameter(s) for Adjusting Menus
 // Returns Double, passes Data by Member Access
-double Game::dsMenuDisplay(int mMENU, int mPAGE)
+double Game::dsMenuDisplay(int chapIndex, int pageIndex)
 {
 	// Initialize Variable(s) for dsMenuDisplay()
-	int // Initialize Int(s) for storing Int(s)
-		dsChoiceMin = 1,
-		dsChoiceMax = 1;
 	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
 	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
 
@@ -398,30 +497,29 @@ double Game::dsMenuDisplay(int mMENU, int mPAGE)
 	system("CLS");
 
 	// cout Top Border, Each Corner Spaced by setw(40)
-	cout << setw(40) << left << "+- - - - - - - - - - - - -"
-		 << setw(40) << right << "- - - - - - - - - - - - -+"
-		 << endl
+	cout << setw(40) << left << "+ - - - - - - - - - - - - - - - - - - -"
+		 << setw(40) << right << "- - - - - - - - - - - - - - - - - - - - +"
 		 << endl;
 
 	// Display Game Menu
-	for (int mLINE = 1; mLINE < (mLINES - 1); ++mLINE)
+	for (int pageRow = 1; pageRow < (screenMenu.at(chapIndex).sPages.at(pageIndex).pageRows + 1); ++pageRow)
 	{
-		// cout menuLines[mMENU][mLINE] lineLeft, then menuLines[mMENU][mLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << right << menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][mLINE][1];
+		// cout lineLeft, then lineRight, Centered to setw(40)
+		cout << setw(40) << right << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lSTRS.at(1);
 
 		// If Line Has Value, cout Value Message
-		if (menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][mLINE][3] != "-1")
+		if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(2) == true)
 		{
-			cout << right << ' ' << menuLinesNumbers[mMENU][mLINE][2];
+			cout << right << ' ' << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lNUMS.at(2);
 		}
 
-		// cout menuLines[mMENU][mLINE] lineRight
-		cout << left << menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][mLINE][2];
+		// cout lineRight
+		cout << left << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lSTRS.at(2);
 
 		// If Line is Selected, cout Selected Message
-		if (menuLinesNumbers[mMENU][mLINE][3] != (-1))
+		if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(0) == true)
 		{
-			cout << menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][11][3];
+			cout << screenMenu.at(chapIndex).sPages.at(pageIndex).pageSel;
 		}
 
 		// cout New Line
@@ -429,45 +527,16 @@ double Game::dsMenuDisplay(int mMENU, int mPAGE)
 	}
 
 	// cout Bottom Border, Each Corner Spaced by setw(40)
-	cout << endl
-		 << setw(40) << left << "+- - - - - - - - - - - - -"
-		 << setw(40) << right << "- - - - - - - - - - - - -+"
+	cout << setw(40) << left << "+ - - - - - - - - - - - - - - - - - - -"
+		 << setw(40) << right << "- - - - - - - - - - - - - - - - - - - - +"
 		 << endl;
 
-	// cout Last menuLines[mMENU][-1] lineLeft, then menuLines[mMENU][-1] lineRight, Left Centered to setw(40)
-	cout << setw(40) << right << menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][11][1]
-		 << left << menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][11][2];
-
-	// Correct choiceMin
-	if (menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][0][3].substr(0, 1) == "+")
-	{
-		dsChoiceMin = (1000 * 1000);
-	}
-	else if (menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][0][3].substr(0, 1) == "-")
-	{
-		dsChoiceMin = ((-1000) * (1000));
-	}
-	else
-	{
-		dsChoiceMin = stoi(menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][0][3].substr(0, 1));
-	}
-
-	// Correct choiceMax
-	if (menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][0][3].substr(1, 1) == "+")
-	{
-		dsChoiceMax = (1000 * 1000);
-	}
-	else if (menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][0][3].substr(1, 1) == "-")
-	{
-		dsChoiceMax = ((-1000) * (1000));
-	}
-	else
-	{
-		dsChoiceMax = stoi(menuLines[(stoi(menuLabels[mMENU][0]) + mPAGE)][0][3].substr(1, 1));
-	}
+	// cout Last menuLines[chapIndex][-1] lineLeft, then menuLines[chapIndex][-1] lineRight, Left Centered to setw(40)
+	cout << setw(40) << right << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(0).lSTRS.at(1)
+		 << left << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(0).lSTRS.at(2);
 
 	// Take User Choice Specified by Menu
-	userDouble = dsChoiceNumber(dsChoiceMin, dsChoiceMax);
+	userDouble = dsChoiceNumber(screenMenu.at(chapIndex).sPages.at(pageIndex).pageMin, screenMenu.at(chapIndex).sPages.at(pageIndex).pageMax);
 
 	// Return User Choice as Double
 	return userDouble;
@@ -476,7 +545,7 @@ double Game::dsMenuDisplay(int mMENU, int mPAGE)
 // Function to Access Game Menus
 // Accepts 2 Int Parameter(s)
 // Returns Void, passes Data by Member Access
-void Game::dsMenus(int mMENU, int mPAGE)
+void Game::dsMenus(int chapIndex, int pageIndex)
 {
 	// Initialize Variable(s) for dsMenus()
 	int userInt = (-1);		  // Initialize Int(s) for storing User Int(s)
@@ -484,33 +553,33 @@ void Game::dsMenus(int mMENU, int mPAGE)
 	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
 
 	// Set Settings Values
-	menuLinesNumbers[2][4][2] = floorDifficulty;
-	menuLinesNumbers[2][5][2] = floorTotal;
-	menuLinesNumbers[2][6][2] = enemyTotal;
-	menuLinesNumbers[2][7][2] = playerTotal;
-	menuLinesNumbers[3][4][2] = floorDifficulty;
-	menuLinesNumbers[3][5][2] = floorTotal;
-	menuLinesNumbers[3][6][2] = enemyTotal;
-	menuLinesNumbers[3][7][2] = playerTotal;
+	screenMenu.at(SETTINGS).sPages.at(0).sLines.at(4).lNUMS.at(2) = floorDifficulty;
+	screenMenu.at(SETTINGS).sPages.at(0).sLines.at(5).lNUMS.at(2) = floorTotal;
+	screenMenu.at(SETTINGS).sPages.at(0).sLines.at(6).lNUMS.at(2) = enemyTotal;
+	screenMenu.at(SETTINGS).sPages.at(0).sLines.at(7).lNUMS.at(2) = playerTotal;
+	screenMenu.at(SETTINGS).sPages.at(1).sLines.at(4).lNUMS.at(2) = floorDifficulty;
+	screenMenu.at(SETTINGS).sPages.at(1).sLines.at(5).lNUMS.at(2) = floorTotal;
+	screenMenu.at(SETTINGS).sPages.at(1).sLines.at(6).lNUMS.at(2) = enemyTotal;
+	screenMenu.at(SETTINGS).sPages.at(1).sLines.at(7).lNUMS.at(2) = playerTotal;
 
 	// Set Floor Intro Values
-	menuLinesNumbers[3][5][2] = (floorCurrent + 1);
+	screenMenu.at(FLOORINTRO).sPages.at(0).sLines.at(5).lNUMS.at(2) = (floorCurrent + 1);
 
 	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
 	{
 		// Display Menu and Take User Choice
-		userDouble = dsMenuDisplay(mMENU, mPAGE);
+		userDouble = dsMenuDisplay(chapIndex, pageIndex);
 		userInt = userDouble;
 
-		// If mPAGE == 0, Display Menu Page 1
-		if (mPAGE == 0)
+		// If pageIndex == 0, Display Menu Page 1
+		if (pageIndex == 0)
 		{
 			// If userInt is (-1), Keep Menu Running
 			if (userInt == (-1))
 			{
 				// Keep Menu Page at Page 1
-				mPAGE = 0;
+				pageIndex = 0;
 
 				// Keep Menu Running until Closed
 				isDone = false;
@@ -520,7 +589,7 @@ void Game::dsMenus(int mMENU, int mPAGE)
 			else if (userInt == 1)
 			{
 				// Keep Menu Page at Page 1
-				mPAGE = 0;
+				pageIndex = 0;
 
 				// Close the Menu
 				isDone = true;
@@ -533,17 +602,17 @@ void Game::dsMenus(int mMENU, int mPAGE)
 				bool isLine = false;
 
 				// Check Lines for Selected Line
-				for (int mLINE = 1; !(isLine) && mLINE < mLINES; ++mLINE)
+				for (int pageRow = 0; !(isLine) && pageRow < (screenMenu.at(chapIndex).sPages.at(pageIndex).pageRows + 1); ++pageRow)
 				{
-					// If User Selected mLINE, Mark mLINE as Selected
-					if (userInt == stoi(menuLines[mMENU][mLINE][3]))
+					// If User Selected pageRow, Mark pageRow as Selected
+					if (userInt == screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lNUMS.at(0))
 					{
-						// Mark mLINE as Selected
-						menuLinesNumbers[mMENU][stoi(menuLines[mMENU][mLINE][0])][3] = 1;
-						menuLinesNumbers[mMENU + 1][stoi(menuLines[mMENU][mLINE][0])][3] = 1;
+						// Mark pageRow as Selected
+						screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(0) = true;
+						screenMenu.at(chapIndex).sPages.at(pageIndex + 1).sLines.at(pageRow).lINFO.at(0) = true;
 
 						// Change Menu Page to Page 2
-						mPAGE = 1;
+						pageIndex = 1;
 
 						// End Checking Lines for Selected Line
 						isLine = true;
@@ -561,14 +630,14 @@ void Game::dsMenus(int mMENU, int mPAGE)
 			}
 		}
 
-		// If mPAGE == 1, Display Menu Page 2
-		else if (mPAGE == 1)
+		// If pageIndex == 1, Display Menu Page 2
+		else if (pageIndex == 1)
 		{
 			// If userInt is (-1), Keep Menu Running
 			if (userInt == (-1))
 			{
 				// Keep Menu Page at Page 2
-				mPAGE = 1;
+				pageIndex = 1;
 
 				// Keep Menu Running until Closed
 				isDone = false;
@@ -581,21 +650,21 @@ void Game::dsMenus(int mMENU, int mPAGE)
 				bool isLine = false;
 
 				// Check Lines for Selected Line
-				for (int mLINE = 1; !(isLine) && mLINE < mLINES; ++mLINE)
+				for (int pageRow = 0; !(isLine) && pageRow < (screenMenu.at(chapIndex).sPages.at(pageIndex).pageRows + 1); ++pageRow)
 				{
-					// If User Selected mLINE, Edit Selected mLINE
-					if (menuLinesNumbers[mMENU][mLINE][3] == 1)
+					// If User Selected pageRow, Edit Selected pageRow
+					if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(0) == true)
 					{
-						// Edit Selected mLINE
-						menuLinesNumbers[mMENU][mLINE][2] = userInt;
-						menuLinesNumbers[mMENU - 1][mLINE][2] = userInt;
+						// Edit Selected pageRow
+						screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lNUMS.at(0) = userInt;
+						screenMenu.at(chapIndex).sPages.at(pageIndex - 1).sLines.at(pageRow).lNUMS.at(0) = userInt;
 
-						// Mark mLINE as UnSelected
-						menuLinesNumbers[mMENU][mLINE][3] = (-1);
-						menuLinesNumbers[mMENU - 1][mLINE][3] = (-1);
+						// Mark pageRow as UnSelected
+						screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(0) = false;
+						screenMenu.at(chapIndex).sPages.at(pageIndex - 1).sLines.at(pageRow).lINFO.at(0) = false;
 
 						// Change Menu Page to Page 1
-						mPAGE = 0;
+						pageIndex = 0;
 
 						// End Checking Lines for Selected Line
 						isLine = true;
@@ -615,10 +684,10 @@ void Game::dsMenus(int mMENU, int mPAGE)
 	} while (isDone != true);
 
 	// Set Settings Values
-	floorDifficulty = menuLinesNumbers[2][4][2];
-	floorTotal = menuLinesNumbers[2][5][2];
-	enemyTotal = menuLinesNumbers[2][6][2];
-	playerTotal = menuLinesNumbers[2][7][2];
+	floorDifficulty = screenMenu.at(SETTINGS).sPages.at(0).sLines.at(4).lNUMS.at(2);
+	floorTotal = screenMenu.at(SETTINGS).sPages.at(0).sLines.at(5).lNUMS.at(2);
+	enemyTotal = screenMenu.at(SETTINGS).sPages.at(0).sLines.at(6).lNUMS.at(2);
+	playerTotal = screenMenu.at(SETTINGS).sPages.at(0).sLines.at(7).lNUMS.at(2);
 
 	// Return Void
 	return;
@@ -635,123 +704,123 @@ void Game::dsMenus(int mMENU, int mPAGE)
 // Function to Display Game Ui
 // Accepts 2 Int Parameter(s) for Adjusting Ui
 // Returns Double, passes Data by Member Access
-double Game::gameUi(int uMENU, int uPAGE)
-{
-	// Initialize Variable(s) for gameUi()
-	int // Initialize Int(s) for storing Int(s)
-		uiHud = 5,
-		uiChoices = 8,
-		uiCombat = 10,
-		dsChoiceMin = 1,
-		dsChoiceMax = 4;
-	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
-
-	// Clear Terminal to Display Game Ui
-	system("CLS");
-
-	// cout Top Border, Each Corner Spaced by setw(40)
-	cout << setw(40) << left << "+- - - - - - - - - - - - -"
-		 << setw(40) << right << "- - - - - - - - - - - - -+"
-		 << endl
-		 << endl;
-
-	// Display Game Ui HUD Line 1 - 4
-	for (int uLINE = 1; uLINE < uiHud; ++uLINE)
-	{
-		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
-			 << setw(40) << right << (to_string(uiLinesNumbers[0][uLINE][1]) + uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2]);
-
-		// cout New Line
-		cout << endl;
-	}
-
-	// Display Game Ui Combat Display Line 5 - 7
-	for (int uLINE = 5; uLINE < uiChoices; ++uLINE)
-	{
-		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << right << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
-			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
-
-		// If Line Has Value, cout Value Message
-		if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][3] != "-1")
-		{
-			cout << uiLinesNumbers[uMENU][uLINE][2];
-		}
-
-		// cout uiLines[uMENU][uLINE] lineRight
-		cout << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2];
-
-		// If Line is Selected, cout Selected Message
-		if (uiLinesNumbers[uMENU][uLINE][3] == 1)
-		{
-			cout << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][11][3];
-		}
-
-		// cout New Line
-		cout << endl;
-	}
-
-	// Display Game Ui Recap Line 8 - 9
-	for (int uLINE = 8; uLINE < uiCombat; ++uLINE)
-	{
-		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << right << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(Players.at(playerCurrent).personHealth))
-			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(Players.at(playerCurrent).personHealth));
-
-		// cout New Line
-		cout << endl;
-	}
-
-	// Display Game Ui Choices Line 10 - 11
-	for (int uLINE = 10; uLINE < uLINES; ++uLINE)
-	{
-		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
-		cout << setw(40) << right << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1]
-			 << left << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2];
-
-		// cout New Line for All Lines, Except Last Line
-		if (uLINE <= (uLINES - 2))
-		{
-			cout << endl;
-		}
-	}
-
-	// Correct choiceMin
-	if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1) == "+")
-	{
-		dsChoiceMin = (1000 * 1000);
-	}
-	else if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1) == "-")
-	{
-		dsChoiceMin = ((-1000) * (1000));
-	}
-	else
-	{
-		dsChoiceMin = stoi(uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1));
-	}
-
-	// Correct choiceMax
-	if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1) == "+")
-	{
-		dsChoiceMax = (1000 * 1000);
-	}
-	else if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1) == "-")
-	{
-		dsChoiceMax = ((-1000) * (1000));
-	}
-	else
-	{
-		dsChoiceMax = stoi(uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1));
-	}
-
-	// Take User Choice Specified by Ui
-	userDouble = dsChoiceNumber(dsChoiceMin, dsChoiceMax);
-
-	// Return User Choice as Double
-	return userDouble;
-}
+// double Game::gameUi(int uMENU, int uPAGE)
+//{
+//	// Initialize Variable(s) for gameUi()
+//	int // Initialize Int(s) for storing Int(s)
+//		uiHud = 5,
+//		uiChoices = 8,
+//		uiCombat = 10,
+//		dsChoiceMin = 1,
+//		dsChoiceMax = 4;
+//	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
+//	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
+//
+//	// Clear Terminal to Display Game Ui
+//	system("CLS");
+//
+//	// cout Top Border, Each Corner Spaced by setw(40)
+//	cout << setw(40) << left << "+- - - - - - - - - - - - -"
+//		 << setw(40) << right << "- - - - - - - - - - - - -+"
+//		 << endl
+//		 << endl;
+//
+//	// Display Game Ui HUD Line 1 - 4
+//	for (int uLINE = 1; uLINE < uiHud; ++uLINE)
+//	{
+//		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
+//		cout << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
+//			 << setw(40) << right << (to_string(uiLinesNumbers[0][uLINE][1]) + uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2]);
+//
+//		// cout New Line
+//		cout << endl;
+//	}
+//
+//	// Display Game Ui Combat Display Line 5 - 7
+//	for (int uLINE = 5; uLINE < uiChoices; ++uLINE)
+//	{
+//		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
+//		cout << setw(40) << right << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(uiLinesNumbers[0][uLINE][0]))
+//			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(uiLinesNumbers[0][uLINE][1]));
+//
+//		// If Line Has Value, cout Value Message
+//		if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][3] != "-1")
+//		{
+//			cout << uiLinesNumbers[uMENU][uLINE][2];
+//		}
+//
+//		// cout uiLines[uMENU][uLINE] lineRight
+//		cout << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2];
+//
+//		// If Line is Selected, cout Selected Message
+//		if (uiLinesNumbers[uMENU][uLINE][3] == 1)
+//		{
+//			cout << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][11][3];
+//		}
+//
+//		// cout New Line
+//		cout << endl;
+//	}
+//
+//	// Display Game Ui Recap Line 8 - 9
+//	for (int uLINE = 8; uLINE < uiCombat; ++uLINE)
+//	{
+//		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
+//		cout << setw(40) << right << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1] + to_string(Players.at(playerCurrent).personHealth))
+//			 << setw(40) << left << (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2] + to_string(Players.at(playerCurrent).personHealth));
+//
+//		// cout New Line
+//		cout << endl;
+//	}
+//
+//	// Display Game Ui Choices Line 10 - 11
+//	for (int uLINE = 10; uLINE < uLINES; ++uLINE)
+//	{
+//		// cout uiLines[uMENU][uLINE] lineLeft, then uiLines[uMENU][uLINE] lineRight, Centered to setw(40)
+//		cout << setw(40) << right << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][1]
+//			 << left << uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][uLINE][2];
+//
+//		// cout New Line for All Lines, Except Last Line
+//		if (uLINE <= (uLINES - 2))
+//		{
+//			cout << endl;
+//		}
+//	}
+//
+//	// Correct choiceMin
+//	if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1) == "+")
+//	{
+//		dsChoiceMin = (1000 * 1000);
+//	}
+//	else if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1) == "-")
+//	{
+//		dsChoiceMin = ((-1000) * (1000));
+//	}
+//	else
+//	{
+//		dsChoiceMin = stoi(uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(0, 1));
+//	}
+//
+//	// Correct choiceMax
+//	if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1) == "+")
+//	{
+//		dsChoiceMax = (1000 * 1000);
+//	}
+//	else if (uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1) == "-")
+//	{
+//		dsChoiceMax = ((-1000) * (1000));
+//	}
+//	else
+//	{
+//		dsChoiceMax = stoi(uiLines[(stoi(uiLabels[uMENU][0]) + uPAGE)][0][3].substr(1, 1));
+//	}
+//
+//	// Take User Choice Specified by Ui
+//	userDouble = dsChoiceNumber(dsChoiceMin, dsChoiceMax);
+//
+//	// Return User Choice as Double
+//	return userDouble;
+//}
 
 /******************************************************************************
  *                                    UI FUNCTIONS                            *
@@ -1012,187 +1081,187 @@ void Game::dsGameNew()
 // Function to Engage in Combat
 // Accepts no Parameters
 // Returns Void
-void Game::gameCombat()
-{
-	// Initialize Variable(s) for gameSettings()
-	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+// void Game::gameCombat()
+//{
+//	// Initialize Variable(s) for gameSettings()
+//	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+//	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+//	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
+//
+//	for (int i = 0; i < floorTotal; ++i)
+//	{
+//		// Display New Floor Intro
+//		dsMenus(3);
+//
+//		for (int j = 0; j < enemyTotal; ++j)
+//		{
+//			do
+//			{
+//				// Move to Next Round
+//				++floorRound;
+//
+//				// Take Player's Combat Choice
+//				gamePlayerTurn(playerChoice, (enemyChoice - 1));
+//
+//				// Take Enemy's Combat Choice
+//				gameEnemyTurn();
+//
+//				// Consume Stamina for Actions in Combat
+//				Players.at(playerCurrent) -= Floors.at(floorCurrent).Enemies.at(enemyCurrent);
+//
+//				// Deal Damage to Loser in Combat
+//				Players.at(playerCurrent) += Floors.at(floorCurrent).Enemies.at(enemyCurrent);
+//
+//				// Stamina Recovery System
+//				gameStaminaRecovery();
+//			} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
+//			// Move to Next Enemy
+//			++enemyCurrent;
+//		}
+//		// Move to Next Floor
+//		++floorCurrent;
+//	}
 
-	for (int i = 0; i < floorTotal; ++i)
-	{
-		// Display New Floor Intro
-		dsMenus(3);
+// Take User Choice of (1 - 5)
+// userInt = dsChoiceNumber(1, 5);
 
-		for (int j = 0; j < enemyTotal; ++j)
-		{
-			do
-			{
-				// Move to Next Round
-				++floorRound;
+// Check User Choice
+// switch (userInt)
+//{
+// case 1: // If User Choice is 1, Continue
+//	isDone = true;
+//	break;
+// case 2: // If User Choice is within range, Continue
+//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 4 to Selected
+//	isDone = false;
+//	break;
+// case 3: // If User Choice is within range, Continue
+//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 5 to Selected
+//	isDone = false;
+//	break;
+// case 4: // If User Choice is within range, Continue
+//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 6 to Selected
+//	isDone = false;
+//	break;
+// case 5: // If User Choice is within range, Continue
+//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 7 to Selected
+//	isDone = false;
+//	break;
+// default: // If User Choice is Not within range, Wait
+//	isDone = false;
+//	break;
+//}
 
-				// Take Player's Combat Choice
-				gamePlayerTurn(playerChoice, (enemyChoice - 1));
+// Fill uiLinesNumbers Array
+// for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
+//{
+//	// Fill uiLinesNumbers Array Lines
+//	for (int uLINE = 0; uLINE < uLINES; ++uLINE)
+//	{
+//		// Fill uiLinesNumbers Array Columns
+//		for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
+//		{
+//			// Fill uiLinesNumbers Array Columns with (-1)
+//			uiLinesNumbers[uMENU][uLINE][uCOL] = (-1);
+//		}
+//	}
+//}
 
-				// Take Enemy's Combat Choice
-				gameEnemyTurn();
-
-				// Consume Stamina for Actions in Combat
-				Players.at(playerCurrent) -= Floors.at(floorCurrent).Enemies.at(enemyCurrent);
-
-				// Deal Damage to Loser in Combat
-				Players.at(playerCurrent) += Floors.at(floorCurrent).Enemies.at(enemyCurrent);
-
-				// Stamina Recovery System
-				gameStaminaRecovery();
-			} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
-			// Move to Next Enemy
-			++enemyCurrent;
-		}
-		// Move to Next Floor
-		++floorCurrent;
-	}
-
-	// Take User Choice of (1 - 5)
-	// userInt = dsChoiceNumber(1, 5);
-
-	// Check User Choice
-	// switch (userInt)
-	//{
-	// case 1: // If User Choice is 1, Continue
-	//	isDone = true;
-	//	break;
-	// case 2: // If User Choice is within range, Continue
-	//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 4 to Selected
-	//	isDone = false;
-	//	break;
-	// case 3: // If User Choice is within range, Continue
-	//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 5 to Selected
-	//	isDone = false;
-	//	break;
-	// case 4: // If User Choice is within range, Continue
-	//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 6 to Selected
-	//	isDone = false;
-	//	break;
-	// case 5: // If User Choice is within range, Continue
-	//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 7 to Selected
-	//	isDone = false;
-	//	break;
-	// default: // If User Choice is Not within range, Wait
-	//	isDone = false;
-	//	break;
-	//}
-
-	// Fill uiLinesNumbers Array
-	// for (int uMENU = 0; uMENU < uMENUS; ++uMENU)
-	//{
-	//	// Fill uiLinesNumbers Array Lines
-	//	for (int uLINE = 0; uLINE < uLINES; ++uLINE)
-	//	{
-	//		// Fill uiLinesNumbers Array Columns
-	//		for (int uCOL = 0; uCOL < uCOLS; ++uCOL)
-	//		{
-	//			// Fill uiLinesNumbers Array Columns with (-1)
-	//			uiLinesNumbers[uMENU][uLINE][uCOL] = (-1);
-	//		}
-	//	}
-	//}
-
-	// Return Void
-	return;
-}
+// Return Void
+// return;
+//}
 
 // Function to execute Person Attack
 // Accepts no parameters
 // Returns void, passes data by member access
-void Game::gameCombats()
-{
-	for (int i = 0; i < enemyTotal; ++i)
-	{
-		do
-		{
-			// Progress Combat and Excute combat choices
-			gamePlayerTurn(playerChoice);
-			gameEnemyTurn();
-
-			// Move to next round
-			++floorRound;
-
-			// Stamina Recovery System
-			gameStaminaRecovery();
-		} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
-		++enemyCurrent;
-	}
-	// Display Progress after Combat
-	// gameProgress();
-
-	if (Players.at(playerCurrent).personHealth > 0)
-	{
-		bool storeUse = false;
-		bool floorNext = false;
-
-		// Victory message
-		cout << "You have killed " << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << ", congrats." << endl
-			 << endl;
-		playerWealth += Floors.at(floorCurrent).Enemies.at(enemyCurrent).personMoney;
-		Players.at(playerCurrent) += Floors.at(floorCurrent).Enemies.at(enemyCurrent);
-		++playerKills;
-
-		// Display Progress after Combat
-		// gameProgress();
-
-		// Ask user to use store is present
-		if (Floors.at(floorCurrent).isStore == true)
-		{
-			cout << "Do you want to use the Store to buy and sell items? (0 = No, 1 = Yes): ";
-			cin >> storeUse;
-			cout << "Player's Choice: " << storeUse << endl
-				 << endl;
-			if (storeUse == 1)
-			{
-				// gameStore();
-				cout << "gameStore(). (Took Enemy Items)" << endl
-					 << endl;
-				playerWealth -= Floors.at(floorCurrent).Enemies.at(enemyCurrent).personMoney;
-			}
-			else
-			{
-				cout << "You can no longer access the Store. (No Items Taken)" << endl
-					 << endl;
-			}
-		}
-
-		// Ask user to advance to the next floor
-		do
-		{
-			cout << "Are you ready to advance to the next Floor? (1 = Yes): ";
-			cin >> floorNext;
-			cout << "Player's Choice: " << floorNext << endl
-				 << endl;
-			if (floorNext == 1)
-			{
-				Players.at(playerCurrent).personStamina = sMAX;
-				playerWealth += Floors.at(floorCurrent).floorMoney;
-				Players.at(playerCurrent).personMoney += Floors.at(floorCurrent).floorMoney;
-				++floorCurrent;
-				floorRound = 0;
-			}
-			else
-			{
-				cout << "Please press 1 to advance to the next Floor" << endl;
-			}
-		} while (floorNext != 1);
-	}
-	else
-	{
-		cout << "You have died. Thats unfortunate." << endl
-			 << endl
-			 << "You killed " << playerKills
-			 << " enemies and earned a total of " << playerWealth << " money." << endl
-			 << endl;
-	}
-	return;
-}
+// void Game::gameCombats()
+//{
+//	for (int i = 0; i < enemyTotal; ++i)
+//	{
+//		do
+//		{
+//			// Progress Combat and Excute combat choices
+//			gamePlayerTurn(playerChoice);
+//			gameEnemyTurn();
+//
+//			// Move to next round
+//			++floorRound;
+//
+//			// Stamina Recovery System
+//			gameStaminaRecovery();
+//		} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
+//		++enemyCurrent;
+//	}
+//	// Display Progress after Combat
+//	// gameProgress();
+//
+//	if (Players.at(playerCurrent).personHealth > 0)
+//	{
+//		bool storeUse = false;
+//		bool floorNext = false;
+//
+//		// Victory message
+//		cout << "You have killed " << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << ", congrats." << endl
+//			 << endl;
+//		playerWealth += Floors.at(floorCurrent).Enemies.at(enemyCurrent).personMoney;
+//		Players.at(playerCurrent) += Floors.at(floorCurrent).Enemies.at(enemyCurrent);
+//		++playerKills;
+//
+//		// Display Progress after Combat
+//		// gameProgress();
+//
+//		// Ask user to use store is present
+//		if (Floors.at(floorCurrent).isStore == true)
+//		{
+//			cout << "Do you want to use the Store to buy and sell items? (0 = No, 1 = Yes): ";
+//			cin >> storeUse;
+//			cout << "Player's Choice: " << storeUse << endl
+//				 << endl;
+//			if (storeUse == 1)
+//			{
+//				// gameStore();
+//				cout << "gameStore(). (Took Enemy Items)" << endl
+//					 << endl;
+//				playerWealth -= Floors.at(floorCurrent).Enemies.at(enemyCurrent).personMoney;
+//			}
+//			else
+//			{
+//				cout << "You can no longer access the Store. (No Items Taken)" << endl
+//					 << endl;
+//			}
+//		}
+//
+//		// Ask user to advance to the next floor
+//		do
+//		{
+//			cout << "Are you ready to advance to the next Floor? (1 = Yes): ";
+//			cin >> floorNext;
+//			cout << "Player's Choice: " << floorNext << endl
+//				 << endl;
+//			if (floorNext == 1)
+//			{
+//				Players.at(playerCurrent).personStamina = sMAX;
+//				playerWealth += Floors.at(floorCurrent).floorMoney;
+//				Players.at(playerCurrent).personMoney += Floors.at(floorCurrent).floorMoney;
+//				++floorCurrent;
+//				floorRound = 0;
+//			}
+//			else
+//			{
+//				cout << "Please press 1 to advance to the next Floor" << endl;
+//			}
+//		} while (floorNext != 1);
+//	}
+//	else
+//	{
+//		cout << "You have died. Thats unfortunate." << endl
+//			 << endl
+//			 << "You killed " << playerKills
+//			 << " enemies and earned a total of " << playerWealth << " money." << endl
+//			 << endl;
+//	}
+//	return;
+//}
 
 // Function for Stamina Recovery System
 // Accepts no parameters
@@ -1244,92 +1313,92 @@ void Game::gameStaminaRecovery()
 // Function to Take User's Choice in Combat
 // Requires 1 Int Parameter(s) for Current Ui Index
 // Returns Void, passes Data by Member Access
-void Game::gamePlayerTurn(int uMENU, int uPAGE)
-{
-	// Initialize Variable(s) for gamePlayerTurn()
-	int userInt = (-1);		  // Initialize Int(s) for storing User Int(s)
-	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
-
-	// Reset Player
-	// playerChoice = (-1);
-	Players.at(playerCurrent).isRecovering = true;
-	Players.at(playerCurrent).isAttacking = false;
-	Players.at(playerCurrent).isBlocking = false;
-	Players.at(playerCurrent).isDodging = false;
-	Players.at(playerCurrent).isWaiting = false;
-
-	// Set Ui Values
-	uiLinesNumbers[0][0][0] = Players.at(playerCurrent).personHealth;
-	uiLinesNumbers[0][0][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth;
-	uiLinesNumbers[0][1][0] = Players.at(playerCurrent).personStamina;
-	uiLinesNumbers[0][1][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina;
-	uiLinesNumbers[0][2][0] = Players.at(playerCurrent).personMoney;
-	uiLinesNumbers[0][2][1] = (enemyTotal - enemyCurrent);
-
-	// Take User's Choice with dsChoiceNumber() while isDone != true;
-	do
-	{
-		// Display Game Ui with Correct Ui Index
-		userDouble = gameUi(uMENU, uPAGE);
-		userInt = userDouble;
-
-		// Check User Choice
-		switch (userInt)
-		{
-		case 1: // If User Choice is 1, Attack
-			// If User has enough Stamina, Attack
-			if (Players.at(playerCurrent).personStamina >= aCOST)
-			{
-				Players.at(playerCurrent).isAttacking = true;
-				isDone = true;
-			}
-			// If User does Not have enough Stamina, Take Choice Again
-			else
-			{
-				isDone = false;
-			}
-			break;
-		case 2: // If User Choice is 2, Block
-			// Disable Stamina Recovery, Block
-			Players.at(playerCurrent).isRecovering = false;
-			Players.at(playerCurrent).isBlocking = true;
-			isDone = true;
-			break;
-		case 3: // If User Choice is 3, Dodge
-			// If User has enough Stamina, Dodge
-			if (Players.at(playerCurrent).personStamina >= dCOST)
-			{
-				Players.at(playerCurrent).isDodging = true;
-				isDone = true;
-			}
-			// If User does Not have enough Stamina, Take Choice Again
-			else
-			{
-				isDone = false;
-			}
-			break;
-		case 4: // If User Choice is 4, Wait
-			// Enable Stamina Recovery, Wait
-			Players.at(playerCurrent).isRecovering = true;
-			Players.at(playerCurrent).isWaiting = true;
-			isDone = true;
-			break;
-		case 9: // If User Choice is 9, Exit
-			isDone = true;
-			break;
-		default: // If User Choice is Not within range, Wait
-			isDone = false;
-			break;
-		}
-	} while (isDone != true);
-
-	// playerChoice = userInt
-	playerChoice = userInt;
-
-	// Return Void
-	return;
-}
+// void Game::gamePlayerTurn(int uMENU, int uPAGE)
+//{
+//	// Initialize Variable(s) for gamePlayerTurn()
+//	int userInt = (-1);		  // Initialize Int(s) for storing User Int(s)
+//	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
+//	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
+//
+//	// Reset Player
+//	// playerChoice = (-1);
+//	Players.at(playerCurrent).isRecovering = true;
+//	Players.at(playerCurrent).isAttacking = false;
+//	Players.at(playerCurrent).isBlocking = false;
+//	Players.at(playerCurrent).isDodging = false;
+//	Players.at(playerCurrent).isWaiting = false;
+//
+//	// Set Ui Values
+//	// uiLinesNumbers[0][0][0] = Players.at(playerCurrent).personHealth;
+//	// uiLinesNumbers[0][0][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth;
+//	// uiLinesNumbers[0][1][0] = Players.at(playerCurrent).personStamina;
+//	// uiLinesNumbers[0][1][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina;
+//	// uiLinesNumbers[0][2][0] = Players.at(playerCurrent).personMoney;
+//	// uiLinesNumbers[0][2][1] = (enemyTotal - enemyCurrent);
+//
+//	// Take User's Choice with dsChoiceNumber() while isDone != true;
+//	do
+//	{
+//		// Display Game Ui with Correct Ui Index
+//		userDouble = gameUi(uMENU, uPAGE);
+//		userInt = userDouble;
+//
+//		// Check User Choice
+//		switch (userInt)
+//		{
+//		case 1: // If User Choice is 1, Attack
+//			// If User has enough Stamina, Attack
+//			if (Players.at(playerCurrent).personStamina >= aCOST)
+//			{
+//				Players.at(playerCurrent).isAttacking = true;
+//				isDone = true;
+//			}
+//			// If User does Not have enough Stamina, Take Choice Again
+//			else
+//			{
+//				isDone = false;
+//			}
+//			break;
+//		case 2: // If User Choice is 2, Block
+//			// Disable Stamina Recovery, Block
+//			Players.at(playerCurrent).isRecovering = false;
+//			Players.at(playerCurrent).isBlocking = true;
+//			isDone = true;
+//			break;
+//		case 3: // If User Choice is 3, Dodge
+//			// If User has enough Stamina, Dodge
+//			if (Players.at(playerCurrent).personStamina >= dCOST)
+//			{
+//				Players.at(playerCurrent).isDodging = true;
+//				isDone = true;
+//			}
+//			// If User does Not have enough Stamina, Take Choice Again
+//			else
+//			{
+//				isDone = false;
+//			}
+//			break;
+//		case 4: // If User Choice is 4, Wait
+//			// Enable Stamina Recovery, Wait
+//			Players.at(playerCurrent).isRecovering = true;
+//			Players.at(playerCurrent).isWaiting = true;
+//			isDone = true;
+//			break;
+//		case 9: // If User Choice is 9, Exit
+//			isDone = true;
+//			break;
+//		default: // If User Choice is Not within range, Wait
+//			isDone = false;
+//			break;
+//		}
+//	} while (isDone != true);
+//
+//	// playerChoice = userInt
+//	playerChoice = userInt;
+//
+//	// Return Void
+//	return;
+//}
 
 // Function to Take Enemy's Choice in Combat
 // Accepts No Parameter(s)

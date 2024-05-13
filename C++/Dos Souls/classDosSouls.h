@@ -55,63 +55,176 @@ Watching Mr.Priestley's labs and stuff I learned failing other classes.
 #include <vector>
 using namespace std;
 
-//
-// const int dsMax[] = {
-//	100,
-//	100,
-//};
-// dsMax[hMAX]
-// enum dsMaxes
-//{
-//	haMAX,
-//	ORANGE,
-//	YELLOW,
-//	GREEN,
-//	BLUE,
-//	INDIGO,
-//	VIOLET,
-//	PINK
-//};
+// Initialize Const Variable(s) for Menu Screen Chapters
+const int chapMenu[] = {0, 1, 2, 3, 4, 5};
+
+// Initialize Enum(s) for Menu Screen Chapters
+enum dsMENUS
+{
+	INTRO,
+	RULES,
+	SETTINGS,
+	FLOORINTRO,
+	STORE,
+	OUTRO
+};
+
+// Initialize Const Variable(s) for Ui Screen Chapters
+const int chapUi[] = {0, 1, 2, 3, 4};
+
+// Initialize Enum(s) for Ui Screen Chapters
+enum dsUIS
+{
+	COMBAT0,
+	COMBAT1,
+	COMBAT2,
+	COMBAT3,
+	COMBAT4,
+	COMBAT5,
+	COMBAT6
+};
 
 // Initialize Const Variable(s) for Game
-const int
-	hMAX{100},	  // Specify Maximum amount of Health
-	hBUFF{1},	  // Specify Maximum Health Multiplier of Enemies
-	hSTEAL{2},	  // Specify Maximum amount of Life Steal
-	sMAX{100},	  // Specify Maximum amount of Stamina
-	sGAIN{10},	  // Specify Base amount of Stamina Recovery
-	sLGAIN{3},	  // Specify Bonus amount of Stamina Recovery for Light Armor
-	sMGAIN{2},	  // Specify Bonus amount of Stamina Recovery for Medium Armor
-	sHGAIN{1},	  // Specify Bonus amount of Stamina Recovery for Heavy Armor
-	aCOST{10},	  // Specify Cost of Attack
-	bCOST{25},	  // Specify Cost of Block
-	bBUFF{2},	  // Specify Damage Reduction of Block
-	dCOST{50},	  // Specify Cost of Dodge
-	rngASIZE{10}, // Specify Size of Person Arrays
-	rngPSIZE{4},  // Specify Size of Player rngArray
-	rngESIZE{3},  // Specify Size of Enemy rngArray
-	mMENUS{5},	  // Specify Maximum amount of Menus
-	mLINES{12},	  // Specify Maximum amount of Menu Lines
-	mCOLS{4},	  // Specify Maximum amount of Menu Line Columns
-	mLABELS{4},	  // Specify Maximum amount of Menu Labels
-	mLCOLS{3},	  // Specify Maximum amount of Menu Label Columns
-	uMENUS{5},	  // Specify Maximum amount of Ui Screens
-	uLINES{12},	  // Specify Maximum amount of Ui Screen Lines
-	uCOLS{4},	  // Specify Maximum amount of Ui Screen Line Columns
-	uLABELS{2},	  // Specify Maximum amount of Ui Screen Labels
-	uLCOLS{3},	  // Specify Maximum amount of Ui Screen Label Columns
-	wSIZE{4},	  // Specify Size of Weapon Array
-	aSIZE{4},	  // Specify Size of Armor Array
-	pSIZE{1},	  // Specify Size of Person Array
-	fSIZE{10},	  // Specify Size of Floor Array
-	fLOOT{500},	  // Specify Minimum amount of Money Player gets for beating Floor
-	eLOOT{250};	  // Specify Minimum amount of Money Player gets for killing Enemy
+const int hMAX{100}, // Specify Maximum amount of Health
+	hBUFF{1},		 // Specify Maximum Health Multiplier of Enemies
+	hSTEAL{2},		 // Specify Maximum amount of Life Steal
+	sMAX{100},		 // Specify Maximum amount of Stamina
+	sGAIN{10},		 // Specify Base amount of Stamina Recovery
+	sLGAIN{3},		 // Specify Bonus amount of Stamina Recovery for Light Armor
+	sMGAIN{2},		 // Specify Bonus amount of Stamina Recovery for Medium Armor
+	sHGAIN{1},		 // Specify Bonus amount of Stamina Recovery for Heavy Armor
+	aCOST{10},		 // Specify Cost of Attack
+	bCOST{25},		 // Specify Cost of Block
+	bBUFF{2},		 // Specify Damage Reduction of Block
+	dCOST{50},		 // Specify Cost of Dodge
+	rngASIZE{10},	 // Specify Size of Person Arrays
+	rngPSIZE{4},	 // Specify Size of Player rngArray
+	rngESIZE{3},	 // Specify Size of Enemy rngArray
+	mMENUS{5},		 // Specify Maximum amount of Menus
+	mLINES{12},		 // Specify Maximum amount of Menu Lines
+	mCOLS{4},		 // Specify Maximum amount of Menu Line Columns
+	mLABELS{4},		 // Specify Maximum amount of Menu Labels
+	mLCOLS{3},		 // Specify Maximum amount of Menu Label Columns
+	uMENUS{5},		 // Specify Maximum amount of Ui Screens
+	uLINES{12},		 // Specify Maximum amount of Ui Screen Lines
+	uCOLS{4},		 // Specify Maximum amount of Ui Screen Line Columns
+	uLABELS{2},		 // Specify Maximum amount of Ui Screen Labels
+	uLCOLS{3},		 // Specify Maximum amount of Ui Screen Label Columns
+	wSIZE{4},		 // Specify Size of Weapon Array
+	aSIZE{4},		 // Specify Size of Armor Array
+	pSIZE{1},		 // Specify Size of Person Array
+	fSIZE{10},		 // Specify Size of Floor Array
+	fLOOT{500},		 // Specify Minimum amount of Money Player gets for beating Floor
+	eLOOT{250};		 // Specify Minimum amount of Money Player gets for killing Enemy
 
 // Initialize Class for Game
 class Game
 {
 public:
 	// Initialize Structs(s) for Game
+	// GAME DISPLAY SCREENS
+	struct sLine
+	{
+		// Initialize Variable(s) for sLine
+		string lineEmptyStr = " "; // Specify sLine's Empty String Value
+		int						   // Initialize Int(s) for storing Int(s)
+			lineIndex = (-1),	   // Specify sLine's Line Index
+			lineEmptyNum = (-1);   // Specify sLine's Empty Number Value
+		// Initialize Vector(s) for sLine
+		vector<string> lSTRS; // Initialize Vector of Strings for sLine Variable Strings
+		vector<double> lNUMS; // Initialize Vector of Doubles for sLine Variable Numbers
+		vector<bool> lINFO;	  // Initialize Vector of Bools for sLine Variable States
+
+		// CONSTRUCTOR FUNCTIONS
+		// sLine Constructor with Default Parameters
+		sLine()
+		{
+			// Add New String(s) to this->lSTRS
+			this->lSTRS.push_back("Line ");
+			// Add New Double(s) to this->lNUMS
+			this->lNUMS.push_back(this->lineEmptyNum);
+			// Add New Bool(s) to this->lINFO
+			this->lINFO.push_back(false);
+		}
+
+		// OVERLOAD FUNCTIONS
+		// Function to Overload Operator '/' for sLine to Split Strings in Half
+		// Requires 1 String Parameter to Split
+		// Returns Void, passes Data by Member Access
+		void operator/(string &oldString)
+		{
+			// Initialize Variable(s) for operator/()
+			int stringHalf = (-1); // Specify Line Half Way Point
+
+			// If oldString Length is Even, Continue Normally
+			if (oldString.length() >= 2 && (oldString.length() % 2) == 0)
+			{
+				// Divide String Length in Half
+				stringHalf = (oldString.length() / 2);
+				// Add 1st Half of oldString to this->lSTRS
+				this->lSTRS.push_back(oldString.substr(0, stringHalf));
+				// Add 2nd Half of oldString to this->lSTRS
+				this->lSTRS.push_back(oldString.substr(stringHalf));
+				// Add Number Slot for 2nd Half to New Line's newLine.lNUMS
+				this->lNUMS.push_back(this->lineEmptyNum);
+				// Add Bool Slot for 2nd Half to New Line's newLine.lINFO
+				this->lINFO.push_back(false);
+			}
+			// If String Length is Odd, Minus String Length by 1
+			else if (oldString.length() >= 3 && (oldString.length() % 2) != 0)
+			{
+				// Minus String Length by 1, then Divide in Half
+				stringHalf = ((oldString.length() - 1) / 2);
+				// Add 1st Half of oldString to this->lSTRS
+				this->lSTRS.push_back(oldString.substr(0, stringHalf));
+				// Add 2nd Half of oldString to this->lSTRS
+				this->lSTRS.push_back(oldString.substr(stringHalf));
+				// Add Number Slot for 2nd Half to New Line's newLine.lNUMS
+				this->lNUMS.push_back(this->lineEmptyNum);
+				// Add Bool Slot for 2nd Half to New Line's newLine.lINFO
+				this->lINFO.push_back(false);
+			}
+			// If String Length is Invalid, Error Without .push_back()
+			else
+			{
+				cout << "Function: sLine.operator/() Failed" << endl;
+			}
+
+			// Return Void
+			return;
+		}
+	};
+
+	struct sPage
+	{
+		// Initialize Variable(s) for sPage
+		string						 // Initialize String(s) for storing String(s)
+			pageName = "New Page",	 // Specify sPage's Name
+			pageSel = " [SELECTED]"; // Specify sPage's Selected Message
+		int							 // Initialize Int(s) for storing Int(s)
+			pageIndex = (-1),		 // Specify sPage's Page Index
+			pageRows = (-1),		 // Specify sPage's Line Row Amount
+			pageCols = (-1),		 // Specify sPage's Line Column Amount
+			pageMin = (-1),			 // Specify sPage's Min Choice
+			pageMax = (-1);			 // Specify sPage's Max Choice
+		bool isLastPage = true;		 // Specify if sPage is Last in Screen
+		// Initialize Vector(s) for sPage
+		vector<sLine> sLines; // Initialize sLine Vector for Page Lines
+	};
+
+	struct sChapter
+	{
+		// Initialize Variable(s) for sChapter
+		string chapName = "New Chapter"; // Specify sChapter's Name
+		int chapIndex = (-1);			 // Specify sChapter's Chapter Index
+		bool isLastChap = true;			 // Specify if sChapter is Last in Screen
+		// Initialize Vector(s) for sChapter
+		vector<sPage> sPages; // Initialize sPage Vector for Screen Pages
+	};
+
+	//
+	// GAME ITEMS
+	//
 	struct Weapon
 	{
 		// Initialize Variable(s) for Weapon
@@ -591,24 +704,10 @@ public:
 	};
 
 	// Initialize Vector(s) for Game
-	vector<Floor> Floors;	// Initialize Floor Vector for Floors
-	vector<Person> Players; // Initialize Person Vector for Players
-
-	// Initialize Array(s) for Menus
-	string (*menuLines)[mLINES][mCOLS] = new string[mMENUS][mLINES][mCOLS]{};	// Establish a Dynamic 3D String Array for Menu Lines
-	string (*menuLabels)[mLCOLS] = new string[mLABELS][mLCOLS]{};				// Establish a Dynamic 2D String Array for Menu Labels
-	int (*menuLinesNumbers)[mLINES][mCOLS] = new int[mLABELS][mLINES][mCOLS]{}; // Establish a Dynamic 3D String Array for Menu Numbers
-
-	// Initialize Array(s) for Ui
-	string (*uiLines)[uLINES][uCOLS] = new string[uMENUS][uLINES][uCOLS]{};	  // Establish a Dynamic 3D String Array for Menu Lines
-	string (*uiLabels)[uLCOLS] = new string[uLABELS][uLCOLS]{};				  // Establish a Dynamic 2D String Array for Menu Labels
-	int (*uiLinesNumbers)[uLINES][uCOLS] = new int[uLABELS][uLINES][uCOLS]{}; // Establish a Dynamic 3D String Array for Menu Numbers
-
-	// Initialize Array(s) for Items
-	// string *weaponLabels = new string[wSIZE]{};		 // Establish a dynamic array for Weapon Labels
-	// string *armorLabels = new string[aSIZE]{};		 // Establish a dynamic array for Armor Labels
-	// string *personLabels = new string[pSIZE]{};		 // Establish a dynamic array for Person Labels
-	// string *floorNames = new string[fSIZE]{}; // Establish a dynamic array for Floor Labels
+	vector<sChapter> screenMenu; // Initialize sChapter Vector for Menu Screens
+	vector<sChapter> screenUi;	 // Initialize sChapter Vector for Ui Screens
+	vector<Floor> Floors;		 // Initialize Floor Vector for Floors
+	vector<Person> Players;		 // Initialize Person Vector for Players
 
 	// Constructor with Default Parameters
 	Game()
@@ -627,48 +726,27 @@ public:
 		// Do Combat while Player's Characters are Not all Dead or Player has Not Won
 		do
 		{
-			gameCombat();
+			// gameCombat();
 		} while (Players.at(-1).personHealth > 0 && Floors.at(-1).Enemies.at(-1).personHealth > 0);
 
 		// Start End Screen
-		// dsMenus(4);
+		dsMenus(4);
 	}
 
 	// Destructor with Default Parameters
 	~Game()
 	{
-		// Wrap Up
-		delete[] menuLabels;
-		menuLabels = nullptr;
-		delete[] menuLines;
-		menuLines = nullptr;
-		delete[] menuLinesNumbers;
-		menuLinesNumbers = nullptr;
-		delete[] uiLabels;
-		uiLabels = nullptr;
-		delete[] uiLines;
-		uiLines = nullptr;
-		delete[] uiLinesNumbers;
-		uiLinesNumbers = nullptr;
-		//  delete[] weaponLabels;
-		//  weaponLabels = nullptr;
-		//  delete[] armorLabels;
-		//  armorLabels = nullptr;
-		//  delete[] personsLabels;
-		//  personsLabels = nullptr;
-		//  delete[] floorNames;
-		//  floorNames = nullptr;
-		//  delete[] Players.at(0).rngArray;
-		//  Players.at(0).rngArray = nullptr;
-		//  delete[] Players.at(0).choiceArray;
-		//  Players.at(0).choiceArray = nullptr;
-		//  for (int i = 0; Floors.size(); ++i)
-		//{
-		//	delete[] Floors.at(i).Enemy.rngArray;
-		//	Floors.at(i).Enemy.rngArray = nullptr;
-		//	delete[] Floors.at(i).Enemy.choiceArray;
-		//	Floors.at(i).Enemy.choiceArray = nullptr;
-		// }
+		// Erase screenMenu Vector
+		screenMenu.erase(screenMenu.begin(), screenMenu.end());
+
+		// Erase screenUi Vector
+		screenUi.erase(screenUi.begin(), screenUi.end());
+
+		// Erase Floors Vector
+		Floors.erase(Floors.begin(), Floors.end());
+
+		// Erase Players Vector
+		Players.erase(Players.begin(), Players.end());
 	}
 
 	// INTERACT FUNCTIONS
@@ -676,6 +754,10 @@ public:
 	double dsChoiceNumber(int = 0, int = 9);
 
 	// FILE FUNCTIONS
+	sChapter sChapterNew(int = -1);
+	sPage sPageNew(int = -1, int = -1);
+	sLine sLineNew(int = -1, int = -1, int = -1);
+	void sChaptersNew();
 	void dsFiles();
 
 	// MENU FUNCTIONS
@@ -715,6 +797,12 @@ public:
 private:
 	// Initialize Private Int(s) for Game
 	int
+		// Screen Count
+		menuCount = 0,
+		screenCount = 0,
+		pageCount = 0,
+		lineCount = 0,
+
 		// Game Settings
 		floorDifficulty = 3,
 		floorTotal = 10,
