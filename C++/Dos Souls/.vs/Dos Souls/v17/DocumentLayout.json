@@ -1,12 +1,71 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\classDosSouls.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:classDosSouls.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\classDosSouls.cxx||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:classDosSouls.cxx||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\DosSouls.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:DosSouls.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DosSouls.cpp",
+              "DocumentMoniker": "C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\DosSouls.cpp",
+              "RelativeDocumentMoniker": "DosSouls.cpp",
+              "ToolTip": "C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\DosSouls.cpp",
+              "RelativeToolTip": "DosSouls.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-15T00:02:26.769Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "classDosSouls.h",
+              "DocumentMoniker": "C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\classDosSouls.h",
+              "RelativeDocumentMoniker": "classDosSouls.h",
+              "ToolTip": "C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\classDosSouls.h",
+              "RelativeToolTip": "classDosSouls.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-05-15T00:02:27.95Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "classDosSouls.cxx",
+              "DocumentMoniker": "C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\classDosSouls.cxx",
+              "RelativeDocumentMoniker": "classDosSouls.cxx",
+              "ToolTip": "C:\\Users\\Zynk\\Coding\\GitHub\\Default\\C\u002B\u002B\\Dos Souls\\classDosSouls.cxx",
+              "RelativeToolTip": "classDosSouls.cxx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-15T00:02:28.843Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

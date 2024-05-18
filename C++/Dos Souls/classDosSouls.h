@@ -123,29 +123,47 @@ class Game
 public:
 	// Initialize Structs(s) for Game
 	// GAME DISPLAY SCREENS
+	struct sLineCol
+	{
+		// Initialize Variable(s) for sLineCol
+		int lcolIndex = (-1);	// Specify sLineCol's Line Column Index
+		string lStr = " ";		// Specify sLineCol's Variable String
+		double lNum = (-1);		// Specify sLineCol's Variable Number
+		int *lNumPtr = nullptr; // Specify sLineCol's Variable Number
+		bool lInfo = false;		// Specify sLineCol's Variable State
+		bool lSel = false;		// Specify sLineCol's Selected State
+	};
+
 	struct sLine
 	{
 		// Initialize Variable(s) for sLine
-		string lineEmptyStr = " "; // Specify sLine's Empty String Value
-		int						   // Initialize Int(s) for storing Int(s)
-			lineIndex = (-1),	   // Specify sLine's Line Index
-			lineEmptyNum = (-1);   // Specify sLine's Empty Number Value
+		int						 // Initialize Int(s) for storing Int(s)
+			lineIndex = (-1),	 // Specify sLine's Line Index
+			lineEmptyNum = (-1); // Specify sLine's Empty Number Value
+		string					 // Initialize String(s) for storing String(s)
+			lineName = "Line ",	 // Specify sLine's Name
+			lineEmptyStr = " ";	 // Specify sLine's Empty String Value
 		// Initialize Vector(s) for sLine
-		vector<string> lSTRS; // Initialize Vector of Strings for sLine Variable Strings
-		vector<double> lNUMS; // Initialize Vector of Doubles for sLine Variable Numbers
-		vector<bool> lINFO;	  // Initialize Vector of Bools for sLine Variable States
+		vector<sLineCol> sLineCols; // Initialize Vector of sLineCols for sLine Line Columns
+		// Initialize Function(s) for sLine
+		// Function to Create New Line Column, and Add to this->sLineCols
+		// Accepts No Parameter(s)
+		// Returns Void, passes Data by Member Access
+		void sLineNew()
+		{
+			// Initialize New sLineCol(s) for storing New Line Column Data
+			sLineCol newLineCol;
+			// Add New Line Column(s) to this->sLineCols
+			this->sLineCols.push_back(newLineCol);
+			// Return Void
+			return;
+		}
 
 		// CONSTRUCTOR FUNCTIONS
-		// sLine Constructor with Default Parameters
-		sLine()
-		{
-			// Add New String(s) to this->lSTRS
-			this->lSTRS.push_back("Line ");
-			// Add New Double(s) to this->lNUMS
-			this->lNUMS.push_back(this->lineEmptyNum);
-			// Add New Bool(s) to this->lINFO
-			this->lINFO.push_back(false);
-		}
+		// Constructor for sLine
+		// Create New Line Column at sLineCols.at(0) to Reserve for Line Data,
+		// and Allow me to Access Line Columns with Line Column 1 starting at Index 1
+		sLine() { sLineNew(); }
 
 		// OVERLOAD FUNCTIONS
 		// Function to Overload Operator '/' for sLine to Split Strings in Half
@@ -155,41 +173,35 @@ public:
 		{
 			// Initialize Variable(s) for operator/()
 			int stringHalf = (-1); // Specify Line Half Way Point
-
 			// If oldString Length is Even, Continue Normally
 			if (oldString.length() >= 2 && (oldString.length() % 2) == 0)
 			{
 				// Divide String Length in Half
 				stringHalf = (oldString.length() / 2);
-				// Add 1st Half of oldString to this->lSTRS
-				this->lSTRS.push_back(oldString.substr(0, stringHalf));
-				// Add 2nd Half of oldString to this->lSTRS
-				this->lSTRS.push_back(oldString.substr(stringHalf));
-				// Add Number Slot for 2nd Half to New Line's newLine.lNUMS
-				this->lNUMS.push_back(this->lineEmptyNum);
-				// Add Bool Slot for 2nd Half to New Line's newLine.lINFO
-				this->lINFO.push_back(false);
+				// Add 1st Half of oldString to OLD this->sLineCols.at(-1).lStr
+				this->sLineCols.at(this->sLineCols.size() - 1).lStr = oldString.substr(0, stringHalf);
+				// Create New Line Column
+				this->sLineNew();
+				// Add 2nd Half of oldString to NEW this->sLineCols.at(-1).lStr
+				this->sLineCols.at(this->sLineCols.size() - 1).lStr = oldString.substr(stringHalf);
 			}
 			// If String Length is Odd, Minus String Length by 1
 			else if (oldString.length() >= 3 && (oldString.length() % 2) != 0)
 			{
 				// Minus String Length by 1, then Divide in Half
 				stringHalf = ((oldString.length() - 1) / 2);
-				// Add 1st Half of oldString to this->lSTRS
-				this->lSTRS.push_back(oldString.substr(0, stringHalf));
-				// Add 2nd Half of oldString to this->lSTRS
-				this->lSTRS.push_back(oldString.substr(stringHalf));
-				// Add Number Slot for 2nd Half to New Line's newLine.lNUMS
-				this->lNUMS.push_back(this->lineEmptyNum);
-				// Add Bool Slot for 2nd Half to New Line's newLine.lINFO
-				this->lINFO.push_back(false);
+				// Add 1st Half of oldString to OLD this->sLineCols.at(-1).lStr
+				this->sLineCols.at(this->sLineCols.size() - 1).lStr = oldString.substr(0, stringHalf);
+				// Create New Line Column
+				this->sLineNew();
+				// Add 2nd Half of oldString to NEW this->sLineCols.at(-1).lStr
+				this->sLineCols.at(this->sLineCols.size() - 1).lStr = oldString.substr(stringHalf);
 			}
 			// If String Length is Invalid, Error Without .push_back()
 			else
 			{
 				cout << "Function: sLine.operator/() Failed" << endl;
 			}
-
 			// Return Void
 			return;
 		}
@@ -198,16 +210,15 @@ public:
 	struct sPage
 	{
 		// Initialize Variable(s) for sPage
-		string						 // Initialize String(s) for storing String(s)
-			pageName = "New Page",	 // Specify sPage's Name
-			pageSel = " [SELECTED]"; // Specify sPage's Selected Message
 		int							 // Initialize Int(s) for storing Int(s)
 			pageIndex = (-1),		 // Specify sPage's Page Index
 			pageRows = (-1),		 // Specify sPage's Line Row Amount
 			pageCols = (-1),		 // Specify sPage's Line Column Amount
 			pageMin = (-1),			 // Specify sPage's Min Choice
 			pageMax = (-1);			 // Specify sPage's Max Choice
-		bool isLastPage = true;		 // Specify if sPage is Last in Screen
+		string						 // Initialize String(s) for storing String(s)
+			pageSel = " [SELECTED]", // Specify sPage's Selected Message
+			pageName = "New Page";	 // Specify sPage's Name
 		// Initialize Vector(s) for sPage
 		vector<sLine> sLines; // Initialize sLine Vector for Page Lines
 	};
@@ -215,11 +226,11 @@ public:
 	struct sChapter
 	{
 		// Initialize Variable(s) for sChapter
-		string chapName = "New Chapter"; // Specify sChapter's Name
 		int chapIndex = (-1);			 // Specify sChapter's Chapter Index
-		bool isLastChap = true;			 // Specify if sChapter is Last in Screen
+		string chapName = "New Chapter"; // Specify sChapter's Name
 		// Initialize Vector(s) for sChapter
-		vector<sPage> sPages; // Initialize sPage Vector for Screen Pages
+		vector<sPage> sPages;	// Initialize sPage Vector for Screen Pages
+		vector<int *> chapPtrs; // Initialize Int Pointer Vector for Pointing to Private Class Variables
 	};
 
 	//
@@ -716,21 +727,21 @@ public:
 		dsFiles();
 
 		// Start Menus
-		dsMenus(0);
-		dsMenus(1);
-		dsMenus(2);
+		dsMenus(INTRO);
+		dsMenus(RULES);
+		dsMenus(SETTINGS);
 
 		// Build Game
 		dsGameNew();
 
 		// Do Combat while Player's Characters are Not all Dead or Player has Not Won
-		do
-		{
-			// gameCombat();
-		} while (Players.at(-1).personHealth > 0 && Floors.at(-1).Enemies.at(-1).personHealth > 0);
+		// do
+		//{
+		//	// gameCombat();
+		//} while (Players.at(-1).personHealth > 0 && Floors.at(-1).Enemies.at(-1).personHealth > 0);
 
 		// Start End Screen
-		dsMenus(4);
+		dsMenus(FLOORINTRO);
 	}
 
 	// Destructor with Default Parameters
@@ -751,14 +762,11 @@ public:
 
 	// INTERACT FUNCTIONS
 	string dsChoiceString();
-	double dsChoiceNumber(int = 0, int = 9);
+	double dsChoiceNumber(int = 1, int = 9);
 
 	// FILE FUNCTIONS
-	sChapter sChapterNew(int = -1);
-	sPage sPageNew(int = -1, int = -1);
-	sLine sLineNew(int = -1, int = -1, int = -1);
-	void sChaptersNew();
 	void dsFiles();
+	void dsFileWrite(int, int = 0, string = "fileNew.txt");
 
 	// MENU FUNCTIONS
 	double dsMenuDisplay(int, int = 0);
@@ -840,6 +848,7 @@ private:
 		fileFloors = "fileFloors.txt",
 		fileEnemies = "fileEnemies.txt",
 		filePlayers = "filePlayers.txt",
+		fileNew = "fileNew.txt",
 
 		// User Name
 		userName = "Player",

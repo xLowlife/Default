@@ -171,9 +171,22 @@ double Game::dsChoiceNumber(int choiceMin, int choiceMax)
 	// If all Char(s) in String is/are Valid, Return String as Double
 	if (isChoice == true)
 	{
-		userDouble = stod(userString);
-		// If userString < choiceMin or userString > choiceMax, Empty Variable(s)
-		if (stod(userString) < choiceMin || stod(userString) > choiceMax)
+		// If userString.length() >= 1, Continue to Final Check
+		if (userString.length() >= 1)
+		{
+			// If userString < choiceMin or userString > choiceMax, Final Check to Empty Variable(s)
+			if (stod(userString) < choiceMin || stod(userString) > choiceMax)
+			{
+				isChoice = false;
+			}
+			// If userString is in Range, Return String as Double
+			else
+			{
+				userDouble = stod(userString);
+			}
+		}
+		// If userString.length() < 1, Empty Variable(s)
+		else
 		{
 			isChoice = false;
 		}
@@ -208,23 +221,6 @@ void Game::dsFiles()
 {
 	// Initialize Variable(s) for dsFiles()
 	ifstream dsFile; // Initialize ifstream(s) for storing ifstream(s)
-	string			 // Initialize Strings(s) for storing String(s), In Order of getline Use Order
-		pageRows,	 // Specify sPage's Line Rows
-		pageCols,	 // Specify sPage's Line Columns
-		chapIndex,	 // Specify sChapter's Chapter Index
-		pageIndex,	 // Specify sPage's Page Index
-		pageMin,	 // Specify sPage's Min Choice
-		pageMax,	 // Specify sPage's Max Choice
-		isLastChap,	 // Specify if sChapter is Last in Screen
-		isLastPage,	 // Specify if sPage is Last in Screen
-		chapName,	 // Specify sChapter's Name
-		pageName,	 // Specify sPage's Name
-		lineEmpty,	 // Specify sLine's Empty State
-		lineIndex,	 // Specify sLine's Line Index
-		lineInfo,	 // Specify sLine's Variable States
-		lineString,	 // Specify sLine's Variable String
-		lineSel,	 // If sLine is Selectable, Specify Number to Select Line
-		lineTrash;	 // Specify Trash Variable
 
 	// Open fileMenus
 	dsFile.open(fileMenus);
@@ -234,6 +230,23 @@ void Game::dsFiles()
 		// Output fileMenus opened successfully to console
 		cout << "File, " << fileMenus << ", opened successfully" << endl
 			 << endl;
+
+		// Initialize Strings(s) for storing String(s), In Order of getline Use Order
+		string
+			pageRows,	 // Specify sPage's Line Rows
+			pageCols,	 // Specify sPage's Line Columns
+			chapIndex,	 // Specify sChapter's Chapter Index
+			pageIndex,	 // Specify sPage's Page Index
+			pageMin,	 // Specify sPage's Min Choice
+			pageMax,	 // Specify sPage's Max Choice
+			isLastChap,	 // Specify if sChapter is Last in Screen
+			isLastPage,	 // Specify if sPage is Last in Screen
+			isLineEmpty, // Specify sLine's Empty State
+			lineIndex,	 // Specify sLine's Line Index
+			lineSel,	 // Specify sLine's Selection Number if sLine is Selectable
+			lineInfo,	 // Specify sLine's Variable States
+			lineString,	 // Specify sLine's Variable String
+			lineTrash;	 // Specify Trash Variable
 
 		// Fill New Chapter's Data and Vectors
 		do
@@ -252,37 +265,35 @@ void Game::dsFiles()
 				getline(dsFile, pageRows, '-');
 				// Specify New Page's Line Row Amount
 				newPage.pageRows = stoi(pageRows);
-
 				// Store New Page's Line Column Amount in pageCols
 				getline(dsFile, pageCols, '-');
 				// Specify New Page's Line Column Amount
 				newPage.pageCols = stoi(pageCols);
-
 				// Advance to Next Line in dsFile
 				getline(dsFile, lineTrash);
 
-				// PAGE INFO
+				// PAGE INDEXES
 				// Store New Chapter's Chapter Index in chapIndex
 				getline(dsFile, chapIndex, ';');
 				// Specify New Chapter's Chapter Index
 				newChapter.chapIndex = stoi(chapIndex);
-
 				// Store New Page's Page Index in chapIndex
 				getline(dsFile, pageIndex, ';');
 				// Specify New Page's Page Index
 				newPage.pageIndex = stoi(pageIndex);
 
+				// PAGE MIN CHOICES
 				// Store New Page's Minimum User Choice in pageMin
 				getline(dsFile, pageMin, ';');
-				// If pageMin == "+", Specify "Infinite" Positive Minimum User Choice
-				if (pageMin == "+")
+				// If pageMin[0] == '+', Specify "Infinite" Positive Minimum User Choice
+				if (pageMin[0] == '+')
 				{
-					newPage.pageMin = (1000 * 1000);
+					newPage.pageMin = ((100 * 100) * (100 * 100));
 				}
-				// If pageMin == "-", Specify "Infinite" Negative Minimum User Choice
-				else if (pageMin == "-")
+				// If pageMin[0] == '-', Specify "Infinite" Negative Minimum User Choice
+				else if (pageMin[0] == '-')
 				{
-					newPage.pageMin = ((-1000) * 1000);
+					newPage.pageMin = (((-100 * 100)) * (100 * 100));
 				}
 				// If pageMin == Number, Specify Minimum User Choice
 				else
@@ -291,71 +302,71 @@ void Game::dsFiles()
 					newPage.pageMin = stoi(pageMin);
 				}
 
+				// PAGE MAX CHOICES
 				// Store New Page's Maximum User Choice in pageMax
 				getline(dsFile, pageMax, ';');
-				// If pageMax == "+", Specify "Infinite" Positive Maximum User Choice
-				if (pageMax == "+")
+				// If pageMax[0] == '+', Specify "Infinite" Positive Maximum User Choice
+				if (pageMax[0] == '+')
 				{
 					newPage.pageMax = (1000 * 1000);
 				}
-				// If pageMax == "-", Specify "Infinite" Negative Maximum User Choice
-				else if (pageMax == "-")
+				// If pageMax[0] == '-', Specify "Infinite" Negative Maximum User Choice
+				else if (pageMax[0] == '-')
 				{
 					newPage.pageMax = ((-1000) * 1000);
 				}
-				// If pageMax == Number, Specify Maximum User Choice
+				// If pageMax[0] == Number, Specify Maximum User Choice
 				else
 				{
 					// Specify New Page's Maximum User Choice
 					newPage.pageMax = stoi(pageMax);
 				}
 
+				// PAGE INFO
 				// Store Note of if New Chapter is Last in Screen
 				getline(dsFile, isLastChap, ';');
 				// Store Note of if New Page is Last in Screen
 				getline(dsFile, isLastPage, ';');
-
-				// Store New Chapter's Name in chapName
-				getline(dsFile, chapName, ';');
-				// Specify New Chapter's Name
-				newChapter.chapName = chapName;
-
-				// Store New Page's Name in pageName
-				getline(dsFile, pageName, ';');
-				// Specify New Page's Name
-				newPage.pageName = pageName;
-
+				// Store New Chapter's Name in newChapter.chapName
+				getline(dsFile, newChapter.chapName, ';');
+				// Store New Page's Name in newPage.pageName
+				getline(dsFile, newPage.pageName, ';');
 				// Advance to Next Line in dsFile
 				getline(dsFile, lineTrash);
 
 				// PAGE LINES
 				// Fill New Lines's Data and Vectors
-				for (int pageRow = 1; pageRow < (newPage.pageRows + 2); ++pageRow)
+				for (int pageRow = 0; pageRow < newPage.pageRows; ++pageRow)
 				{
 					// Initialize New sLine(s) for storing New Line Data
 					sLine newLine;
 
+					// LINE INFO
 					// Store Note of if New Line is Empty
-					getline(dsFile, lineEmpty, ';');
-
+					getline(dsFile, isLineEmpty, ';');
 					// Store New Line's Line Index in lineIndex
 					getline(dsFile, lineIndex, ';');
 					// Specify New Line's Line Index
 					newLine.lineIndex = stoi(lineIndex);
-					// Add New Line's Line Index to newLine.lSTRS.at(0)
-					newLine.lSTRS.at(0).append(lineIndex);
+					// Specify New Line's Name
+					newLine.lineName.append(lineIndex);
 
+					// LINE SELECTION
 					// Store Note of if New Line can be Selected
 					getline(dsFile, lineInfo, ';');
+					// Specify New Line Column 0's Line Column Index
+					newLine.sLineCols.at(0).lcolIndex = 0;
+					// Specify New Line Column 0's String
+					newLine.sLineCols.at(0).lStr = "Column 0";
 					// If New Line CAN be Selected, Add Data on How to New Line's Vectors
 					if (lineInfo[0] == '+')
 					{
-						// Add true to newLine.lINFO.at(0)
-						newLine.lINFO.at(0) = true;
-						// Store New Line's Required Choice for Select in lineIndex
+						// Specify New Line Column 0's Required User Choice as true
+						newLine.sLineCols.at(0).lInfo = true;
+						// Store New Line's Required Choice for Select in lineSel
 						getline(dsFile, lineSel, ';');
-						// Add Required User Choice to newLine.lNUMS.at(0)
-						newLine.lNUMS.at(0) = stoi(lineSel);
+						// Specify New Line Column 0's Required User Choice
+						newLine.sLineCols.at(0).lNum = stoi(lineSel);
 					}
 					// If New Line CANNOT be Selected, Advance to Next Line Column
 					else
@@ -370,29 +381,26 @@ void Game::dsFiles()
 						}
 					}
 
+					// LINE COLUMNS
 					// Fill New Lines's lSTRS Vector with String(s)
 					for (int pageCol = 1; pageCol < (newPage.pageCols + 1); ++pageCol)
 					{
-						// Add Number Slot to New Line's newLine.lNUMS
-						newLine.lNUMS.push_back(newLine.lineEmptyNum);
+						// Create New Line Column
+						newLine.sLineNew();
 
 						// Store Note of if New Lines's Line Column needs Input
 						getline(dsFile, lineInfo, ';');
-						// If New Lines's Line Column needs Input, Add true to newLine.lINFO
+						// Specify New Line Column's Line Column Index
+						newLine.sLineCols.at(newLine.sLineCols.size() - 1).lcolIndex = stoi(lineInfo.substr(1));
+						// If New Lines's Line Column needs Input, Add true to newLine.sLineCols.at(-1).lInfo
 						if (lineInfo[0] == '+')
 						{
-							// Add true to newLine.lINFO
-							newLine.lINFO.push_back(true);
-						}
-						// If New Lines's Line Column needs Input, Add false to newLine.lINFO
-						else
-						{
-							// Add false to newLine.lINFO
-							newLine.lINFO.push_back(false);
+							// Specify New Line Column's Required User Choice as true
+							newLine.sLineCols.at(newLine.sLineCols.size() - 1).lInfo = true;
 						}
 
 						// If New Line is NOT Marked Empty, Add String to newLine.lSTRS
-						if (lineEmpty[0] == '+')
+						if (isLineEmpty[0] == '+')
 						{
 							// Store New Line's Line Column String in lineString
 							getline(dsFile, lineString, ';');
@@ -407,18 +415,20 @@ void Game::dsFiles()
 								getline(dsFile, lineString, ';');
 								// Split Next Line in Half, and Add Both Halves to newLine.lSTRS
 								(newLine / lineString);
+								// Specify Next Line Column's Line Column Index
+								newLine.sLineCols.at(newLine.sLineCols.size() - 1).lcolIndex = stoi(lineInfo.substr(1));
 								// If Next Lines's Line Column needs Input, Add true to newLine.lINFO.at(pageCol)
 								if (lineInfo[0] == '+')
 								{
-									// Add true to newLine.lINFO.at(pageCol)
-									newLine.lINFO.at(pageCol) = true;
+									// Specify New Line Column's Required User Choice as true
+									newLine.sLineCols.at(newLine.sLineCols.size() - 1).lInfo = true;
 								}
 							}
 							// If New Line's Line Column String is NOT "sLine/", Add Line Column String
 							else
 							{
-								// Add New Line's Line Column String to New Line's newLine.lSTRS
-								newLine.lSTRS.push_back(lineString);
+								// Add New Line Column's String to newLine.sLineCols.at(-1).lStr
+								newLine.sLineCols.at(newLine.sLineCols.size() - 1).lStr = lineString;
 							}
 						}
 						// If New Line is Marked Empty, Trash All Strings
@@ -426,8 +436,6 @@ void Game::dsFiles()
 						{
 							// Advance to Next Line Column in dsFile
 							getline(dsFile, lineTrash, ';');
-							// Add String Slot to New Line's newLine.lSTRS
-							newLine.lSTRS.push_back(newLine.lineEmptyStr);
 						}
 					}
 					// Add New Line to New Page's newPage.sLines
@@ -443,7 +451,41 @@ void Game::dsFiles()
 		} while (isLastChap[0] == '+');
 		// Close fileMenus
 		dsFile.close();
+
+		// Add Menu's Setting Screen Pointers for Line Column Pointers to Follow
+		screenMenu.at(SETTINGS).chapPtrs.push_back(&floorDifficulty);
+		screenMenu.at(SETTINGS).chapPtrs.push_back(&floorTotal);
+		screenMenu.at(SETTINGS).chapPtrs.push_back(&enemyTotal);
+		screenMenu.at(SETTINGS).chapPtrs.push_back(&playerTotal);
+
+		// Add Menu's FLOOR INTRO Screen Pointers for Line Column Pointers to Follow
+		screenMenu.at(FLOORINTRO).chapPtrs.push_back(&floorCurrent);
+
+		// Make Menu Screen Page's Line Column Pointers Follow Pointers in Menu Screen's chapPtrs Vector
+		for (int menuScreen = 0; menuScreen < screenMenu.size(); ++menuScreen)
+		{ // Loop through Menu Screens
+			for (int screenPage = 0; screenPage < screenMenu.at(menuScreen).sPages.size(); ++screenPage)
+			{ // Loop through Menu Screen's Pages
+				// Track which chapPtr in screenMenu.at(menuScreen).chapPtrs to Point to
+				int chapPtrsAmount = 0;
+				for (int pageLine = 1; chapPtrsAmount < screenMenu.at(menuScreen).chapPtrs.size() && pageLine < screenMenu.at(menuScreen).sPages.at(screenPage).sLines.size(); ++pageLine)
+				{ // Loop through Menu Screen Page's Line Rows While chapPtrsAmount < screenMenu.at(menuScreen).chapPtrs.size()
+					for (int LineCol = 1; LineCol < screenMenu.at(menuScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.size(); ++LineCol)
+					{ // Loop through Menu Screen Page's Line Columns
+						// If Menu Screen Page's Line Column needs chapPtr, Point to it's chapPtr in screenMenu.at(menuScreen).chapPtrs
+						if (screenMenu.at(menuScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.at(LineCol).lInfo == true)
+						{
+							// Point to chapPtr in screenMenu.at(menuScreen).chapPtrs.at(chapPtrsAmount)
+							screenMenu.at(menuScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.at(LineCol).lNumPtr = screenMenu.at(menuScreen).chapPtrs.at(chapPtrsAmount);
+							// Specify Next chapPtr in screenMenu.at(menuScreen).chapPtrs to Point to
+							++chapPtrsAmount;
+						}
+					}
+				}
+			}
+		}
 	}
+
 	// If fileMenus did Not Open, Error
 	else
 	{
@@ -451,27 +493,187 @@ void Game::dsFiles()
 		cout << "File, " << fileMenus << ", failed to open" << endl
 			 << endl;
 	}
+	// Return Void
+	return;
+}
 
-	// Open fileUi
-	dsFile.open(fileUi);
-	// If fileUi did Open, Continue
-	if (dsFile.is_open())
+// Function to Write Game Files for Game Data
+// Accepts 1 Parameter for File Name ("fileNew.txt")
+// Returns Void, passes Data by Member Access
+void Game::dsFileWrite(int chapIndex, int pageIndex, string dsWriteFileName)
+{
+	// Initialize Variable(s) for dsFileWrite()
+	std::ofstream dsWriteFile(dsWriteFileName, std::ofstream::out); // Initialize ofstream(s) for storing ofstream(s)
+	// Initialize String Vector for Menu Screen Page's Line Strings
+	vector<string> lineStrings;
+
+	// Open dsWriteFileName
+	dsWriteFile.open(dsWriteFileName);
+	// If dsWriteFileName did Open, Continue
+	if (dsWriteFile.is_open())
 	{
-		// Output fileUi opened successfully to console
-		cout << "File, " << fileUi << ", opened successfully" << endl
+		// Output dsWriteFileName opened successfully to console
+		cout << "File, " << dsWriteFileName << ", opened successfully" << endl
 			 << endl;
 
-		// Close fileUi
-		dsFile.close();
+		// Initialize Strings(s) for storing String(s), In Order of getline Use Order
+		string
+			lineHeader = " ", // Specify String for Header Line
+			lineData = " ";	  // Specify String for Data Line
+
+		// Fill Header Line (Line -2)
+		// Append Menu Screen Page's Total Line Rows to lineHeader
+		lineHeader = to_string(screenMenu.at(chapIndex).sPages.at(pageIndex).pageRows);
+		lineHeader.append("-");
+		// Append Menu Screen Page's Total Line Columns to lineHeader
+		lineHeader.append(to_string(screenMenu.at(chapIndex).sPages.at(pageIndex).pageCols));
+		lineHeader.append("---------------------");
+		// Append Menu Screen Chapter's Name to lineHeader
+		lineHeader.append(screenMenu.at(chapIndex).chapName);
+		lineHeader.append("-");
+		// Append Menu Screen Page's Name to lineHeader
+		lineHeader.append(screenMenu.at(chapIndex).sPages.at(pageIndex).pageName);
+		lineHeader.append("---------------------;");
+
+		// Fill Data Line (Line -1)
+		// Append Menu Screen Chapter's Index to lineData
+		lineData = to_string(screenMenu.at(chapIndex).chapIndex);
+		lineData.append(";");
+		// Append Menu Screen Page's Index to lineData
+		lineData.append(to_string(screenMenu.at(chapIndex).sPages.at(pageIndex).pageIndex));
+		lineData.append(";");
+		// Append Menu Screen Page's Min User Choice to lineData
+		lineData.append(to_string(screenMenu.at(chapIndex).sPages.at(pageIndex).pageMin));
+		lineData.append(";");
+		// Append Menu Screen Page's Max User Choice to lineData
+		lineData.append(to_string(screenMenu.at(chapIndex).sPages.at(pageIndex).pageMax));
+		lineData.append(";");
+		// If Menu Screen Chapter is Not Last Chapter, Append "+;"
+		if (screenMenu.at(chapIndex).chapIndex < (screenMenu.size() - 1))
+		{
+			lineData.append("+;");
+		}
+		// If Menu Screen Chapter is Last Chapter, Append "-;"
+		else
+		{
+			lineData.append("-;");
+		}
+		// If Menu Screen Page is Not Last Page, Append "+;"
+		if (screenMenu.at(chapIndex).sPages.at(pageIndex).pageIndex < (screenMenu.at(chapIndex).sPages.size() - 1))
+		{
+			lineData.append("+;");
+		}
+		// If Menu Screen Page is Last Page, Append "-;"
+		else
+		{
+			lineData.append("-;");
+		}
+		// Append Menu Screen Chapter's Name to lineData
+		lineData.append(screenMenu.at(chapIndex).chapName);
+		lineData.append(";");
+		// Append Menu Screen Page's Name to lineData
+		lineData.append(screenMenu.at(chapIndex).sPages.at(pageIndex).pageName);
+		lineData.append(";");
+
+		// Add lineHeader to lineStrings Vector
+		lineStrings.push_back(lineHeader);
+		// Add lineData to lineStrings Vector
+		lineStrings.push_back(lineData);
+
+		// Fill String Lines (Line 0 - lineStrings.size())
+		for (int pageLine = 0; pageLine < screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.size(); ++pageLine)
+		{ // Loop through Menu Screen Page's Line Rows
+			// Initialize String for storing Menu Screen Page's Line Column String
+			string lineString = " ";
+
+			// Temporarily Append Line Index to lineString
+			lineString = "-;";
+
+			// Append Line Index to lineString
+			lineString.append(to_string(screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).lineIndex));
+
+			// If Line is Line 0, Append Selected Message to lineString
+			if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).lineIndex == 0)
+			{
+				lineString.append(";-;");
+				lineString.append(screenMenu.at(chapIndex).sPages.at(pageIndex).pageSel);
+			}
+			// If Line Can be Selected, Append ";+;" and Required Choice to Select Line to lineString
+			else if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(0).lInfo == true)
+			{
+				lineString.append(";+;");
+				// Prevents Decimals from being Appended to lineString
+				int doubleTOint = (-1);
+				doubleTOint = screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(0).lNum;
+				lineString.append(to_string(doubleTOint));
+			}
+			// If Line Can NOT be Selected, Append ";-; ;" to lineString
+			else
+			{
+				lineString.append(";-; ");
+			}
+
+			// Write Lines to File
+			for (int LineCol = 1; LineCol < screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.size(); ++LineCol)
+			{ // Loop through Menu Screen Page's Line Columns
+
+				// If Line Column Requires Data, Append ";+;" and Required Choice to Select Line to lineString
+				if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lInfo == true)
+				{
+					lineString.append(";+");
+				}
+				// If Line Can NOT be Selected, Append ";-; ;" to lineString
+				else
+				{
+					lineString.append(";-");
+				}
+				// Append Line Column Index to lineString
+				lineString.append(to_string(screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lcolIndex));
+				lineString.append(";");
+
+				// Append Line Column String to lineString
+				lineString.append(screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lStr);
+			}
+			lineString.append(";");
+
+			// Check if Menu Screen Page's Line Columns are Not Empty
+			bool isEmpty = true;
+			for (int LineCol = 1; isEmpty && LineCol < screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.size(); ++LineCol)
+			{ // Loop through Menu Screen Page's Line Columns
+				// If Menu Screen Page's Line Column is Not Empty, Replace "-" and Beginning of lineString with "+"
+				if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lStr.length() >= 1)
+				{
+					// If Menu Screen Page's Line Column is Not " ", Replace "-" and Beginning of lineString with "+"
+					if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lStr != " ")
+					{
+						// Replace "-" and Beginning of lineString with "+"
+						lineString.replace(0, 1, "+");
+						isEmpty = false;
+					}
+				}
+			}
+
+			// Add lineString to lineStrings Vector
+			lineStrings.push_back(lineString);
+		}
+
+		// Write lineStrings to dsWriteFile
+		char lineChar;
+		for (int pageLine = 0; pageLine < lineStrings.size(); ++pageLine)
+		{ // Loop through lineStrings's Lines
+			dsWriteFile << lineStrings.at(pageLine);
+		}
+
+		// Close dsWriteFileName
+		dsWriteFile.close();
 	}
-	// If fileUi did Not Open, Error
+	// If dsWriteFileName did Not Open, Error
 	else
 	{
-		// Output fileUi failed to open to console
-		cout << "File, " << fileUi << ", failed to open" << endl
+		// Output dsWriteFileName failed to open to console
+		cout << "File, " << dsWriteFileName << ", failed to open" << endl
 			 << endl;
 	}
-
 	// Return Void
 	return;
 }
@@ -491,51 +693,66 @@ double Game::dsMenuDisplay(int chapIndex, int pageIndex)
 {
 	// Initialize Variable(s) for dsMenuDisplay()
 	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
-	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
 
-	// Clear Terminal to Display Game Menu
+	// Clear Terminal to Display Game Screen
 	system("CLS");
 
-	// cout Top Border, Each Corner Spaced by setw(40)
+	// Display Top Border, Each Corner Spaced by setw(40)
 	cout << setw(40) << left << "+ - - - - - - - - - - - - - - - - - - -"
 		 << setw(40) << right << "- - - - - - - - - - - - - - - - - - - - +"
 		 << endl;
 
-	// Display Game Menu
-	for (int pageRow = 1; pageRow < (screenMenu.at(chapIndex).sPages.at(pageIndex).pageRows + 1); ++pageRow)
-	{
-		// cout lineLeft, then lineRight, Centered to setw(40)
-		cout << setw(40) << right << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lSTRS.at(1);
+	// Display Game Screen
+	for (int pageLine = 1; pageLine < screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.size(); ++pageLine)
+	{ // Loop through Menu Screen Page's Line Rows
+		// Initialize String Vector for Menu Screen Page's Line Column Strings
+		vector<string> lineStrings;
 
-		// If Line Has Value, cout Value Message
-		if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(2) == true)
-		{
-			cout << right << ' ' << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lNUMS.at(2);
+		// Fill Game Screen's lineStrings Vector
+		for (int LineCol = 1; LineCol < screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.size(); ++LineCol)
+		{ // Loop through Menu Screen Page's Line Columns
+			// Initialize String for storing Menu Screen Page's Line Column String
+			string lineString = " ";
+			// Specify lineString is Menu Screen Page's Line Column String
+			lineString = screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lStr;
+
+			// If Menu Screen Page's Line Column Pointer Points to Value, Replace "~" in lineString with Value Pointed to
+			if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lInfo == true)
+			{
+				// Replace "~" in lineString with Value Pointed to by Menu Screen Page's Line Column Pointer
+				lineString.replace(lineString.find_first_of("~"), 1, to_string(*screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lNumPtr));
+			}
+
+			// Add lineString to lineStrings Vector
+			lineStrings.push_back(lineString);
 		}
 
-		// cout lineRight
-		cout << left << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lSTRS.at(2);
-
-		// If Line is Selected, cout Selected Message
-		if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(0) == true)
+		// If Menu Screen Page's Line is Selected, Append Menu Screen Page's Selected Message
+		if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(0).lSel == true)
 		{
-			cout << screenMenu.at(chapIndex).sPages.at(pageIndex).pageSel;
+			// Append Menu Screen Page's Selected Message to Last lineString
+			lineStrings.at(lineStrings.size() - 1).append(screenMenu.at(chapIndex).sPages.at(pageIndex).pageSel);
 		}
 
-		// cout New Line
+		// Display Left String of Menu Screen Page's Line Row, Centered to setw(40)
+		cout << setw(40) << right << lineStrings.at(0);
+		// Display Right String of Menu Screen Page's Line Row, Centered to setw(40)
+		cout << setw(40) << left << lineStrings.at(1);
+
+		// Display New Line After Menu Screen Page's Line Row
 		cout << endl;
 	}
 
-	// cout Bottom Border, Each Corner Spaced by setw(40)
+	// Display Bottom Border, Each Corner Spaced by setw(40)
 	cout << setw(40) << left << "+ - - - - - - - - - - - - - - - - - - -"
 		 << setw(40) << right << "- - - - - - - - - - - - - - - - - - - - +"
 		 << endl;
 
-	// cout Last menuLines[chapIndex][-1] lineLeft, then menuLines[chapIndex][-1] lineRight, Left Centered to setw(40)
-	cout << setw(40) << right << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(0).lSTRS.at(1)
-		 << left << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(0).lSTRS.at(2);
+	// Display Final Line After All of Menu Screen Page's Line Rows
+	cout << setw(40) << right << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(0).sLineCols.at(1).lStr
+		 << left << screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(0).sLineCols.at(2).lStr;
 
-	// Take User Choice Specified by Menu
+	// Take User Choice Specified by Menu Screen's Page
 	userDouble = dsChoiceNumber(screenMenu.at(chapIndex).sPages.at(pageIndex).pageMin, screenMenu.at(chapIndex).sPages.at(pageIndex).pageMax);
 
 	// Return User Choice as Double
@@ -551,19 +768,6 @@ void Game::dsMenus(int chapIndex, int pageIndex)
 	int userInt = (-1);		  // Initialize Int(s) for storing User Int(s)
 	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
 	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
-
-	// Set Settings Values
-	screenMenu.at(SETTINGS).sPages.at(0).sLines.at(4).lNUMS.at(2) = floorDifficulty;
-	screenMenu.at(SETTINGS).sPages.at(0).sLines.at(5).lNUMS.at(2) = floorTotal;
-	screenMenu.at(SETTINGS).sPages.at(0).sLines.at(6).lNUMS.at(2) = enemyTotal;
-	screenMenu.at(SETTINGS).sPages.at(0).sLines.at(7).lNUMS.at(2) = playerTotal;
-	screenMenu.at(SETTINGS).sPages.at(1).sLines.at(4).lNUMS.at(2) = floorDifficulty;
-	screenMenu.at(SETTINGS).sPages.at(1).sLines.at(5).lNUMS.at(2) = floorTotal;
-	screenMenu.at(SETTINGS).sPages.at(1).sLines.at(6).lNUMS.at(2) = enemyTotal;
-	screenMenu.at(SETTINGS).sPages.at(1).sLines.at(7).lNUMS.at(2) = playerTotal;
-
-	// Set Floor Intro Values
-	screenMenu.at(FLOORINTRO).sPages.at(0).sLines.at(5).lNUMS.at(2) = (floorCurrent + 1);
 
 	// Take User's Choice with dsChoiceNumber() while isDone != true;
 	do
@@ -601,24 +805,23 @@ void Game::dsMenus(int chapIndex, int pageIndex)
 				// Initialize Bool(s) for storing Bool(s)
 				bool isLine = false;
 
-				// Check Lines for Selected Line
-				for (int pageRow = 0; !(isLine) && pageRow < (screenMenu.at(chapIndex).sPages.at(pageIndex).pageRows + 1); ++pageRow)
-				{
-					// If User Selected pageRow, Mark pageRow as Selected
-					if (userInt == screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lNUMS.at(0))
+				// Check Menu Screen Page's Line Rows for Selected Line Row
+				for (int pageLine = 1; !(isLine) && pageLine < screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.size(); ++pageLine)
+				{ // Loop through Menu Screen Page's Line Rows
+					// If User Selected Page's Line Row, Mark Page's Line Row as Selected
+					if (userInt == screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(0).lNum)
 					{
-						// Mark pageRow as Selected
-						screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(0) = true;
-						screenMenu.at(chapIndex).sPages.at(pageIndex + 1).sLines.at(pageRow).lINFO.at(0) = true;
-
 						// Change Menu Page to Page 2
-						pageIndex = 1;
+						++pageIndex;
 
-						// End Checking Lines for Selected Line
+						// Mark Page's Line Row as Selected
+						screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(0).lSel = true;
+
+						// End Checking Menu Screen Page's Line Rows for Selected Line Row
 						isLine = true;
 					}
 
-					// If Not Line, Keep Looking
+					// If Not Selected Page's Line Row, Keep Looking
 					else
 					{
 						isLine = false;
@@ -649,28 +852,34 @@ void Game::dsMenus(int chapIndex, int pageIndex)
 				// Initialize Bool(s) for storing Bool(s)
 				bool isLine = false;
 
-				// Check Lines for Selected Line
-				for (int pageRow = 0; !(isLine) && pageRow < (screenMenu.at(chapIndex).sPages.at(pageIndex).pageRows + 1); ++pageRow)
-				{
-					// If User Selected pageRow, Edit Selected pageRow
-					if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(0) == true)
+				// Check Menu Screen Page's Line Rows for Selected Line Row
+				for (int pageLine = 1; !(isLine) && pageLine < screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.size(); ++pageLine)
+				{ // Loop through Menu Screen Page's Line Rows
+					// If User Selected Page's Line Row, Check Page's Line Columns
+					if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(0).lSel == true)
 					{
-						// Edit Selected pageRow
-						screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lNUMS.at(0) = userInt;
-						screenMenu.at(chapIndex).sPages.at(pageIndex - 1).sLines.at(pageRow).lNUMS.at(0) = userInt;
+						// Check Page's Line Columns for Selected Pointer
+						for (int LineCol = 1; LineCol < screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.size(); ++LineCol)
+						{ // Loop through Menu Screen Page's Line Columns
+						  // If User Selected Page's Line Row, Check Page's Line Columns
+							if (screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lInfo == true)
+							{
+								// Edit Value that Line Column's Selected Pointer Points to
+								*screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(LineCol).lNumPtr = userInt;
 
-						// Mark pageRow as UnSelected
-						screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageRow).lINFO.at(0) = false;
-						screenMenu.at(chapIndex).sPages.at(pageIndex - 1).sLines.at(pageRow).lINFO.at(0) = false;
+								// Mark Page's Line Row as Unselected
+								screenMenu.at(chapIndex).sPages.at(pageIndex).sLines.at(pageLine).sLineCols.at(0).lSel = false;
 
-						// Change Menu Page to Page 1
-						pageIndex = 0;
+								// Change Menu Page to Page 1
+								--pageIndex;
 
-						// End Checking Lines for Selected Line
-						isLine = true;
+								// End Checking Menu Screen Page's Line Rows for Selected Line Row
+								isLine = true;
+							}
+						}
 					}
 
-					// If Not Line, Keep Looking
+					// If Not Selected Page's Line Row, Keep Looking
 					else
 					{
 						isLine = false;
@@ -682,12 +891,6 @@ void Game::dsMenus(int chapIndex, int pageIndex)
 			}
 		}
 	} while (isDone != true);
-
-	// Set Settings Values
-	floorDifficulty = screenMenu.at(SETTINGS).sPages.at(0).sLines.at(4).lNUMS.at(2);
-	floorTotal = screenMenu.at(SETTINGS).sPages.at(0).sLines.at(5).lNUMS.at(2);
-	enemyTotal = screenMenu.at(SETTINGS).sPages.at(0).sLines.at(6).lNUMS.at(2);
-	playerTotal = screenMenu.at(SETTINGS).sPages.at(0).sLines.at(7).lNUMS.at(2);
 
 	// Return Void
 	return;
