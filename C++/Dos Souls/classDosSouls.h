@@ -41,758 +41,161 @@ Watching Mr.Priestley's labs and stuff I learned failing other classes.
 /******************************************************************************
  *                              class Dos Souls .h                            *
  ******************************************************************************/
+/*  	DEFINE HEADER FILE FOR CLASSES	-	-	-	-	-	-	-	-	-	  */
 #ifndef CLASS_DOS_SOULS_H
 #define CLASS_DOS_SOULS_H
-
+/*  	INCLUDE LIBRARIES FOR FILE	-	-	-	-	-	-	-	-	-	-	  */
 #include <stdlib.h>
-#include <cctype> // isdigit()
+#include <cctype>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <random> // Mersenne Twister
+#include <random>
 #include <string>
 #include <cstring>
 #include <vector>
+/*  	DEFINE NAMESPACE FOR FILE	-	-	-	-	-	-	-	-	-	-	  */
 using namespace std;
+/******************************************************************************
+ *                               GLOBAL DECLARATIONS                          *
+ ******************************************************************************/
 
-// Initialize Const Variable(s) for Menu Screen Chapters
-const int chapMenu[] = {0, 1, 2, 3, 4, 5};
-
-// Initialize Enum(s) for Menu Screen Chapters
-enum dsMENUS
+/*  	INITIALIZE GLOBAL CONSTS FOR FILE	-	-	-	-	-	-	-	-	  */
+/** 	Initialize Const Int Array for Game Consts	-	-	-	-	-	-	 **/
+const int gameConsts[] =
+	{100, 1, 2, 100, 10, 3, 2, 1, 10, 25, 2, 50, 10, 4, 3, 500, 250};
+/***	Initialize Enums for Game Consts	-	-	-	-	-	-	-	-	***/
+enum gameConstNames
 {
-	INTRO,
-	RULES,
-	SETTINGS,
-	FLOORINTRO,
-	STORE,
-	OUTRO
+	hMAX,	  // Specify Maximum amount of Health
+	hBUFF,	  // Specify Maximum Health Multiplier of Enemies
+	hSTEAL,	  // Specify Maximum amount of Life Steal
+	sMAX,	  // Specify Maximum amount of Stamina
+	sGAIN,	  // Specify Base amount of Stamina Recovery
+	sLGAIN,	  // Specify Bonus amount of Stamina Recovery for Light Armor
+	sMGAIN,	  // Specify Bonus amount of Stamina Recovery for Medium Armor
+	sHGAIN,	  // Specify Bonus amount of Stamina Recovery for Heavy Armor
+	aCOST,	  // Specify Cost of Attack
+	bCOST,	  // Specify Cost of Block
+	bBUFF,	  // Specify Damage Reduction of Block
+	dCOST,	  // Specify Cost of Dodge
+	rngASIZE, // Specify Size of Person Arrays
+	rngPSIZE, // Specify Size of Player rngArray
+	rngESIZE, // Specify Size of Enemy rngArray
+	fLOOT,	  // Specify Minimum amount of Money Player gets for beating Floor
+	eLOOT	  // Specify Minimum amount of Money Player gets for killing Enemy
 };
 
-// Initialize Const Variable(s) for Ui Screen Chapters
-const int chapUi[] = {0, 1, 2, 3, 4};
-
-// Initialize Enum(s) for Ui Screen Chapters
-enum dsUIS
+/** 	Initialize Const Int Array for Display Screens (Menus)	-	-	-	 **/
+const int screenMenus[] = {0, 1, 2, 3, 4, 5, 6};
+/***	Initialize Enums for Display Screens (Menus)	-	-	-	-	-	***/
+enum screenMenuNames
 {
-	COMBAT0,
-	COMBAT1,
-	COMBAT2,
-	COMBAT3,
-	COMBAT4,
-	COMBAT5,
-	COMBAT6
+	INTRO,		// Specify Game's Intro Menu Screen
+	RULES,		// Specify Game's Rules Menu Screen
+	SETTINGS,	// Specify Game's Settings Menu Screen
+	FLOORINTRO, // Specify Game's Floor Intro Menu Screen
+	STORE,		// Specify Game's Store Menu Screen
+	OUTRO		// Specify Game's Outro Menu Screen
 };
 
-// Initialize Const Variable(s) for Game
-const int hMAX{100}, // Specify Maximum amount of Health
-	hBUFF{1},		 // Specify Maximum Health Multiplier of Enemies
-	hSTEAL{2},		 // Specify Maximum amount of Life Steal
-	sMAX{100},		 // Specify Maximum amount of Stamina
-	sGAIN{10},		 // Specify Base amount of Stamina Recovery
-	sLGAIN{3},		 // Specify Bonus amount of Stamina Recovery for Light Armor
-	sMGAIN{2},		 // Specify Bonus amount of Stamina Recovery for Medium Armor
-	sHGAIN{1},		 // Specify Bonus amount of Stamina Recovery for Heavy Armor
-	aCOST{10},		 // Specify Cost of Attack
-	bCOST{25},		 // Specify Cost of Block
-	bBUFF{2},		 // Specify Damage Reduction of Block
-	dCOST{50},		 // Specify Cost of Dodge
-	rngASIZE{10},	 // Specify Size of Person Arrays
-	rngPSIZE{4},	 // Specify Size of Player rngArray
-	rngESIZE{3},	 // Specify Size of Enemy rngArray
-	mMENUS{5},		 // Specify Maximum amount of Menus
-	mLINES{12},		 // Specify Maximum amount of Menu Lines
-	mCOLS{4},		 // Specify Maximum amount of Menu Line Columns
-	mLABELS{4},		 // Specify Maximum amount of Menu Labels
-	mLCOLS{3},		 // Specify Maximum amount of Menu Label Columns
-	uMENUS{5},		 // Specify Maximum amount of Ui Screens
-	uLINES{12},		 // Specify Maximum amount of Ui Screen Lines
-	uCOLS{4},		 // Specify Maximum amount of Ui Screen Line Columns
-	uLABELS{2},		 // Specify Maximum amount of Ui Screen Labels
-	uLCOLS{3},		 // Specify Maximum amount of Ui Screen Label Columns
-	wSIZE{4},		 // Specify Size of Weapon Array
-	aSIZE{4},		 // Specify Size of Armor Array
-	pSIZE{1},		 // Specify Size of Person Array
-	fSIZE{10},		 // Specify Size of Floor Array
-	fLOOT{500},		 // Specify Minimum amount of Money Player gets for beating Floor
-	eLOOT{250};		 // Specify Minimum amount of Money Player gets for killing Enemy
-
-// Initialize Class for Game
-class Game
+/** 	Initialize Const Int Array for Display Screens (Uis)	-	-	-	 **/
+const int screenUis[] = {0, 1, 2, 3, 4};
+/***	Initialize Enums for Display Screens (Uis)	-	-	-	-	-	-	***/
+enum screenUiNames
 {
-public:
-	// Initialize Structs(s) for Game
-	// GAME DISPLAY SCREENS
-	struct sLineCol
-	{
-		// Initialize Variable(s) for sLineCol
-		int lcolIndex = (-1);	// Specify sLineCol's Line Column Index
-		string lStr = " ";		// Specify sLineCol's Variable String
-		double lNum = (-1);		// Specify sLineCol's Variable Number
-		int *lNumPtr = nullptr; // Specify sLineCol's Variable Number
-		bool lInfo = false;		// Specify sLineCol's Variable State
-		bool lSel = false;		// Specify sLineCol's Selected State
-	};
-
-	struct sLine
-	{
-		// Initialize Variable(s) for sLine
-		int						 // Initialize Int(s) for storing Int(s)
-			lineIndex = (-1),	 // Specify sLine's Line Index
-			lineEmptyNum = (-1); // Specify sLine's Empty Number Value
-		string					 // Initialize String(s) for storing String(s)
-			lineName = "Line ",	 // Specify sLine's Name
-			lineEmptyStr = " ";	 // Specify sLine's Empty String Value
-		// Initialize Vector(s) for sLine
-		vector<sLineCol> sLineCols; // Initialize Vector of sLineCols for sLine Line Columns
-		// Initialize Function(s) for sLine
-		// Function to Create New Line Column, and Add to this->sLineCols
-		// Accepts No Parameter(s)
-		// Returns Void, passes Data by Member Access
-		void sLineNew()
-		{
-			// Initialize New sLineCol(s) for storing New Line Column Data
-			sLineCol newLineCol;
-			// Add New Line Column(s) to this->sLineCols
-			this->sLineCols.push_back(newLineCol);
-			// Return Void
-			return;
-		}
-
-		// CONSTRUCTOR FUNCTIONS
-		// Constructor for sLine
-		// Create New Line Column at sLineCols.at(0) to Reserve for Line Data,
-		// and Allow me to Access Line Columns with Line Column 1 starting at Index 1
-		sLine() { sLineNew(); }
-
-		// OVERLOAD FUNCTIONS
-		// Function to Overload Operator '/' for sLine to Split Strings in Half
-		// Requires 1 String Parameter to Split
-		// Returns Void, passes Data by Member Access
-		void operator/(string &oldString)
-		{
-			// Initialize Variable(s) for operator/()
-			int stringHalf = (-1); // Specify Line Half Way Point
-			// If oldString Length is Even, Continue Normally
-			if (oldString.length() >= 2 && (oldString.length() % 2) == 0)
-			{
-				// Divide String Length in Half
-				stringHalf = (oldString.length() / 2);
-				// Add 1st Half of oldString to OLD this->sLineCols.at(-1).lStr
-				this->sLineCols.at(this->sLineCols.size() - 1).lStr = oldString.substr(0, stringHalf);
-				// Create New Line Column
-				this->sLineNew();
-				// Add 2nd Half of oldString to NEW this->sLineCols.at(-1).lStr
-				this->sLineCols.at(this->sLineCols.size() - 1).lStr = oldString.substr(stringHalf);
-			}
-			// If String Length is Odd, Minus String Length by 1
-			else if (oldString.length() >= 3 && (oldString.length() % 2) != 0)
-			{
-				// Minus String Length by 1, then Divide in Half
-				stringHalf = ((oldString.length() - 1) / 2);
-				// Add 1st Half of oldString to OLD this->sLineCols.at(-1).lStr
-				this->sLineCols.at(this->sLineCols.size() - 1).lStr = oldString.substr(0, stringHalf);
-				// Create New Line Column
-				this->sLineNew();
-				// Add 2nd Half of oldString to NEW this->sLineCols.at(-1).lStr
-				this->sLineCols.at(this->sLineCols.size() - 1).lStr = oldString.substr(stringHalf);
-			}
-			// If String Length is Invalid, Error Without .push_back()
-			else
-			{
-				cout << "Function: sLine.operator/() Failed" << endl;
-			}
-			// Return Void
-			return;
-		}
-	};
-
-	struct sPage
-	{
-		// Initialize Variable(s) for sPage
-		int							 // Initialize Int(s) for storing Int(s)
-			pageIndex = (-1),		 // Specify sPage's Page Index
-			pageRows = (-1),		 // Specify sPage's Line Row Amount
-			pageCols = (-1),		 // Specify sPage's Line Column Amount
-			pageMin = (-1),			 // Specify sPage's Min Choice
-			pageMax = (-1);			 // Specify sPage's Max Choice
-		string						 // Initialize String(s) for storing String(s)
-			pageSel = " [SELECTED]", // Specify sPage's Selected Message
-			pageName = "New Page";	 // Specify sPage's Name
-		// Initialize Vector(s) for sPage
-		vector<sLine> sLines; // Initialize sLine Vector for Page Lines
-	};
-
-	struct sChapter
-	{
-		// Initialize Variable(s) for sChapter
-		int chapIndex = (-1);			 // Specify sChapter's Chapter Index
-		string chapName = "New Chapter"; // Specify sChapter's Name
-		// Initialize Vector(s) for sChapter
-		vector<sPage> sPages;	// Initialize sPage Vector for Screen Pages
-		vector<int *> chapPtrs; // Initialize Int Pointer Vector for Pointing to Private Class Variables
-	};
-
-	//
-	// GAME ITEMS
-	//
-	struct Weapon
-	{
-		// Initialize Variable(s) for Weapon
-		string							   // Initialize String(s) for storing String(s)
-			weaponName = "Bare Hands",	   // Specify Name of Weapon
-			weaponBuff = "No Weapon Buff"; // Specify Buff of Weapon
-		double							   // Initialize Double(s) for storing Double(s)
-			weaponDamage = 20,			   // Specify Damage of Weapon
-			weaponPrice = 0;			   // Specify Price of Weapon
-		int								   // Initialize Int(s) for storing Int(s)
-			weaponType = 0;				   // Specify Type of Weapon
-	};
-
-	struct Armor
-	{
-		// Initialize Variable(s) for Armor
-		string							 // Initialize String(s) for storing String(s)
-			armorName = "Nothing",		 // Specify Name of Armor
-			armorBuff = "No Armor Buff"; // Specify Buff of Armor
-		double							 // Initialize Double(s) for storing Double(s)
-			armorDefense = 10,			 // Specify Defense of Armor
-			armorPrice = 0;				 // Specify Price of Armor
-		int								 // Initialize Int(s) for storing Int(s)
-			armorType = 0;				 // Specify Type of Armor
-	};
-
-	struct Person
-	{
-		// Initialize Variable(s) for Person
-		string					   // Initialize String(s) for storing String(s)
-			personName = "Person"; // Specify Name of Person
-		double					   // Initialize Double(s) for storing Double(s)
-			personhMAX = hMAX,	   // Specify Maximum amount of Health of Person
-			personHealth = hMAX,   // Specify Health of Person
-			personStamina = sMAX,  // Specify Stamina of Person
-			personMoney = 0;	   // Specify Money of Person
-		int						   // Initialize Int(s) for storing Int(s)
-			personIndex = 0,	   // Specify Index of Person
-			personNumber = 0,	   // Specify Number of Person
-			personWeapon = 0,	   // Specify Weapon Equipped to Person
-			personArmor = 0;	   // Specify Armor Equipped to Person
-		bool					   // Initialize Bool(s) for storing Bool(s)
-			isPlayer = false,	   // Specify if Person is Player
-			isRecovering = true,   // Specify if Person is Recovering
-			isAttacking = false,   // Specify if Person is Attacking
-			isBlocking = false,	   // Specify if Person is Blocking
-			isDodging = false,	   // Specify if Person is Dodging
-			isWaiting = false;	   // Specify if Person is Waiting
-
-		// Initialize Array(s) for Person
-		int
-			//*rngArray = new int[rngASIZE]{},			// Establish Dynamic Array for RNG
-			rngArray[rngASIZE]{1}, // Establish an Array for RNG
-			//*choiceArray = new int[rngASIZE]{}; 		// Establish Dynamic Array for Random Choices
-			choiceArray[rngASIZE]{1}; // Establish Array for Random Choices
-
-		// Initialize Vector(s) for Person
-		vector<Weapon> Weapons; // Initialize Weapon Vector for Weapons
-		vector<Armor> Armors;	// Initialize Armor Vector for Armors
-
-		// OVERLOAD FUNCTIONS
-		// Function to Overload Operator '==' for Person to Evaluate for Combat Tie
-		// Accepts 1 Person Parameter
-		// Returns Bool, passes Data by Member Access
-		bool
-		operator==(Person &Person2)
-		{
-			// Initialize Variable(s) for Person's operator==()
-			bool combatTie = false; // Initialize Bool(s) for storing Bool Data
-
-			// If Person 1 and Person 2 are Attacking, Combat is Tied
-			if (this->isAttacking == true && Person2.isAttacking == true)
-			{
-				combatTie = true;
-			}
-
-			// If Person 1 and Person 2 are Blocking, Combat is Tied
-			else if (this->isBlocking == true && Person2.isBlocking == true)
-			{
-				combatTie = true;
-			}
-
-			// If Person 1 and Person 2 are Dodging, Combat is Tied
-			else if (this->isDodging == true && Person2.isDodging == true)
-			{
-				combatTie = true;
-			}
-
-			// If Person 1 and Person 2 are Waiting, Combat is Tied
-			else if (this->isWaiting == true && Person2.isWaiting == true)
-			{
-				combatTie = true;
-			}
-
-			// If Person 1 and Person 2 are Not doing Same Action, Combat is Not Tied
-			else
-			{
-				combatTie = false;
-			}
-
-			// Return Combat Tie as Bool
-			return combatTie;
-		}
-
-		// Function to Overload Operator '!=' for Person to Evaluate for Combat Not Tie
-		// Accepts 1 Person Parameter
-		// Returns Bool, passes Data by Member Access
-		bool operator!=(Person &Person2)
-		{
-			// Initialize Variable(s) for Person's operator!=()
-			bool combatNotTie = false; // Initialize Bool(s) for storing Bool Data
-
-			// If Person 1 is Attacking and Person 2 is Not, Combat is Not Tied
-			if (this->isAttacking == true && Person2.isAttacking == false)
-			{
-				combatNotTie = true;
-			}
-
-			// If Person 1 is Blocking and Person 2 is Not, Combat is Not Tied
-			else if (this->isBlocking == true && Person2.isBlocking == false)
-			{
-				combatNotTie = true;
-			}
-
-			// If Person 1 is Dodging and Person 2 is Not, Combat is Not Tied
-			else if (this->isDodging == true && Person2.isDodging == false)
-			{
-				combatNotTie = true;
-			}
-
-			// If Person 1 is Waiting and Person 2 is Not, Combat is Not Tied
-			else if (this->isWaiting == true && Person2.isWaiting == false)
-			{
-				combatNotTie = true;
-			}
-
-			// If Person 1 and Person 2 are doing Same Action, Combat is Tied
-			else
-			{
-				combatNotTie = false;
-			}
-
-			// Return Combat Not Tie as Bool
-			return combatNotTie;
-		}
-
-		// Function to Overload Operator '<=' for Person to Evaluate for Combat Loss
-		// Accepts 1 Person Parameter
-		// Returns Bool, passes Data by Member Access
-		bool operator<=(Person &Person2)
-		{
-			// Initialize Variable(s) for Person's operator<=()
-			bool combatLoss = false; // Initialize Bool(s) for storing Bool Data
-
-			// If Person 1 is Attacking and Person 2 is Dodging, Combat is Loss
-			if (this->isAttacking == true && Person2.isDodging == true)
-			{
-				combatLoss = true;
-			}
-
-			// If Person 1 is Blocking and Person 2 is Attacking, Combat is Loss
-			else if (this->isBlocking == true && Person2.isAttacking == true)
-			{
-				combatLoss = true;
-			}
-
-			// If Person 1 is Dodging and Person 2 is Blocking, Combat is Loss
-			else if (this->isDodging == true && Person2.isBlocking == true)
-			{
-				combatLoss = true;
-			}
-
-			// If Person 1 is Waiting and Person 2 is Attacking, Combat is Loss
-			else if (this->isWaiting == true && Person2.isAttacking == true)
-			{
-				combatLoss = true;
-			}
-
-			// If Person 1 is Not doing Losing Action against Person 2, Combat is Not Loss
-			else
-			{
-				combatLoss = false;
-			}
-
-			// Return Combat Loss as Bool
-			return combatLoss;
-		}
-
-		// Function to Overload Operator '>=' for Person to Evaluate for Combat Win
-		// Accepts 1 Person Parameter
-		// Returns Bool, passes Data by Member Access
-		bool operator>=(Person &Person2)
-		{
-			// Initialize Variable(s) for Person's operator>=()
-			bool combatWin = false; // Initialize Bool(s) for storing Bool Data
-
-			// If Person 1 is Attacking and Person 2 is Blocking, Combat is Win
-			if (this->isAttacking == true && Person2.isBlocking == true)
-			{
-				combatWin = true;
-			}
-
-			// If Person 1 is Blocking and Person 2 is Dodging, Combat is Win
-			else if (this->isBlocking == true && Person2.isDodging == true)
-			{
-				combatWin = true;
-			}
-
-			// If Person 1 is Dodging and Person 2 is Attacking, Combat is Win
-			else if (this->isDodging == true && Person2.isAttacking == true)
-			{
-				combatWin = true;
-			}
-
-			// If Person 1 is Attacking and Person 2 is Waiting, Combat is Win
-			else if (this->isAttacking == true && Person2.isWaiting == true)
-			{
-				combatWin = true;
-			}
-
-			// If Person 1 is Not doing Winning Action against Person 2, Combat is Not Win
-			else
-			{
-				combatWin = false;
-			}
-
-			// Return Combat Win as Bool
-			return combatWin;
-		}
-
-		// Function to Overload Operator '+=' for Damaging Health in Combat
-		// Accepts 1 Person Parameter
-		// Returns Void, passes Data by Member Access
-		void operator+=(Person &Person2)
-		{
-			// If Person 1 Wins Combat, Deal Damage to Person 2
-			if (*this >= Person2)
-			{
-				// Check if Person 2 is Blocking
-				if (Person2.isBlocking == true)
-				{
-					// If Person 2 is Blocking, Deal Full Damage divided by bBUFF
-					Person2.personHealth -= ((this->Weapons.at(this->personWeapon).weaponDamage - Person2.Armors.at(Person2.personArmor).armorDefense) / bBUFF);
-
-					// If Person 2 Blocks the Attack, Take Stamina Cost of Blocking from Person 2
-					Person2.personStamina -= bCOST;
-
-					// If Person 2 Blocks the Attack and Person 2's Stamina Drops to 0, Person 1 Attacks Person 2 again, Deal Full Damage
-					if (Person2.personStamina <= 0)
-					{
-						Person2.personStamina = 0; // Don't let Person 2's Stamina go Below 0
-						Person2.personHealth -= (this->Weapons.at(this->personWeapon).weaponDamage - Person2.Armors.at(Person2.personArmor).armorDefense);
-					}
-				}
-
-				// If Person 2 is Not Blocking, Deal Full Damage
-				else
-				{
-					Person2.personHealth -= (this->Weapons.at(this->personWeapon).weaponDamage - Person2.Armors.at(Person2.personArmor).armorDefense);
-				}
-			}
-
-			// If Person 2 Wins Combat, Deal Damage to Person 1
-			else if (*this <= Person2)
-			{
-				// Check if Person 1 is Blocking
-				if (this->isBlocking == true)
-				{
-					// If Person 1 is Blocking, Deal Full Damage divided by bBUFF
-					this->personHealth -= ((Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense) / bBUFF);
-
-					// If Person 1 Blocks the Attack, Take Stamina Cost of Blocking from Person 1
-					this->personStamina -= bCOST;
-
-					// If Person 1 Blocks the Attack and Person 1's Stamina Drops to 0, Person 2 Attacks Person 1 again, Deal Full Damage
-					if (this->personStamina <= 0)
-					{
-						this->personStamina = 0; // Don't let Person 1's Stamina go Below 0
-						this->personHealth -= (Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense);
-					}
-				}
-
-				// If Person 1 is Not Blocking, Deal Full Damage
-				else
-				{
-					this->personHealth -= (Person2.Weapons.at(Person2.personWeapon).weaponDamage - this->Armors.at(this->personArmor).armorDefense);
-				}
-			}
-
-			// Return Void
-			return;
-		}
-
-		// Function to Overload Operator '-=' for Consuming Stamina in Combat
-		// Accepts 1 Person Parameter
-		// Returns Void, passes Data by Member Access
-		void operator-=(Person &Person2)
-		{
-			// If Person 1 is Attacking, Take Stamina Cost of Attacking from Person 1
-			if (this->isAttacking == true)
-			{
-				this->personStamina -= aCOST;
-			}
-
-			// If Person 1 is Dodging, Take Stamina Cost of Dodging from Person 1
-			else if (this->isDodging == true)
-			{
-				this->personStamina -= dCOST;
-			}
-
-			// Don't let Person 1's Stamina go Below 0
-			if (this->personStamina <= 0)
-			{
-				this->personStamina = 0;
-			}
-
-			// If Person 2 is Attacking, Take Stamina Cost of Attacking from Person 2
-			if (Person2.isAttacking == true)
-			{
-				Person2.personStamina -= aCOST;
-			}
-
-			// If Person 2 is Dodging, Take Stamina Cost of Dodging from Person 2
-			else if (Person2.isDodging == true)
-			{
-				Person2.personStamina -= dCOST;
-			}
-
-			// Don't let Person 2's Stamina go Below 0
-			if (Person2.personStamina <= 0)
-			{
-				Person2.personStamina = 0;
-			}
-
-			// Return Void
-			return;
-		}
-
-		// Function to Overload Operator '<' for Person to Evaluate if Health is Less than Person 2
-		// Accepts 1 Person Parameter
-		// Returns Bool, passes Data by Member Access
-		bool operator<(Person &Person2)
-		{
-			// Initialize Variable(s) for Person's operator<()
-			bool healthLess = false; // Initialize Bool(s) for storing Bool Data
-
-			// If Person 1's Health is Less than Person 2's Health, Health is Less
-			if (this->personHealth < Person2.personHealth)
-			{
-				healthLess = true;
-			}
-
-			// If Person 1's Health is Not Less than Person 2's Health, Health is Not Less
-			else
-			{
-				healthLess = false;
-			}
-
-			// Return Health is Less as Bool
-			return healthLess;
-		}
-
-		// Function to Overload Operator '>' for Person to Evaluate if Health is More than Person 2
-		// Accepts 1 Person Parameter
-		// Returns Bool, passes Data by Member Access
-		bool operator>(Person &Person2)
-		{
-			// Initialize Variable(s) for Person's operator>()
-			bool healthMore = false; // Initialize Bool(s) for storing Bool Data
-
-			// If Person 1's Health is More than Person 2's Health, Health is More
-			if (this->personHealth > Person2.personHealth)
-			{
-				healthMore = true;
-			}
-
-			// If Person 1's Health is Not More than Person 2's Health, Health is Not More
-			else
-			{
-				healthMore = false;
-			}
-
-			// Return Health is More as Bool
-			return healthMore;
-		}
-
-		// Function to Overload Operator '+' for Person to Give Person 1 Person 2's Loot after Kill
-		// Accepts 1 Person Parameter
-		// Returns Void, passes Data by Member Access
-		void operator+(Person &Person2)
-		{
-			// Recover Person 1's Health and Stamina after Kill
-			this->personHealth += (Person2.personhMAX / hSTEAL);
-			if (this->personHealth >= hMAX)
-			{
-				this->personHealth = hMAX; // Don't let Person 1's Health go Above hMAX
-			}
-			this->personStamina = sMAX;
-
-			// Take that Loser's Money
-			this->personMoney += Person2.personMoney;
-
-			// Return Void
-			return;
-		}
-
-		// Function to Overload Operator '-' for Person to Give Person 1 Person 2's Items after Kill
-		// Accepts 1 Person Parameter
-		// Returns Void, passes Data by Member Access
-		void operator-(Person &Person2)
-		{
-			// And his Shit too
-			this->Weapons.push_back(Person2.Weapons.at(Person2.personWeapon));
-			this->Armors.push_back(Person2.Armors.at(Person2.personArmor));
-
-			// Return Void
-			return;
-		}
-
-		// Function to Overload Operator '=' for Person
-		// Accepts 1 Person Parameter
-		// Returns Void, passes Data by Member Access
-		void operator=(Person &Person2)
-		{
-			// Fill Person 1 with Person 2's Data
-			this->personName = Person2.personName; // Specify Name of Person
-			// this->personHealth = Person2.personHealth;	 // Specify Health of Person
-			// this->personStamina = Person2.personStamina; // Specify Stamina of Person
-			this->personMoney = Person2.personMoney;   // Specify Money of Person
-			this->personIndex = Person2.personIndex;   // Specify Index of Person
-			this->personNumber = Person2.personNumber; // Specify Number of Person
-			this->personWeapon = Person2.personWeapon; // Specify Weapon Equipped to Person
-			this->personArmor = Person2.personArmor;   // Specify Armor Equipped to Person
-			this->isPlayer = Person2.isPlayer;		   // Specify if Person is Player
-
-			// Return Void
-			return;
-		}
-	};
-
-	struct Floor
-	{
-		// Initialize Variable(s) for Floor
-		string					 // Initialize String(s) for storing String(s)
-			floorName = "Floor"; // Specify Name of Floor
-		double					 // Initialize Double(s) for storing Double(s)
-			floorLevel = 1,		 // Specify Level of Floor
-			floorModifier = 1,	 // Specify Modifier of Floor
-			floorMoney = fLOOT;	 // Specify Reward of Floor
-		int						 // Initialize Int(s) for storing Int(s)
-			floorIndex = 0,		 // Specify Index of Floor
-			floorNumber = 1;	 // Specify Number of Floor
-		bool					 // Initialize Bool(s) for storing Bool(s)
-			isStore = true;		 // Specify if Store is Available on Floor
-
-		// Initialize Vector(s) for Floor
-		vector<Person> Enemies; // Initialize Person Vector for Floor Enemies
-
-		// OVERLOAD FUNCTIONS
-		// Function to Overload Operator '=' for Floor
-		// Accepts 1 Floor Parameter
-		// Returns Void, passes Data by Member Access
-		void operator=(Floor &Floor2)
-		{
-			// Fill Floor 1 with Floor 2's Data
-			this->floorName = Floor2.floorName;			// Specify Name of Floor
-			this->floorModifier = Floor2.floorModifier; // Specify Modifier of Floor
-			this->floorMoney = Floor2.floorMoney;		// Specify Reward of Floor
-			this->floorIndex = Floor2.floorIndex;		// Specify Index of Floor
-			this->floorNumber = Floor2.floorNumber;		// Specify Number of Floor
-			this->floorLevel = Floor2.floorLevel;		// Specify Level of Floor
-			this->isStore = Floor2.isStore;				// Specify if Store is Available on Floor
-
-			// Return Void
-			return;
-		}
-	};
-
-	// Initialize Vector(s) for Game
-	vector<sChapter> screenMenu; // Initialize sChapter Vector for Menu Screens
-	vector<sChapter> screenUi;	 // Initialize sChapter Vector for Ui Screens
-	vector<Floor> Floors;		 // Initialize Floor Vector for Floors
-	vector<Person> Players;		 // Initialize Person Vector for Players
-
-	// Constructor with Default Parameters
-	Game()
-	{
-		// Add Game Data to Arrays
-		dsFiles();
-
-		// Start Menus
-		dsMenus(INTRO);
-		dsMenus(RULES);
-		dsMenus(SETTINGS);
-
-		// Build Game
-		dsGameNew();
-
-		// Do Combat while Player's Characters are Not all Dead or Player has Not Won
-		// do
-		//{
-		//	// gameCombat();
-		//} while (Players.at(-1).personHealth > 0 && Floors.at(-1).Enemies.at(-1).personHealth > 0);
-
-		// Start End Screen
-		dsMenus(FLOORINTRO);
-	}
-
-	// Destructor with Default Parameters
-	~Game()
-	{
-		// Erase screenMenu Vector
-		screenMenu.erase(screenMenu.begin(), screenMenu.end());
-
-		// Erase screenUi Vector
-		screenUi.erase(screenUi.begin(), screenUi.end());
-
-		// Erase Floors Vector
-		Floors.erase(Floors.begin(), Floors.end());
-
-		// Erase Players Vector
-		Players.erase(Players.begin(), Players.end());
-	}
-
-	// INTERACT FUNCTIONS
+	COMBAT0, // Specify Game's Player Neutral Combat Ui Screen
+	COMBAT1, // Specify Game's Player Attack Combat Ui Screen
+	COMBAT2, // Specify Game's Player Block Combat Ui Screen
+	COMBAT3, // Specify Game's Player Dodge Combat Ui Screen
+	COMBAT4	 // Specify Game's Player Wait Combat Ui Screen
+};
+
+/*  	INITIALIZE GLOBAL FUNCTIONS FOR FILE	-	-	-	-	-	-	-	  */
+/** 	Initialize New Global Functions	-	-	-	-	-	-	-	-	-	 **/
+//
+
+/******************************************************************************
+ *                               GLOBAL DECLARATIONS                          *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                                CLASS DEFINITIONS                           *
+ ******************************************************************************/
+
+class Game /*  	INITIALIZE CLASS FOR GAME	-	-	-	-	-	-	-	-	  */
+{
+public: /** 	Public Member Section for Game Class	-	-	-	-	-	 **/
+	/*  	INITIALIZE PUBLIC STRUCTS FOR GAME CLASS	-	-	-	-	-	  */
+	/** 	Initialize Display Screen Structs	-	-	-	-	-	-	-	 **/
+	struct sLineCol;
+	struct sLine;
+	struct sPage;
+	struct sChapter;
+
+	/** 	Initialize Game Item Structs	-	-	-	-	-	-	-	-	 **/
+	struct Weapon;
+	struct Armor;
+
+	/** 	Initialize Game Character Structs	-	-	-	-	-	-	-	 **/
+	struct Person;
+
+	/** 	Initialize Game Level Structs	-	-	-	-	-	-	-	-	 **/
+	struct Floor;
+
+	/*  	INITIALIZE PUBLIC VECTORS FOR GAME CLASS	-	-	-	-	-	  */
+	/** 	Initialize Display Screen Vectors	-	-	-	-	-	-	-	 **/
+	vector<sChapter> screenMenu;
+	vector<sChapter> screenUi;
+
+	/** 	Initialize Game Character Vectors	-	-	-	-	-	-	-	 **/
+	vector<Person> Players;
+
+	/** 	Initialize Game Level Vectors	-	-	-	-	-	-	-	-	 **/
+	vector<Floor> Floors;
+
+	/*  	INITIALIZE PUBLIC FUNCTIONS FOR GAME CLASS	-	-	-	-	-	  */
+	/** 	Initialize Class Constructor Functions	-	-	-	-	-	-	 **/
+	Game();
+	~Game();
+
+	/** 	Initialize User Input Functions	-	-	-	-	-	-	-	-	 **/
 	string dsChoiceString();
 	double dsChoiceNumber(int = 1, int = 9);
 
-	// FILE FUNCTIONS
-	void dsFiles();
+	/** 	Initialize File Read/Write Functions	-	-	-	-	-	-	 **/
+	void dsFiles(string);
 	void dsFileWrite(int, int = 0, string = "fileNew.txt");
 
-	// MENU FUNCTIONS
+	/** 	Initialize Display Screen (Menus) Functions	-	-	-	-	-	 **/
 	double dsMenuDisplay(int, int = 0);
 	void dsMenus(int, int = 0);
 
-	// UI FUNCTIONS
-	double gameUi(int, int = 0);
+	/** 	Initialize Display Screen (Uis) Functions	-	-	-	-	-	 **/
+	double dsUiDisplay(int, int = 0);
+	void dsUis(int, int = 0);
 
-	// SYSTEM FUNCTIONS
+	/** 	Initialize Game Build Functions	-	-	-	-	-	-	-	-	 **/
 	int rndInt(int, int = 1);
 	bool rng(int = rngPSIZE);
 	Floor dsFloorNew(int = -1);
 	Person dsEnemyNew(int = -1, int = -1);
 	Person dsPlayerNew(int = -1);
 	void dsGameNew();
+
+	/** 	Initialize Game Combat Functions	-	-	-	-	-	-	-	 **/
 	void gameCombat();
 	void gameStaminaRecovery();
 	void gamePlayerTurn(int, int = 0);
 	int gameEnemyAi();
 	void gameEnemyTurn();
 
-	// GAME FUNCTIONS
+	/** 	Initialize Game Extra Functions	-	-	-	-	-	-	-	-	 **/
 	void gameAddItems();
 	void gameProgress();
 	void gameCombats();
 
+	/** 	Initialize Game Trash Functions	-	-	-	-	-	-	-	-	 **/
 	void turnAttackShow();
 	void turnBlockShow();
 	void turnDodgeShow();
@@ -802,46 +205,48 @@ public:
 	void enemyDodgeShow();
 	void enemyWaitShow();
 
-private:
-	// Initialize Private Int(s) for Game
+private: /** 	Private Member Section for Game Class	-	-	-	-	-	 **/
+	/*  	INITIALIZE PRIVATE VARIABLES FOR GAME CLASS	-	-	-	-	-	  */
+	/** 	Initialize Private Ints for Game Class	-	-	-	-	-	-	 **/
 	int
-		// Screen Count
+		/***	Display Screen Ints	-	-	-	-	-	-	-	-	-	-	***/
 		menuCount = 0,
 		screenCount = 0,
 		pageCount = 0,
 		lineCount = 0,
 
-		// Game Settings
+		/***	Game Settings Ints	-	-	-	-	-	-	-	-	-	-	***/
 		floorDifficulty = 3,
 		floorTotal = 10,
 		enemyTotal = 1,
 		playerTotal = 1,
 
-		// Floor/Person Count
+		/***	Game Character/Level Ints	-	-	-	-	-	-	-	-	***/
 		floorCount = 0,
 		enemyCount = 0,
 		playerCount = 0,
 
-		// Game Progress
+		/***	Game Progress Ints	-	-	-	-	-	-	-	-	-	-	***/
 		floorCurrent = 0,
 		floorRound = 0,
 		enemyCurrent = 0,
 		playerCurrent = 0,
 
-		// Game Choices
+		/***	Combat Choice Ints	-	-	-	-	-	-	-	-	-	-	***/
 		enemyChoice = 0,
 		playerChoice = 0,
 
-		// Game Stats
+		/***	Game Statistics Ints	-	-	-	-	-	-	-	-	-	***/
 		playerFloors = 0,
 		playerKills = 0,
 		playerWealth = 0,
 
-		// User Int
+		/***	User Input Ints	-	-	-	-	-	-	-	-	-	-	-	***/
 		userInt = 0;
-	// Initialize Private String(s) for Game
+
+	/** 	Initialize Private Strings for Game Class	-	-	-	-	-	 **/
 	string
-		// Game Files
+		/***	Game Files Strings	-	-	-	-	-	-	-	-	-	-	***/
 		fileMenus = "fileMenus.txt",
 		fileUi = "fileUi.txt",
 		fileItems = "fileItems.txt",
@@ -850,15 +255,31 @@ private:
 		filePlayers = "filePlayers.txt",
 		fileNew = "fileNew.txt",
 
-		// User Name
+		/***	User Input Strings	-	-	-	-	-	-	-	-	-	-	***/
 		userName = "Player",
-
-		// User String
 		userString = "0";
-	// Initialize Private Bool(s) for Game
+
+	/** 	Initialize Private Bools for Game Class	-	-	-	-	-	-	 **/
 	bool
+		/***	Game Value Bools	-	-	-	-	-	-	-	-	-	-	***/
 		userIntisInt = false,
 		userStringisString = false;
+
+	/*  	INITIALIZE PRIVATE FUNCTIONS FOR GAME CLASS	-	-	-	-	-	  */
+	/** 	Initialize New Private Functions	-	-	-	-	-	-	-	 **/
+	//
 };
+
+/******************************************************************************
+ *                                CLASS DEFINITIONS                           *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                               GLOBAL DEFINITIONS                           *
+ ******************************************************************************/
+
+/******************************************************************************
+ *                               GLOBAL DEFINITIONS                           *
+ ******************************************************************************/
 
 #endif
