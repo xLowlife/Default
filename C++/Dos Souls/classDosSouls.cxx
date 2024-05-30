@@ -8,10 +8,10 @@ Purpose of the program:
 Make a game for weekly homework.
 
 Specification Summary:
-A game where 2 opponents fight to the death in a series
-of multi-rounded games of Rock, Paper, Scissors matches until 1 person's health
-reaches 0. The game is played in the format of Attack, Block, Dodge, and runs on
-a system of Stamina which is a resource required to be able to perform an Attack,
+A game where 2 opponents fight to the death in a series of multi-rounded games
+of Rock, Paper, Scissors matches until 1 person's health
+reaches 0. The game is played in the format of Attack, Block, Dodge, and runs
+on a system of Stamina which is a resource required to perform an Attack,
 Block, or Dodge. If a person does NOT have enough stamina to Attack, Block,
 or Dodge, they must "Wait" which is a state of no action leaving them open to
 being attacked, but allowed to regain Stamina while spending 0 Stamina.
@@ -21,7 +21,7 @@ The player enters 1 Floor at a time, and each floor has a
 specifed amount of Enemies per Floor (Default is 1 Enemy per Floor).
 
 Game Rules:
-Attack	beats	Block	-	Attacker deals Damage to Blocker divided by block strength.
+Attack	beats	Block	-	Attacker deals Damage to Blocker / block strength.
 Block	beats	Dodge	-	Blocker deals Damage to Dodger.
 Dodge	beats	Attack	-	Dodger deals Damage to Attacker.
 If a Blocker Blocks an Attack, and the Blocker's Stamina reaches 0 or Lower,
@@ -49,8 +49,9 @@ using namespace std;
  *                               STRUCT DEFINITIONS                           *
  ******************************************************************************/
 
-/*  	DEFINE PUBLIC STRUCTS FOR GAME CLASS	-	-	-	-	-	-	-	  */
+/*  	DEFINE PUBLIC STRUCTS FOR CLASS	-	-	-	-	-	-	-	-	-	  */
 /** 	Define Display Screen Structs	-	-	-	-	-	-	-	-	-	 **/
+
 // Struct that stores Line Columns for Display Screen Pages
 // Contains Ints, Int Pointers, Doubles, Strings, and Bools
 // Defines Struct, passes Data by Member Access
@@ -68,7 +69,9 @@ struct Game::sLineCol
 		*lDoubPtr = nullptr; // Specify sLineCol's Pointer to Variable Doubles
 
 	/** 	Initialize Strings for sLineCol	-	-	-	-	-	-	-	-	 **/
-	string lStr = " "; // Specify sLineCol's Variable String
+	string
+		lStr = " ",	 // Specify sLineCol's Variable String
+		lType = " "; // Specify sLineCol's Pointer Type
 
 	/** 	Initialize Bools for sLineCol	-	-	-	-	-	-	-	-	 **/
 	bool
@@ -297,6 +300,31 @@ struct Game::Person
 	vector<Armor> Armors;	// Initialize Armor Vector for Armors
 
 	/*  	DEFINE FUNCTIONS FOR Person	-	-	-	-	-	-	-	-	-	  */
+	/** 	Define Struct Constructor Functions	-	-	-	-	-	-	-	 **/
+	// Default Constructor for Person
+	// Create New Persons with Default Items
+	// Define Constructor
+	// Person() { PersonNew(); }
+
+	/** 	Define Struct Vector Functions	-	-	-	-	-	-	-	-	 **/
+	// Function to Create New Persons with Default Items
+	// Accepts No Parameters
+	// Returns Void, Passes Data by Member Access
+	void PersonNew()
+	{
+		/*  	INITIALIZE VARIABLES FOR PersonNew()	-	-	-	-	-	  */
+		/** 	Initialize Items for PersonNew()	-	-	-	-	-	-	 **/
+		Weapon *noWeapon = new Weapon; // Initialize Weapon(s) for Weapon Data
+		Armor *noArmor = new Armor;	   // Initialize Armor(s) for Armor Data
+
+		/***	Push Back Items to this->Items Vector	-	-	-	-	-	***/
+		this->Weapons.push_back(*noWeapon);
+		this->Armors.push_back(*noArmor);
+
+		/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	  */
+		return;
+	}
+
 	/** 	Define Struct Overload Functions	-	-	-	-	-	-	-	 **/
 	// Function to Evaluate for Combat Tie
 	// Accepts 1 Person Parameter for Comparing
@@ -838,58 +866,54 @@ struct Game::Floor
 /******************************************************************************
  *                             FUNCTION DEFINITIONS                           *
  ******************************************************************************/
-/** 	Initialize Class Deconstructor Functions	-	-	-	-	-	 **/
-/***	Define Default Class Constructor	-	-	-	-	-	-	***/
-Game::Game()
 
+/** 	Initialize Class Constructor Functions	-	-	-	-	-	-	-	 **/
+/***	Define Default Class Constructor	-	-	-	-	-	-	-	-	***/
+Game::Game()
 {
-	/*  	GATHER MENU DATA FROM GAME FILES	-	-	-	-	-	-	  */
+	/*  	GATHER MENU DATA FROM GAME FILES	-	-	-	-	-	-	-	  */
 	dsFiles(fileMenus);
 
-	/*  	OPEN MENU SCREENS TO BEGIN GAME	-	-	-	-	-	-	-	  */
+	/*  	OPEN MENU SCREENS TO BEGIN GAME	-	-	-	-	-	-	-	-	  */
 	dsMenus(INTRO);
 	dsMenus(RULES);
 	dsMenus(SETTINGS);
 
-	/*  	BUILD NEW GAME LEVELS AND CHARACTERS	-	-	-	-	-	  */
+	/*  	BUILD NEW GAME LEVELS AND CHARACTERS	-	-	-	-	-	-	  */
 	dsGameNew();
 
-	/*  	GATHER UI DATA FROM GAME FILES	-	-	-	-	-	-	-	  */
+	/*  	GATHER UI DATA FROM GAME FILES	-	-	-	-	-	-	-	-	  */
 	dsFiles(fileUi);
 
-	/*  	ENGAGE IN COMBAT UNTIL VICTORY OR GAME OVER	-	-	-	-	  */
-	dsUis(COMBAT1, (1 - 1));
-	dsUis(COMBAT1, (2 - 1));
-	dsUis(COMBAT1, (3 - 1));
-	dsUis(COMBAT1, (4 - 1));
+	/*  	ENGAGE IN COMBAT UNTIL VICTORY OR GAME OVER	-	-	-	-	-	  */
+	do
+	{
+		/** 	Play Until All Levels Done or All Players Dead	-	-	-	 **/
+		gameCombat();
+	} while (Floors.at(Floors.size() - 1)
+					 .Enemies.at(Floors.at(Floors.size() - 1)
+									 .Enemies.size() -
+								 1)
+					 .personHealth > 0 &&
+			 Players.at(Players.size() - 1).personHealth > 0);
 
-	// do
-	//{
-	/** 	Play Until All Levels Done or All Player Characters Dead	 **/
-	// gameCombat();
-	//} while (Floors.at(Floors.size() - 1)
-	//				 .Enemies
-	//				 .at(Floors.at(Floors.size() - 1).Enemies.size() - 1)
-	//				 .personHealth > 0 &&
-	//		 Players.at(Players.size() - 1).personHealth > 0);
-
-	/*  	OPEN OUTRO MENU SCREENS AFTER GAME COMPLETE	-	-	-	-	  */
-	dsMenus(FLOORINTRO);
+	/*  	OPEN OUTRO MENU SCREENS AFTER GAME COMPLETE	-	-	-	-	-	  */
+	// dsMenus(OUTRO);
 }
 
-/***	Define Default Class Deconstructor	-	-	-	-	-	***/
+/***	Define Default Class Deconstructor	-	-	-	-	-	-	-	-	***/
 Game::~Game()
 {
-	/*  	ERASE screenMenu VECTOR	-	-	-	-	-	-	-	-	-	  */
+	/*  	ERASE screenMenu VECTOR	-	-	-	-	-	-	-	-	-	-	  */
 	screenMenu.erase(screenMenu.begin(), screenMenu.end());
 
-	/*  	ERASE screenUi VECTOR	-	-	-	-	-	-	-	-	-	  */
+	/*  	ERASE screenUi VECTOR	-	-	-	-	-	-	-	-	-	-	  */
 	screenUi.erase(screenUi.begin(), screenUi.end());
 
-	/*  	ERASE Floors VECTOR	-	-	-	-	-	-	-	-	-	-	  */
+	/*  	ERASE Floors VECTOR	-	-	-	-	-	-	-	-	-	-	-	  */
 	Floors.erase(Floors.begin(), Floors.end());
 
-	/*  	ERASE Players VECTOR	-	-	-	-	-	-	-	-	-	  */
+	/*  	ERASE Players VECTOR	-	-	-	-	-	-	-	-	-	-	  */
 	Players.erase(Players.begin(), Players.end());
 }
 
@@ -1086,24 +1110,21 @@ double Game::dsChoiceNumber(int choiceMin, int choiceMax)
  *                      File Read/Write Functions                             *
  ******************************************************************************/
 
-// Function to Access Game Files for Game Data
-// Accepts No Parameter(s)
+// Function to Retrieve Game Data from Game Files
+// Accepts 1 String Parameter for Name of File to Read
 // Returns Void, passes Data by Member Access
 void Game::dsFiles(string dsFileName)
 {
-	// Initialize Variable(s) for dsFiles()
-	ifstream dsFile; // Initialize ifstream(s) for storing ifstream(s)
+	/*  	INITIALIZE VARIABLES FOR dsFiles()	-	-	-	-	-	-	-	  */
+	/** 	Initialize Fstreams for dsFiles()	-	-	-	-	-	-	-	 **/
+	fstream dsFile;
 
-	// Open dsFileName
-	dsFile.open(dsFileName);
-	// If dsFileName did Open, Continue
-	if (dsFile.is_open())
+	/*  	OPEN THE FILE WITH FileOpen()	-	-	-	-	-	-	-	-	  */
+	/** 	If File Opens Correctly, Retrieve Game Data	-	-	-	-	-	 **/
+	if (fileOpen(dsFile, dsFileName,
+				 false) == true)
 	{
-		// Output dsFileName opened successfully to console
-		cout << "File, " << dsFileName << ", opened successfully" << endl
-			 << endl;
-
-		// Initialize Strings(s) for storing String(s), In Order of getline Use Order
+		/***	Initialize Strings for Retrieving Game Data	-	-	-	-	***/
 		string
 			pageRows,	 // Specify sPage's Line Rows
 			pageCols,	 // Specify sPage's Line Columns
@@ -1115,256 +1136,376 @@ void Game::dsFiles(string dsFileName)
 			isLastPage,	 // Specify if sPage is Last in Screen
 			isLineEmpty, // Specify sLine's Empty State
 			lineIndex,	 // Specify sLine's Line Index
-			lineSel,	 // Specify sLine's Selection Number if sLine is Selectable
+			lineSel,	 // Specify sLine's Selection Number
 			lineInfo,	 // Specify sLine's Variable States
 			lineString,	 // Specify sLine's Variable String
 			lineTrash;	 // Specify Trash Variable
 
-		// Fill New Chapter's Data and Vectors
+		/*  	RETRIEVE NEW CHAPTERS FOR DISPLAY SCREENS	-	-	-	-	  */
+		/** 	Retrieve New Chapters Until Signal to Stop is Read	-	-	 **/
 		do
 		{
-			// Initialize New sChapter(s) for storing New Chapter Data
+			/***	Initialize sChapters for Storing New Screen Chapters	***/
 			sChapter newChapter;
 
-			// Fill New Pages's Data and Vectors
+			/*  	RETRIEVE NEW PAGES FOR DISPLAY SCREENS	-	-	-	-	  */
+			/** 	Retrieve New Pages Until Signal to Stop is Read	-	-	 **/
 			do
 			{
-				// Initialize New sPage(s) for storing New Page Data
+				/***	Initialize sPages for Storing New Chapter Pages	-	***/
 				sPage newPage;
 
-				// PAGE DIMENSIONS
-				// Store New Page's Line Row Amount in pageRows
+				/*  	RETRIEVE DATA FOR PAGE DIMENSIONS	-	-	-	-	  */
+				/** 	Retrieve Page's Total Line Rows	-	-	-	-	-	 **/
 				getline(dsFile, pageRows, '-');
-				// Specify New Page's Line Row Amount
+				/***	Add Page's Total Line Rows to New Page	-	-	-	***/
 				newPage.pageRows = stoi(pageRows);
-				// Store New Page's Line Column Amount in pageCols
+
+				/** 	Retrieve Page's Total Line Columns	-	-	-	-	 **/
 				getline(dsFile, pageCols, '-');
-				// Specify New Page's Line Column Amount
+				/***	Add Page's Total Line Columns to New Page	-	-	***/
 				newPage.pageCols = stoi(pageCols);
-				// Advance to Next Line in dsFile
+
+				/*  	ADVANCE TO NEXT LINE IN FILE	-	-	-	-	-	  */
 				getline(dsFile, lineTrash);
 
-				// PAGE INDEXES
-				// Store New Chapter's Chapter Index in chapIndex
+				/*  	RETRIEVE DATA FOR PAGE INDEXES	-	-	-	-	-	  */
+				/** 	Retrieve Chapter's Index in Screen Vector	-	-	 **/
 				getline(dsFile, chapIndex, ';');
-				// Specify New Chapter's Chapter Index
+				/***	Add Chapter's Index to New Chapter	-	-	-	-	***/
 				newChapter.chapIndex = stoi(chapIndex);
-				// Store New Page's Page Index in chapIndex
+
+				/** 	Retrieve Page's Index in Screen Vector	-	-	-	 **/
 				getline(dsFile, pageIndex, ';');
-				// Specify New Page's Page Index
+				/***	Add Pages's Index to New Page	-	-	-	-	-	***/
 				newPage.pageIndex = stoi(pageIndex);
 
-				// PAGE MIN CHOICES
-				// Store New Page's Minimum User Choice in pageMin
+				/*  	RETRIEVE DATA FOR MINIMUM USER CHOICE	-	-	-	  */
+				/** 	Retrieve Page's Minimum Choice for User	-	-	-	 **/
 				getline(dsFile, pageMin, ';');
-				// If pageMin[0] == '+', Specify "Infinite" Positive Minimum User Choice
+
+				/*  	CHECK FOR "INFINITE" MINIMUM USER CHOICE	-	-	  */
+				/** 	If pageMin[0] == '+', Specify Positive "Infinite"	 **/
 				if (pageMin[0] == '+')
 				{
+					/***	Specify a Positive "Infinite" Minimum Choice	***/
 					newPage.pageMin = ((100 * 100) * (100 * 100));
 				}
-				// If pageMin[0] == '-', Specify "Infinite" Negative Minimum User Choice
+
+				/** 	If pageMin[0] == '-', Specify Negative "Infinite"	 **/
 				else if (pageMin[0] == '-')
 				{
+					/***	Specify a Negative "Infinite" Minimum Choice	***/
 					newPage.pageMin = (((-100 * 100)) * (100 * 100));
 				}
-				// If pageMin == Number, Specify Minimum User Choice
+
+				/** 	If pageMin[0] == Number, Specify Number as Minimum	 **/
 				else
 				{
-					// Specify New Page's Minimum User Choice
+					/***	Specify Number as Minimum Choice	-	-	-	***/
 					newPage.pageMin = stoi(pageMin);
 				}
 
-				// PAGE MAX CHOICES
-				// Store New Page's Maximum User Choice in pageMax
+				/*  	RETRIEVE DATA FOR MAXIMUM USER CHOICE	-	-	-	  */
+				/** 	Retrieve Page's Maximum Choice for User	-	-	-	 **/
 				getline(dsFile, pageMax, ';');
-				// If pageMax[0] == '+', Specify "Infinite" Positive Maximum User Choice
+
+				/*  	CHECK FOR "INFINITE" MAXIMUM USER CHOICE	-	-	  */
+				/** 	If pageMax[0] == '+', Specify Positive "Infinite"	 **/
 				if (pageMax[0] == '+')
 				{
+					/***	Specify a Positive "Infinite" Maximum Choice	***/
 					newPage.pageMax = (1000 * 1000);
 				}
-				// If pageMax[0] == '-', Specify "Infinite" Negative Maximum User Choice
+
+				/** 	If pageMax[0] == '-', Specify Negative "Infinite"	 **/
 				else if (pageMax[0] == '-')
 				{
+					/***	Specify a Negative "Infinite" Maximum Choice	***/
 					newPage.pageMax = ((-1000) * 1000);
 				}
-				// If pageMax[0] == Number, Specify Maximum User Choice
+
+				/** 	If pageMax[0] == Number, Specify Number as Maximum	 **/
 				else
 				{
-					// Specify New Page's Maximum User Choice
+					/***	Specify Number as Maximum Choice	-	-	-	***/
 					newPage.pageMax = stoi(pageMax);
 				}
 
-				// PAGE INFO
-				// Store Note of if New Chapter is Last in Screen
+				/*  	CHECK FOR SIGNALS TO STOP NEW DISPLAY SCREENS	-	  */
+				/** 	Retrieve Signal to Stop New Chapters	-	-	-	 **/
 				getline(dsFile, isLastChap, ';');
-				// Store Note of if New Page is Last in Screen
+				/** 	Retrieve Signal to Stop New Pages	-	-	-	-	 **/
 				getline(dsFile, isLastPage, ';');
-				// Store New Chapter's Name in newChapter.chapName
+
+				/*  	RETRIEVE DATA FOR DISPLAY SCREEN NAMES	-	-	-	  */
+				/** 	Retrieve Chapter's Name and Add to New Chapter	-	 **/
 				getline(dsFile, newChapter.chapName, ';');
-				// Store New Page's Name in newPage.pageName
+				/** 	Retrieve Page's Name and Add to New Page	-	-	 **/
 				getline(dsFile, newPage.pageName, ';');
-				// Advance to Next Line in dsFile
+
+				/*  	ADVANCE TO NEXT LINE IN FILE	-	-	-	-	-	  */
 				getline(dsFile, lineTrash);
 
-				// PAGE LINES
-				// Fill New Lines's Data and Vectors
+				/*  	RETRIEVE NEW PAGE LINES FOR DISPLAY SCREENS	-	-	  */
+				/** 	Loop through Page's Total Line Rows from File	-	 **/
 				for (int pageRow = 0; pageRow < newPage.pageRows; ++pageRow)
 				{
-					// Initialize New sLine(s) for storing New Line Data
+					/***	Initialize sLines for Storing New Page Lines	***/
 					sLine newLine;
 
-					// LINE INFO
-					// Store Note of if New Line is Empty
+					/*  	RETRIEVE DATA FOR IF LINE IS EMPTY	-	-	-	  */
+					/** 	Retrieve Signal to Know if Line is Empty	-	 **/
 					getline(dsFile, isLineEmpty, ';');
-					// Store New Line's Line Index in lineIndex
+
+					/*  	RETRIEVE DATA FOR LINE INDEXES	-	-	-	-	  */
+					/** 	Retrieve Line's Index in Page Vector	-	-	 **/
 					getline(dsFile, lineIndex, ';');
-					// Specify New Line's Line Index
+					/***	Add Line's Index to New Line	-	-	-	-	***/
 					newLine.lineIndex = stoi(lineIndex);
-					// Specify New Line's Name
+					/***	Add Line's Name to New Line	-	-	-	-	-	***/
 					newLine.lineName.append(lineIndex);
 
-					// LINE SELECTION
-					// Store Note of if New Line can be Selected
+					/*  	RETRIEVE DATA FOR LINE SELECTION	-	-	-	  */
+					/** 	Retrieve Signal for if Line Can be Selected	-	 **/
 					getline(dsFile, lineInfo, ';');
-					// Specify New Line Column 0's Line Column Index
+					/***	Add Line Column 0's Index to Column 0	-	-	***/
 					newLine.sLineCols.at(0).lcolIndex = 0;
-					// Specify New Line Column 0's String
+					/***	Add Line Column 0's Name to Column 0	-	-	***/
 					newLine.sLineCols.at(0).lStr = "Column 0";
-					// If New Line CAN be Selected, Add Data on How to New Line's Vectors
+
+					/*  	CHECK IF PAGE LINE CAN BE SELECTED	-	-	-	  */
+					/** 	If Line Can be Selected, Add Info to Column 0	 **/
 					if (lineInfo[0] == '+')
 					{
-						// Specify New Line Column 0's Required User Choice as true
+						/***	Add true to Column 0's Selection Bool	-	***/
 						newLine.sLineCols.at(0).lInfo = true;
-						// Store New Line's Required Choice for Select in lineSel
+
+						/***	Retrieve Number Required to Select Line	-	***/
 						getline(dsFile, lineSel, ';');
-						// Specify New Line Column 0's Required User Choice
+						/***	Add Number to Select Line to Column 0	-	***/
 						newLine.sLineCols.at(0).lNum = stoi(lineSel);
 					}
-					// If New Line CANNOT be Selected, Advance to Next Line Column
+
+					/** 	If Line Can't be Selected, Check if Line is 0	 **/
 					else
 					{
-						// Advance to Next Line Column in dsFile
+						/*  	TRASH DATA IF NOT LINE 0	-	-	-	-	  */
+						/** 	Retrieve Data to Check Before Trashing	-	 **/
 						getline(dsFile, lineTrash, ';');
-						// If New Line is Line 0, Do NOT Trash String
+
+						/** 	If Line is 0, Add Line Selected Message	-	 **/
 						if (pageRow == 0)
 						{
-							// Specify New Page's Selected Message
+							/***	Add Line Selected Message to New Page	***/
 							newPage.pageSel = lineTrash;
 						}
 					}
 
-					// LINE COLUMNS
-					// Fill New Lines's lSTRS Vector with String(s)
-					for (int pageCol = 1; pageCol < (newPage.pageCols + 1); ++pageCol)
+					/*  	RETRIEVE NEW LINE COLUMNS FOR DISPLAY SCREENS	  */
+					/** 	Loop through Line's Total Columns from File	-	 **/
+					for (int pageCol = 1;
+						 pageCol < (newPage.pageCols + 1);
+						 ++pageCol)
 					{
-						// Create New Line Column
+						/***	Create New Column for Storing Columns Data	***/
 						newLine.sLineNew();
 
-						// Store Note of if New Lines's Line Column needs Input
+						/*  	RETRIEVE DATA FOR COLUMN INPUT	-	-	-	  */
+						/** 	Retrieve Signal for if Column Needs Input	 **/
 						getline(dsFile, lineInfo, ';');
-						// Specify New Line Column's Line Column Index
-						newLine.sLineCols.at(newLine.sLineCols.size() - 1).lcolIndex = stoi(lineInfo.substr(1));
-						// If New Lines's Line Column needs Input, Add true to newLine.sLineCols.at(-1).lInfo
+						/***	Add Column's Index to Last Column	-	-	***/
+						newLine
+							.sLineCols
+							.at(newLine.sLineCols.size() - 1)
+							.lcolIndex = stoi(lineInfo.substr(2));
+
+						/*  	CHECK IF LAST COLUMN NEEDS INPUT	-	-	  */
+						/** 	If Column Needs Input, Add Info to Column	 **/
 						if (lineInfo[0] == '+')
 						{
-							// Specify New Line Column's Required User Choice as true
-							newLine.sLineCols.at(newLine.sLineCols.size() - 1).lInfo = true;
+							/***	Add true to Last Column's Input Bool	***/
+							newLine
+								.sLineCols
+								.at(newLine.sLineCols.size() - 1)
+								.lInfo = true;
+
+							/***	Add Column's Input Type to Last Column	***/
+							newLine
+								.sLineCols
+								.at(newLine.sLineCols.size() - 1)
+								.lType = lineInfo[1];
 						}
 
-						// If New Line is NOT Marked Empty, Add String to newLine.lSTRS
+						/*  	CHECK IF LINE IS EMPTY	-	-	-	-	-	  */
+						/** 	If Line is Not Empty, Add Data to Columns	 **/
 						if (isLineEmpty[0] == '+')
 						{
-							// Store New Line's Line Column String in lineString
+							/*  	RETRIEVE DATA FOR COLUMN STRING	-	-	  */
+							/** 	Retrieve Column's String	-	-	-	 **/
 							getline(dsFile, lineString, ';');
-							// If New Line's Line Column String is "sLine/", Split Next Line in Half
+
+							/*  	CHECK IF NEXT COLUMN STRING NEEDS HALVED  */
+							/** 	If String is "sLine/", Cut Next String	 **/
 							if (lineString == "sLine/")
 							{
-								// Advance to Next Line Column in Loop
+								/*  	ADVANCE TO NEXT COLUMN IN LOOP	-	  */
 								++pageCol;
-								// Store Note of if Next Line's Line Column needs Input
+
+								/*  	RETRIEVE DATA FOR NEXT COLUMN	-	  */
+								/** 	Retrieve Signal for if Needs Input	 **/
 								getline(dsFile, lineInfo, ';');
-								// Store Next Line's Line Column String in lineString
+
+								/** 	Retrieve Next Column's String to Cut **/
 								getline(dsFile, lineString, ';');
-								// Split Next Line in Half, and Add Both Halves to newLine.lSTRS
+								/***	Cut Next Column's String in Half	***/
 								(newLine / lineString);
-								// Specify Next Line Column's Line Column Index
-								newLine.sLineCols.at(newLine.sLineCols.size() - 1).lcolIndex = stoi(lineInfo.substr(1));
-								// If Next Lines's Line Column needs Input, Add true to newLine.lINFO.at(pageCol)
+								/***	Add Column's Index to Next Column	***/
+								newLine
+									.sLineCols
+									.at(newLine.sLineCols.size() - 1)
+									.lcolIndex =
+									stoi(lineInfo.substr(2));
+
+								/*  	CHECK IF NEXT COLUMN NEEDS INPUT	  */
+								/** 	If Next Column Needs Input	-	-	 **/
 								if (lineInfo[0] == '+')
 								{
-									// Specify New Line Column's Required User Choice as true
-									newLine.sLineCols.at(newLine.sLineCols.size() - 1).lInfo = true;
+									/***	Add Number to Select Col to Col	***/
+									newLine
+										.sLineCols
+										.at(newLine.sLineCols.size() - 1)
+										.lInfo = true;
+
+									/***	Add Col's Input Type to Col	-	***/
+									newLine
+										.sLineCols
+										.at(newLine.sLineCols.size() - 1)
+										.lType = lineInfo[1];
 								}
 							}
-							// If New Line's Line Column String is NOT "sLine/", Add Line Column String
+							/** 	If String is Not "sLine/", Add String	 **/
 							else
 							{
-								// Add New Line Column's String to newLine.sLineCols.at(-1).lStr
-								newLine.sLineCols.at(newLine.sLineCols.size() - 1).lStr = lineString;
+								/** 	Add String to Last Column	-	-	 **/
+								newLine
+									.sLineCols
+									.at(newLine.sLineCols.size() - 1)
+									.lStr = lineString;
 							}
 						}
-						// If New Line is Marked Empty, Trash All Strings
+
+						/** 	If Line is Empty, Leave Column Empty	-	 **/
 						else
 						{
-							// Advance to Next Line Column in dsFile
+							/*  	ADVANCE TO NEXT COLUMN IN FILE	-	-	  */
 							getline(dsFile, lineTrash, ';');
 						}
 					}
-					// Add New Line to New Page's newPage.sLines
+
+					/***	Add New Line to New Page	-	-	-	-	-	***/
 					newPage.sLines.push_back(newLine);
-					// Advance to Next Line in dsFile
+
+					/*  	ADVANCE TO NEXT LINE IN FILE	-	-	-	-	  */
 					getline(dsFile, lineTrash);
 				}
-				// Add New Page to New Chapter's newChapter.sPages
-				newChapter.sPages.push_back(newPage);
-			} while (isLastPage[0] == '+');
 
-			// If File is Menu File, Add to screenMenu
+				/***	Add New Page to New Chapter	-	-	-	-	-	-	***/
+				newChapter.sPages.push_back(newPage);
+
+			} while (isLastPage[0] == '+'); /*  	SIGNAL TO STOP NEW PAGES  */
+
+			/*  	CHECK WHICH DISPLAY SCREEN TO STORE DATA	-	-	-	  */
+			/** 	If Display Screen is a Menu Screen, Add to screenMenu	 **/
 			if (dsFileName == fileMenus)
 			{
-				// Add New Chapter to screenMenu Vector
+				/***	Push Back New Chapter to screenMenu Vector	-	-	***/
 				screenMenu.push_back(newChapter);
 			}
-			// If File is Ui File, Add to screenUi
+
+			/** 	If Display Screen is a Ui Screen, Add to screenUi	-	 **/
 			else if (dsFileName == fileUi)
 			{
-				// Add New Chapter to screenMenu Vector
+				/***	Push Back New Chapter to screenUi Vector	-	-	***/
 				screenUi.push_back(newChapter);
 			}
+		} while (isLastChap[0] == '+'); /*  	SIGNAL TO STOP NEW CHAPTERS	  */
 
-		} while (isLastChap[0] == '+');
-		// Close dsFileName
+		/*  	CLOSE GAME FILE WHEN DONE RETRIEVING GAME DATA	-	-	-	  */
 		dsFile.close();
 
-		// If File is Menu File, Add to screenMenu
+		/*  	CHECK WHICH DISPLAY SCREEN TO STORE POINTERS TO GAME DATA	  */
+		/** 	If Screen is a Menu Screen, Add Pointers to Menu Chapters	 **/
 		if (dsFileName == fileMenus)
 		{
-			// Add Menu's Setting Screen Pointers for Line Column Pointers to Follow
-			screenMenu.at(SETTINGS).chapPtrs.push_back(&floorDifficulty);
-			screenMenu.at(SETTINGS).chapPtrs.push_back(&floorTotal);
-			screenMenu.at(SETTINGS).chapPtrs.push_back(&enemyTotal);
-			screenMenu.at(SETTINGS).chapPtrs.push_back(&playerTotal);
+			/***	Add Pointers to chapPtr Vector in Settings Chapter	-	***/
+			screenMenu.at(SETTINGS)
+				.chapPtrs.push_back(&floorDifficulty);
+			screenMenu.at(SETTINGS)
+				.chapPtrs.push_back(&floorTotal);
+			screenMenu.at(SETTINGS)
+				.chapPtrs.push_back(&enemyTotal);
+			screenMenu.at(SETTINGS)
+				.chapPtrs.push_back(&playerTotal);
 
-			// Add Menu's FLOOR INTRO Screen Pointers for Line Column Pointers to Follow
-			screenMenu.at(FLOORINTRO).chapPtrs.push_back(&floorCurrent);
+			/***	Add Pointers to chapPtr Vector in Floor Intro Chapter	***/
+			screenMenu.at(FLOORINTRO)
+				.chapPtrs.push_back(&floorCurrent);
 
-			// Make Menu Screen Page's Line Column Pointers Follow Pointers in Menu Screen's chapPtrs Vector
-			for (int menuScreen = 0; menuScreen < screenMenu.size(); ++menuScreen)
-			{ // Loop through Menu Screens
-				for (int screenPage = 0; screenPage < screenMenu.at(menuScreen).sPages.size(); ++screenPage)
-				{ // Loop through Menu Screen's Pages
-					// Track which chapPtr in screenMenu.at(menuScreen).chapPtrs to Point to
+			/*  	CHECK WHICH CHAPTERS NEED DATA FROM CHAPTER VECTOR	-	  */
+			/** 	Loop through Menu Screen Chapters to Find Chapters	-	 **/
+			for (int menuScreen = 0;
+				 menuScreen < screenMenu.size();
+				 ++menuScreen)
+			{
+				/*  	CHECK WHICH PAGES NEED DATA FROM CHAPTER VECTOR	-	  */
+				/** 	Loop through Chapter Pages to Find Pages	-	-	 **/
+				for (int screenPage = 0;
+					 screenPage < screenMenu.at(menuScreen)
+									  .sPages.size();
+					 ++screenPage)
+				{
+					/***	Initialize Ints for Tracking Pointers Needed	***/
 					int chapPtrsAmount = 0;
-					for (int pageLine = 1; chapPtrsAmount < screenMenu.at(menuScreen).chapPtrs.size() && pageLine < screenMenu.at(menuScreen).sPages.at(screenPage).sLines.size(); ++pageLine)
-					{ // Loop through Menu Screen Page's Line Rows While chapPtrsAmount < screenMenu.at(menuScreen).chapPtrs.size()
-						for (int LineCol = 1; LineCol < screenMenu.at(menuScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.size(); ++LineCol)
-						{ // Loop through Menu Screen Page's Line Columns
-							// If Menu Screen Page's Line Column needs chapPtr, Point to it's chapPtr in screenMenu.at(menuScreen).chapPtrs
-							if (screenMenu.at(menuScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.at(LineCol).lInfo == true)
+
+					/*  	CHECK WHICH PAGE LINES NEED DATA FROM CHAPTER	  */
+					/** 	Loop through Page Lines to Find Lines	-	-	 **/
+					/** 	Break Loop If Out of Pointers to Offer	-	-	 **/
+					for (int pageLine = 1;
+						 chapPtrsAmount < screenMenu.at(menuScreen)
+											  .chapPtrs.size() &&
+						 pageLine < screenMenu.at(menuScreen)
+										.sPages.at(screenPage)
+										.sLines.size();
+						 ++pageLine)
+					{
+						/*  	CHECK WHICH LINE COLUMNS NEED DATA	-	-	  */
+						/** 	Loop through Line Columns to Find Columns	 **/
+						for (int LineCol = 1;
+							 LineCol < screenMenu.at(menuScreen)
+										   .sPages.at(screenPage)
+										   .sLines.at(pageLine)
+										   .sLineCols.size();
+							 ++LineCol)
+						{
+							/*  	POINT LINE COLUMNS TO DATA FROM CHAPTER	  */
+							/** 	If Line Column Needs Data from Chapter	 **/
+							if (screenMenu.at(menuScreen)
+									.sPages.at(screenPage)
+									.sLines.at(pageLine)
+									.sLineCols.at(LineCol)
+									.lInfo == true)
 							{
-								// Point to chapPtr in screenMenu.at(menuScreen).chapPtrs.at(chapPtrsAmount)
-								screenMenu.at(menuScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.at(LineCol).lNumPtr = screenMenu.at(menuScreen).chapPtrs.at(chapPtrsAmount);
-								// Specify Next chapPtr in screenMenu.at(menuScreen).chapPtrs to Point to
+								/***	Point Column to Data from Chapter	***/
+								screenMenu.at(menuScreen)
+									.sPages.at(screenPage)
+									.sLines.at(pageLine)
+									.sLineCols.at(LineCol)
+									.lNumPtr =
+									screenMenu.at(menuScreen)
+										.chapPtrs.at(chapPtrsAmount);
+
+								/***	Increase Count of Columns with Ptrs	***/
 								++chapPtrsAmount;
 							}
 						}
@@ -1372,36 +1513,87 @@ void Game::dsFiles(string dsFileName)
 				}
 			}
 		}
-		// If File is Ui File, Add to screenUi
+
+		/** 	If Screen is a Ui Screen, Add Pointers to Ui Chapters	-	 **/
 		else if (dsFileName == fileUi)
 		{
-			// Add Ui's Combat Screen Pointers for Line Column Pointers to Follow
-			screenUi.at(COMBAT1).chapPtrs.push_back(&floorCurrent);
-			screenUi.at(COMBAT1).chapPtrs.push_back(&floorRound);
-			screenUi.at(COMBAT1).doubPtrs.push_back(&Players.at(playerCurrent).personHealth);
-			screenUi.at(COMBAT1).doubPtrs.push_back(&Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth);
-			screenUi.at(COMBAT1).doubPtrs.push_back(&Players.at(playerCurrent).personStamina);
-			screenUi.at(COMBAT1).doubPtrs.push_back(&Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina);
-			screenUi.at(COMBAT1).doubPtrs.push_back(&Players.at(playerCurrent).personMoney);
-			screenUi.at(COMBAT1).chapPtrs.push_back(&enemyCount);
+			/***	Add Pointers to chapPtr Vector in Combat 1 Chapter	-	***/
+			screenUi.at(COMBAT1)
+				.chapPtrs.push_back(&floorCurrent);
+			screenUi.at(COMBAT1)
+				.chapPtrs.push_back(&floorRound);
+			screenUi.at(COMBAT1)
+				.doubPtrs.push_back(&Players.at(0)
+										 .personHealth);
+			screenUi.at(COMBAT1)
+				.doubPtrs.push_back(&Floors.at(0)
+										 .Enemies.at(0)
+										 .personHealth);
+			screenUi.at(COMBAT1)
+				.doubPtrs.push_back(&Players.at(0)
+										 .personStamina);
+			screenUi.at(COMBAT1)
+				.doubPtrs.push_back(&Floors.at(0)
+										 .Enemies.at(0)
+										 .personStamina);
+			screenUi.at(COMBAT1)
+				.doubPtrs.push_back(&Players.at(0)
+										 .personMoney);
+			screenUi.at(COMBAT1)
+				.chapPtrs.push_back(&enemyCount);
 
-			// Make Ui Screen Page's Line Column Pointers Follow Pointers in Ui Screen's chapPtrs Vector
-			for (int uiScreen = 0; uiScreen < screenUi.size(); ++uiScreen)
-			{ // Loop through Ui Screens
-				for (int screenPage = 0; screenPage < screenUi.at(uiScreen).sPages.size(); ++screenPage)
-				{ // Loop through Ui Screen's Pages
-					// Track which chapPtr in screenUi.at(uiScreen).chapPtrs to Point to
+			/*  	CHECK WHICH CHAPTERS NEED DATA FROM CHAPTER VECTOR	-	  */
+			/** 	Loop through Ui Screen Chapters to Find Chapters	-	 **/
+			for (int uiScreen = 0;
+				 uiScreen < screenUi.size();
+				 ++uiScreen)
+			{
+				/*  	CHECK WHICH PAGES NEED DATA FROM CHAPTER VECTOR	-	  */
+				/** 	Loop through Chapter Pages to Find Pages	-	-	 **/
+				for (int screenPage = 0;
+					 screenPage < screenUi.at(uiScreen)
+									  .sPages.size();
+					 ++screenPage)
+				{
+					/***	Initialize Ints for Tracking Pointers Needed	***/
 					int chapPtrsAmount = 0;
-					for (int pageLine = 1; chapPtrsAmount < screenUi.at(uiScreen).chapPtrs.size() && pageLine < 2 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.size()*/; ++pageLine)
-					{ // Loop through Ui Screen Page's Line Rows While chapPtrsAmount < screenUi.at(uiScreen).chapPtrs.size()
-						for (int LineCol = 1; LineCol < screenUi.at(uiScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.size(); ++LineCol)
-						{ // Loop through Ui Screen Page's Line Columns
-							// If Ui Screen Page's Line Column needs chapPtr, Point to it's chapPtr in screenUi.at(uiScreen).chapPtrs
-							if (screenUi.at(uiScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.at(LineCol).lInfo == true)
+
+					/*  	CHECK WHICH PAGE LINES NEED DATA FROM CHAPTER	  */
+					/** 	Loop through Page Lines to Find Lines	-	-	 **/
+					/** 	Break Loop If Out of Pointers to Offer	-	-	 **/
+					for (int pageLine = 1;
+						 chapPtrsAmount < screenUi.at(uiScreen)
+											  .chapPtrs.size() &&
+						 pageLine < 2 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.size()*/;
+						 ++pageLine)
+					{
+						/*  	CHECK WHICH LINE COLUMNS NEED DATA	-	-	  */
+						/** 	Loop through Line Columns to Find Columns	 **/
+						for (int LineCol = 1;
+							 LineCol < screenUi.at(uiScreen)
+										   .sPages.at(screenPage)
+										   .sLines.at(pageLine)
+										   .sLineCols.size();
+							 ++LineCol)
+						{
+							/*  	POINT LINE COLUMNS TO DATA FROM CHAPTER	  */
+							/** 	If Line Column Needs Data from Chapter	 **/
+							if (screenUi.at(uiScreen)
+									.sPages.at(screenPage)
+									.sLines.at(pageLine)
+									.sLineCols.at(LineCol)
+									.lInfo == true)
 							{
-								// Point to chapPtr in screenUi.at(uiScreen).chapPtrs.at(chapPtrsAmount)
-								screenUi.at(uiScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.at(LineCol).lNumPtr = screenUi.at(uiScreen).chapPtrs.at(chapPtrsAmount);
-								// Specify Next chapPtr in screenUi.at(uiScreen).chapPtrs to Point to
+								/***	Point Column to Data from Chapter	***/
+								screenUi.at(uiScreen)
+									.sPages.at(screenPage)
+									.sLines.at(pageLine)
+									.sLineCols.at(LineCol)
+									.lNumPtr =
+									screenUi.at(uiScreen)
+										.chapPtrs.at(chapPtrsAmount);
+
+								/***	Increase Count of Columns with Ptrs	***/
 								++chapPtrsAmount;
 							}
 						}
@@ -1409,23 +1601,55 @@ void Game::dsFiles(string dsFileName)
 				}
 			}
 
-			// Make Ui Screen Page's Line Column Pointers Follow Pointers in Ui Screen's doubPtrs Vector
-			for (int uiScreen = 0; uiScreen < screenUi.size(); ++uiScreen)
-			{ // Loop through Ui Screens
-				for (int screenPage = 0; screenPage < screenUi.at(uiScreen).sPages.size(); ++screenPage)
-				{ // Loop through Ui Screen's Pages
-					// Track which chapPtr in screenUi.at(uiScreen).doubPtrs to Point to
+			/*  	CHECK WHICH CHAPTERS NEED DATA FROM CHAPTER VECTOR	-	  */
+			/** 	Loop through Ui Screen Chapters to Find Chapters	-	 **/
+			for (int uiScreen = 0;
+				 uiScreen < screenUi.size();
+				 ++uiScreen)
+			{
+				/*  	CHECK WHICH PAGES NEED DATA FROM CHAPTER VECTOR	-	  */
+				/** 	Loop through Chapter Pages to Find Pages	-	-	 **/
+				for (int screenPage = 0;
+					 screenPage < screenUi.at(uiScreen)
+									  .sPages.size();
+					 ++screenPage)
+				{
+					/***	Initialize Ints for Tracking Pointers Needed	***/
 					int doubPtrsAmount = 0;
-					for (int pageLine = 2; doubPtrsAmount < screenUi.at(uiScreen).doubPtrs.size() && pageLine < 5 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.size()*/; ++pageLine)
-					{ // Loop through Ui Screen Page's Line Rows While doubPtrsAmount < screenUi.at(uiScreen).doubPtrs.size()
-						for (int LineCol = 1; LineCol < 2 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.size()*/; ++LineCol)
-						{ // Loop through Ui Screen Page's Line Columns
-							// If Ui Screen Page's Line Column needs chapPtr, Point to it's chapPtr in screenUi.at(uiScreen).doubPtrs
-							if (screenUi.at(uiScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.at(LineCol).lInfo == true)
+
+					/*  	CHECK WHICH PAGE LINES NEED DATA FROM CHAPTER	  */
+					/** 	Loop through Page Lines to Find Lines	-	-	 **/
+					/** 	Break Loop If Out of Pointers to Offer	-	-	 **/
+					for (int pageLine = 2;
+						 doubPtrsAmount < screenUi.at(uiScreen)
+											  .doubPtrs.size() &&
+						 pageLine < 5 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.size()*/;
+						 ++pageLine)
+					{
+						/*  	CHECK WHICH LINE COLUMNS NEED DATA	-	-	  */
+						/** 	Loop through Line Columns to Find Columns	 **/
+						for (int LineCol = 1;
+							 LineCol < 2 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.size()*/;
+							 ++LineCol)
+						{
+							/*  	POINT LINE COLUMNS TO DATA FROM CHAPTER	  */
+							/** 	If Line Column Needs Data from Chapter	 **/
+							if (screenUi.at(uiScreen)
+									.sPages.at(screenPage)
+									.sLines.at(pageLine)
+									.sLineCols.at(LineCol)
+									.lInfo == true)
 							{
-								// Point to chapPtr in screenUi.at(uiScreen).doubPtrs.at(doubPtrsAmount)
-								screenUi.at(uiScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.at(LineCol).lDoubPtr = screenUi.at(uiScreen).doubPtrs.at(doubPtrsAmount);
-								// Specify Next chapPtr in screenUi.at(uiScreen).doubPtrs to Point to
+								/***	Point Column to Data from Chapter	***/
+								screenUi.at(uiScreen)
+									.sPages.at(screenPage)
+									.sLines.at(pageLine)
+									.sLineCols.at(LineCol)
+									.lDoubPtr =
+									screenUi.at(uiScreen)
+										.doubPtrs.at(doubPtrsAmount);
+
+								/***	Increase Count of Columns with Ptrs	***/
 								++doubPtrsAmount;
 							}
 						}
@@ -1435,14 +1659,7 @@ void Game::dsFiles(string dsFileName)
 		}
 	}
 
-	// If dsFileName did Not Open, Error
-	else
-	{
-		// Output dsFileName failed to open to console
-		cout << "File, " << dsFileName << ", failed to open" << endl
-			 << endl;
-	}
-	// Return Void
+	/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	-	  */
 	return;
 }
 
@@ -1451,21 +1668,19 @@ void Game::dsFiles(string dsFileName)
 // Returns Void, passes Data by Member Access
 void Game::dsFileWrite(int chapIndex, int pageIndex, string dsWriteFileName)
 {
-	// Initialize Variable(s) for dsFileWrite()
-	std::ofstream dsWriteFile; // Initialize ofstream(s) for storing ofstream(s)
-	// Initialize String Vector for Menu Screen Page's Line Strings
+	/*  	INITIALIZE VARIABLES FOR dsFileWrite()	-	-	-	-	-	-	  */
+	/** 	Initialize Fstreams for dsFileWrite()	-	-	-	-	-	-	 **/
+	fstream dsWriteFile;
+
+	/** 	Initialize Vectors for dsFileWrite()	-	-	-	-	-	-	 **/
 	vector<string> lineStrings;
 
-	// Open dsWriteFileName
-	dsWriteFile.open(dsWriteFileName);
-	// If dsWriteFileName did Open, Continue
-	if (dsWriteFile.is_open())
+	/*  	OPEN THE FILE WITH FileOpen()	-	-	-	-	-	-	-	-	  */
+	/** 	If File Opens Correctly, Write Game Data to File	-	-	-	 **/
+	if (fileOpen(dsWriteFile, dsWriteFileName, true) == true)
 	{
-		// Output dsWriteFileName opened successfully to console
-		cout << "File, " << dsWriteFileName << ", opened successfully" << endl
-			 << endl;
-
-		// Initialize Strings(s) for storing String(s), In Order of getline Use Order
+		/*  	INITIALIZE VARIABLES FOR WRITING DATA	-	-	-	-	-	  */
+		/** 	Initialize Strings for Writing Data	-	-	-	-	-	-	 **/
 		string
 			lineHeader = " ", // Specify String for Header Line
 			lineData = " ";	  // Specify String for Data Line
@@ -1616,14 +1831,8 @@ void Game::dsFileWrite(int chapIndex, int pageIndex, string dsWriteFileName)
 		// Close dsWriteFileName
 		dsWriteFile.close();
 	}
-	// If dsWriteFileName did Not Open, Error
-	else
-	{
-		// Output dsWriteFileName failed to open to console
-		cout << "File, " << dsWriteFileName << ", failed to open" << endl
-			 << endl;
-	}
-	// Return Void
+
+	/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	-	  */
 	return;
 }
 
@@ -1663,7 +1872,7 @@ double Game::dsMenuDisplay(int chapIndex, int pageIndex)
 						.sLines.size();
 		 ++pageLine)
 	{
-		/*  	INITIALIZE VECTORS FOR dsMenuDisplay()	-	-	-	-	-	-	  */
+		/*  	INITIALIZE VECTORS FOR dsMenuDisplay()	-	-	-	-	-	  */
 		vector<string> lineStrings;
 
 		/*  	CHECK FOR LINE COLUMNS	-	-	-	-	-	-	-	-	-	  */
@@ -1689,14 +1898,33 @@ double Game::dsMenuDisplay(int chapIndex, int pageIndex)
 					.sLineCols.at(LineCol)
 					.lInfo == true)
 			{
-				lineString.replace(
-					lineString.find_first_of("~"),
-					1,
-					to_string(*screenMenu.at(chapIndex)
-								   .sPages.at(pageIndex)
-								   .sLines.at(pageLine)
-								   .sLineCols.at(LineCol)
-								   .lNumPtr));
+				/*  	CHECK IF SCREEN IS FLOOR INTRO	-	-	-	-	-	  */
+				/** 	If Screen is Floor Intro Screen, Add 1	-	-	-	 **/
+				if (chapIndex == FLOORINTRO)
+				{
+					lineString.replace(
+						lineString.find_first_of("~"),
+						1,
+						to_string(*screenMenu.at(chapIndex)
+									   .sPages.at(pageIndex)
+									   .sLines.at(pageLine)
+									   .sLineCols.at(LineCol)
+									   .lNumPtr +
+								  1));
+				}
+
+				/** 	If Screen is Not Floor Intro Screen, Do Not Add 1	 **/
+				else
+				{
+					lineString.replace(
+						lineString.find_first_of("~"),
+						1,
+						to_string(*screenMenu.at(chapIndex)
+									   .sPages.at(pageIndex)
+									   .sLines.at(pageLine)
+									   .sLineCols.at(LineCol)
+									   .lNumPtr));
+				}
 			}
 
 			/***	Add lineString to lineStrings Vector	-	-	-	-	***/
@@ -1947,17 +2175,442 @@ void Game::dsMenus(int chapIndex, int pageIndex)
  *                       Display Screen Functions (Ui)                        *
  ******************************************************************************/
 
-// Function to Display Game Menus
+// Function to Display Uis Screens Combat Text
+// Accepts No Parameters
+// Returns Void, Passes Data by Member Access
+void Game::dsUisCombat()
+{
+	/*  	CHECK ENEMY'S LOSING ACTION	-	-	-	-	-	-	-	-	-	  */
+	/** 	If Enemy Attacked, Display Enemy Attack Messsage	-	-	-	 **/
+	if (Floors.at(floorCurrent)
+			.Enemies.at(enemyCurrent)
+			.isAttacking == true)
+	{
+		/*  	CHECK PLAYER'S WINNING ACTION	-	-	-	-	-	-	-	  */
+		/** 	If Player Attacked, Display Player Attack Messsage	-	-	 **/
+		if (Players.at(playerCurrent).isAttacking == true)
+		{
+			cout << Players.at(playerCurrent).personName
+				 << " hit "
+				 << Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personName
+				 << " at the same time for "
+				 << (Players.at(playerCurrent)
+						 .Weapons.at(Players.at(playerCurrent)
+										 .personWeapon)
+						 .weaponDamage -
+					 Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .Armors.at(Floors.at(floorCurrent)
+										.Enemies.at(enemyCurrent)
+										.personArmor)
+						 .armorDefense)
+				 << " damage." << endl;
+		}
+
+		/** 	If Player Dodged, Display Player Dodge Messsage	-	-	-	 **/
+		else if (Players.at(playerCurrent).isDodging == true)
+		{
+			cout << Players.at(playerCurrent).personName
+				 << " dodged "
+				 << Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personName
+				 << "'s attack and hit them after for "
+				 << (Players.at(playerCurrent)
+						 .Weapons.at(Players.at(playerCurrent)
+										 .personWeapon)
+						 .weaponDamage -
+					 Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .Armors.at(Floors.at(floorCurrent)
+										.Enemies.at(enemyCurrent)
+										.personArmor)
+						 .armorDefense)
+				 << " damage." << endl;
+		}
+	}
+
+	/** 	If Enemy Blocked, Display Enemy Block Messsage	-	-	-	-	 **/
+	else if (Floors.at(floorCurrent)
+				 .Enemies.at(enemyCurrent)
+				 .isBlocking == true)
+	{
+		/*  	CHECK PLAYER'S WINNING ACTION	-	-	-	-	-	-	-	  */
+		/** 	If Player Attacked, Display Player Attack Messsage	-	-	 **/
+		if (Players.at(playerCurrent).isAttacking == true)
+		{
+			/*  	CHECK IF PLAYER DIED	-	-	-	-	-	-	-	-	  */
+			/** 	If Enemy Died, Display Enemy Dead Messsage	-	-	-	 **/
+			if (Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personHealth -
+					((Players.at(playerCurrent)
+						  .Weapons.at(Players.at(playerCurrent)
+										  .personWeapon)
+						  .weaponDamage -
+					  Floors.at(floorCurrent)
+						  .Enemies.at(enemyCurrent)
+						  .Armors.at(Floors.at(floorCurrent)
+										 .Enemies.at(enemyCurrent)
+										 .personArmor)
+						  .armorDefense) /
+					 gameConsts[bBUFF]) <=
+				0)
+			{
+				cout << Players.at(playerCurrent).personName
+					 << " hit "
+					 << Floors.at(floorCurrent)
+							.Enemies.at(enemyCurrent)
+							.personName
+					 << "'s shield and damaged them for "
+					 << ((Players.at(playerCurrent)
+							  .Weapons.at(Players.at(playerCurrent)
+											  .personWeapon)
+							  .weaponDamage -
+						  Floors.at(floorCurrent)
+							  .Enemies.at(enemyCurrent)
+							  .Armors.at(Floors.at(floorCurrent)
+											 .Enemies.at(enemyCurrent)
+											 .personArmor)
+							  .armorDefense) /
+						 gameConsts[bBUFF])
+					 << " damage." << endl;
+			}
+
+			/** 	If Enemy Alive, Display Enemy Alive Messsage	-	-	 **/
+			else
+			{
+				cout << Players.at(playerCurrent).personName
+					 << " hit "
+					 << Floors.at(floorCurrent)
+							.Enemies.at(enemyCurrent)
+							.personName
+					 << "'s shield and damaged them for "
+					 << ((Players.at(playerCurrent)
+							  .Weapons.at(Players.at(playerCurrent)
+											  .personWeapon)
+							  .weaponDamage -
+						  Floors.at(floorCurrent)
+							  .Enemies.at(enemyCurrent)
+							  .Armors.at(Floors.at(floorCurrent)
+											 .Enemies.at(enemyCurrent)
+											 .personArmor)
+							  .armorDefense) /
+						 gameConsts[bBUFF])
+					 << " damage." << endl;
+
+				/*  	CHECK IF ENEMY RAN OUT OF STAMINA	-	-	-	-	  */
+				/** 	If Out of Stam, Display Enemy Stunned Messsage	-	 **/
+				if ((Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .personStamina -
+					 gameConsts[bCOST]) <= 0)
+				{
+					cout << Players.at(playerCurrent).personName
+						 << " stunned "
+						 << Floors.at(floorCurrent)
+								.Enemies.at(enemyCurrent)
+								.personName
+						 << " and hit them again for "
+						 << (Players.at(playerCurrent)
+								 .Weapons.at(Players.at(playerCurrent)
+												 .personWeapon)
+								 .weaponDamage -
+							 Floors.at(floorCurrent)
+								 .Enemies.at(enemyCurrent)
+								 .Armors.at(Floors.at(floorCurrent)
+												.Enemies.at(enemyCurrent)
+												.personArmor)
+								 .armorDefense)
+						 << " damage." << endl;
+				}
+			}
+		}
+	}
+
+	/** 	If Enemy Dodged, Display Enemy Dodge Messsage	-	-	-	-	 **/
+	else if (Floors.at(floorCurrent)
+				 .Enemies.at(enemyCurrent)
+				 .isDodging == true)
+	{
+		/*  	CHECK PLAYER'S WINNING ACTION	-	-	-	-	-	-	-	  */
+		/** 	If Player Blocked, Display Player Block Messsage	-	-	 **/
+		if (Players.at(playerCurrent).isBlocking == true)
+		{
+			cout << Players.at(playerCurrent).personName
+				 << " caught "
+				 << Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personName
+				 << "'s dodge and hit them them after for "
+				 << (Players.at(playerCurrent)
+						 .Weapons.at(Players.at(playerCurrent)
+										 .personWeapon)
+						 .weaponDamage -
+					 Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .Armors.at(Floors.at(floorCurrent)
+										.Enemies.at(enemyCurrent)
+										.personArmor)
+						 .armorDefense)
+				 << " damage." << endl;
+		}
+	}
+
+	/** 	If Enemy Waited, Display Enemy Wait Messsage	-	-	-	-	 **/
+	else if (Floors.at(floorCurrent)
+				 .Enemies.at(enemyCurrent)
+				 .isWaiting == true)
+	{
+		/*  	CHECK PLAYER'S WINNING ACTION	-	-	-	-	-	-	-	  */
+		/** 	If Player Attacked, Display Player Attack Messsage	-	-	 **/
+		if (Players.at(playerCurrent).isAttacking == true)
+		{
+			cout << Players.at(playerCurrent).personName
+				 << " attacked "
+				 << Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personName
+				 << " while they hesitated and hit them for "
+				 << (Players.at(playerCurrent)
+						 .Weapons.at(Players.at(playerCurrent)
+										 .personWeapon)
+						 .weaponDamage -
+					 Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .Armors.at(Floors.at(floorCurrent)
+										.Enemies.at(enemyCurrent)
+										.personArmor)
+						 .armorDefense)
+				 << " damage." << endl;
+		}
+	}
+
+	/*  	CHECK PLAYER'S LOSING ACTION	-	-	-	-	-	-	-	-	  */
+	/** 	If Player Attacked, Display Player Attack Messsage	-	-	-	 **/
+	if (Players.at(playerCurrent).isAttacking == true)
+	{
+		/*  	CHECK ENEMY'S WINNING ACTION	-	-	-	-	-	-	-	  */
+		/** 	If Enemy Attacked, Display Enemy Attack Messsage	-	-	 **/
+		if (Floors.at(floorCurrent)
+				.Enemies.at(enemyCurrent)
+				.isAttacking == true)
+		{
+			cout << Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personName
+				 << " hit "
+				 << Players.at(playerCurrent).personName
+				 << " at the same time for "
+				 << (Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .Weapons.at(Floors.at(floorCurrent)
+										 .Enemies.at(enemyCurrent)
+										 .personWeapon)
+						 .weaponDamage -
+					 Players.at(playerCurrent)
+						 .Armors.at(Players.at(playerCurrent)
+										.personArmor)
+						 .armorDefense)
+				 << " damage." << endl;
+		}
+
+		/** 	If Enemy Dodged, Display Enemy Dodge Messsage	-	-	-	 **/
+		else if (Floors.at(floorCurrent)
+					 .Enemies.at(enemyCurrent)
+					 .isDodging == true)
+		{
+			cout << Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personName
+				 << " dodged "
+				 << Players.at(playerCurrent).personName
+				 << "'s attack and hit them after for "
+				 << (Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .Weapons.at(Floors.at(floorCurrent)
+										 .Enemies.at(enemyCurrent)
+										 .personWeapon)
+						 .weaponDamage -
+					 Players.at(playerCurrent)
+						 .Armors.at(Players.at(playerCurrent)
+										.personArmor)
+						 .armorDefense)
+				 << " damage." << endl;
+		}
+	}
+
+	/** 	If Player Blocked, Display Player Block Messsage	-	-	-	 **/
+	else if (Players.at(playerCurrent).isBlocking == true)
+	{
+		/*  	CHECK ENEMY'S WINNING ACTION	-	-	-	-	-	-	-	  */
+		/** 	If Enemy Attacked, Display Enemy Attack Messsage	-	-	 **/
+		if (Floors.at(floorCurrent)
+				.Enemies.at(enemyCurrent)
+				.isAttacking == true)
+		{
+			/*  	CHECK IF PLAYER DIED	-	-	-	-	-	-	-	-	  */
+			/** 	If Player Died, Display Player Dead Messsage	-	-	 **/
+			if (Players.at(playerCurrent).personHealth -
+					((Floors.at(floorCurrent)
+						  .Enemies.at(enemyCurrent)
+						  .Weapons.at(Floors.at(floorCurrent)
+										  .Enemies.at(enemyCurrent)
+										  .personWeapon)
+						  .weaponDamage -
+					  Players.at(playerCurrent)
+						  .Armors.at(Players.at(playerCurrent)
+										 .personArmor)
+						  .armorDefense) /
+					 gameConsts[bBUFF]) <=
+				0)
+			{
+				cout << Floors.at(floorCurrent)
+							.Enemies.at(enemyCurrent)
+							.personName
+					 << " hit "
+					 << Players.at(playerCurrent).personName
+					 << "'s shield and damaged them for "
+					 << ((Floors.at(floorCurrent)
+							  .Enemies.at(enemyCurrent)
+							  .Weapons.at(Floors.at(floorCurrent)
+											  .Enemies.at(enemyCurrent)
+											  .personWeapon)
+							  .weaponDamage -
+						  Players.at(playerCurrent)
+							  .Armors.at(Players.at(playerCurrent)
+											 .personArmor)
+							  .armorDefense) /
+						 gameConsts[bBUFF])
+					 << " damage." << endl;
+			}
+
+			/** 	If Player is Alive, Display Player Alive Messsage	-	 **/
+			else
+			{
+				cout << Floors.at(floorCurrent)
+							.Enemies.at(enemyCurrent)
+							.personName
+					 << " hit "
+					 << Players.at(playerCurrent).personName
+					 << "'s shield and damaged them for "
+					 << ((Floors.at(floorCurrent)
+							  .Enemies.at(enemyCurrent)
+							  .Weapons.at(Floors.at(floorCurrent)
+											  .Enemies.at(enemyCurrent)
+											  .personWeapon)
+							  .weaponDamage -
+						  Players.at(playerCurrent)
+							  .Armors.at(Players.at(playerCurrent)
+											 .personArmor)
+							  .armorDefense) /
+						 gameConsts[bBUFF])
+					 << " damage." << endl;
+
+				/*  	CHECK IF PLAYER RAN OUT OF STAMINA	-	-	-	-	  */
+				/** 	If Out of Stam, Display Player Stunned Messsage	-	 **/
+				if ((Players.at(playerCurrent).personStamina -
+					 gameConsts[bCOST]) <= 0)
+				{
+					cout << Floors.at(floorCurrent)
+								.Enemies.at(enemyCurrent)
+								.personName
+						 << " stunned "
+						 << Players.at(playerCurrent).personName
+						 << " and hit them again for "
+						 << (Floors.at(floorCurrent)
+								 .Enemies.at(enemyCurrent)
+								 .Weapons.at(Floors.at(floorCurrent)
+												 .Enemies.at(enemyCurrent)
+												 .personWeapon)
+								 .weaponDamage -
+							 Players.at(playerCurrent)
+								 .Armors.at(Players.at(playerCurrent)
+												.personArmor)
+								 .armorDefense)
+						 << " damage." << endl;
+				}
+			}
+		}
+	}
+
+	/** 	If Player Dodged, Display Player Dodge Messsage	-	-	-	-	 **/
+	else if (Players.at(playerCurrent).isDodging == true)
+	{
+		/*  	CHECK ENEMY'S WINNING ACTION	-	-	-	-	-	-	-	  */
+		/** 	If Enemy Blocked, Display Enemy Block Messsage	-	-	-	 **/
+		if (Floors.at(floorCurrent)
+				.Enemies.at(enemyCurrent)
+				.isBlocking == true)
+		{
+			cout << Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personName
+				 << " caught "
+				 << Players.at(playerCurrent).personName
+				 << "'s dodge and hit them them after for "
+				 << (Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .Weapons.at(Floors.at(floorCurrent)
+										 .Enemies.at(enemyCurrent)
+										 .personWeapon)
+						 .weaponDamage -
+					 Players.at(playerCurrent)
+						 .Armors.at(Players.at(playerCurrent)
+										.personArmor)
+						 .armorDefense)
+				 << " damage." << endl;
+		}
+	}
+
+	/** 	If Player Waited, Display Player Wait Messsage	-	-	-	-	 **/
+	else if (Players.at(playerCurrent).isWaiting == true)
+	{
+		/*  	CHECK ENEMY'S WINNING ACTION	-	-	-	-	-	-	-	  */
+		/** 	If Enemy Attacked, Display Enemy Attack Messsage	-	-	 **/
+		if (Floors.at(floorCurrent)
+				.Enemies.at(enemyCurrent)
+				.isAttacking == true)
+		{
+			cout << Floors.at(floorCurrent)
+						.Enemies.at(enemyCurrent)
+						.personName
+				 << " attacked "
+				 << Players.at(playerCurrent).personName
+				 << " while they hesitated and hit them for "
+				 << (Floors.at(floorCurrent)
+						 .Enemies.at(enemyCurrent)
+						 .Weapons.at(Floors.at(floorCurrent)
+										 .Enemies.at(enemyCurrent)
+										 .personWeapon)
+						 .weaponDamage -
+					 Players.at(playerCurrent)
+						 .Armors.at(Players.at(playerCurrent)
+										.personArmor)
+						 .armorDefense)
+				 << " damage." << endl;
+		}
+	}
+
+	/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	-	  */
+	return;
+}
+
+// Function to Display Game Uis Screens
 // Accepts 2 Int Parameters, 1 for Menu Chapter, and 1 for Menu Page
 // Returns Double, passes Data by Member Access
-double Game::dsUiDisplay(int chapIndex, int pageIndex)
+double Game::dsUisDisplay(int chapIndex, int pageIndex)
 {
-	/*  	INITIALIZE VARIABLES FOR dsMenuDisplay()	-	-	-	-	-	  */
-	/** 	Initialize Doubles for dsMenuDisplay()	-	-	-	-	-	-	 **/
+	/*  	INITIALIZE VARIABLES FOR dsUisDisplay()	-	-	-	-	-	-	  */
+	/** 	Initialize Doubles for dsUisDisplay()	-	-	-	-	-	-	 **/
 	double userDouble = (-1);
 
-	/** 	Initialize Strings for dsMenuDisplay()	-	-	-	-	-	-	 **/
+	/** 	Initialize Strings for dsUisDisplay()	-	-	-	-	-	-	 **/
 	string lineString = " ";
+
+	int newDouble = (-1);
 
 	/*  	OUTPUT DISPLAY SCREEN TO CONSOLE	-	-	-	-	-	-	-	  */
 	/** 	Clear Console to Refresh Display Screen	-	-	-	-	-	-	 **/
@@ -1970,53 +2623,79 @@ double Game::dsUiDisplay(int chapIndex, int pageIndex)
 
 	/** 	Loop through Page's Line Rows, Checking for Line Columns	-	 **/
 	for (int pageLine = 1;
-		 pageLine < screenMenu.at(chapIndex)
+		 pageLine < screenUi.at(chapIndex)
 						.sPages.at(pageIndex)
 						.sLines.size();
 		 ++pageLine)
 	{
-		/*  	INITIALIZE VECTORS FOR dsMenuDisplay()	-	-	-	-	-	-	  */
+		/*  	INITIALIZE VECTORS FOR dsUisDisplay()	-	-	-	-	-	  */
 		vector<string> lineStrings;
 
 		/*  	CHECK FOR LINE COLUMNS	-	-	-	-	-	-	-	-	-	  */
 		/** 	Loop through Page's Line Colums, Checking for Line Data	-	 **/
 		for (int LineCol = 1;
-			 LineCol < screenMenu.at(chapIndex)
+			 LineCol < screenUi.at(chapIndex)
 						   .sPages.at(pageIndex)
 						   .sLines.at(pageLine)
 						   .sLineCols.size();
 			 ++LineCol)
 		{
 			/***	Specify lineString is Page's Line Column String	-	-	***/
-			lineString = screenMenu.at(chapIndex)
+			lineString = screenUi.at(chapIndex)
 							 .sPages.at(pageIndex)
 							 .sLines.at(pageLine)
 							 .sLineCols.at(LineCol)
 							 .lStr;
 
 			/***	If Page's Line Column Pointer Points to Value, Swap "~"	***/
-			if (screenMenu.at(chapIndex)
-					.sPages.at(pageIndex)
-					.sLines.at(pageLine)
-					.sLineCols.at(LineCol)
-					.lInfo == true)
-			{
-				lineString.replace(
-					lineString.find_first_of("~"),
-					1,
-					to_string(*screenMenu.at(chapIndex)
-								   .sPages.at(pageIndex)
-								   .sLines.at(pageLine)
-								   .sLineCols.at(LineCol)
-								   .lNumPtr));
-			}
+			//			if (screenUi.at(chapIndex)
+			//					.sPages.at(pageIndex)
+			//					.sLines.at(pageLine)
+			//					.sLineCols.at(LineCol)
+			//					.lInfo == true)
+			//			{
+			//				switch (screenUi.at(chapIndex)
+			//							.sPages.at(pageIndex)
+			//							.sLines.at(pageLine)
+			//							.sLineCols.at(LineCol)
+			//							.lType[0])
+			//				{
+			//				case 'i':
+			//					lineString.replace(
+			//						lineString.find_first_of("~"),
+			//						1,
+			//						to_string(*screenUi.at(chapIndex)
+			//									   .sPages.at(pageIndex)
+			//									   .sLines.at(pageLine)
+			//									   .sLineCols.at(LineCol)
+			//									   .lNumPtr));
+			//					break;
+			//				case 'd':
+			//					//
+			//					newDouble =
+			//						*screenUi.at(chapIndex)
+			//							 .sPages.at(pageIndex)
+			//							 .sLines.at(pageLine)
+			//							 .sLineCols.at(LineCol)
+			//							 .lDoubPtr;
+			//
+			//					//
+			//					lineString.replace(
+			//						lineString.find_first_of("~"),
+			//						1,
+			//						to_string(newDouble));
+			//					break;
+			//				default:
+			//					break;
+			//				}
+			//			}
 
 			/***	Add lineString to lineStrings Vector	-	-	-	-	***/
 			lineStrings.push_back(lineString);
 		}
 
 		/** 	If Page Line is Selected, Append Page's Selected Message	 **/
-		if (screenMenu.at(chapIndex)
+		if (screenUi.at(chapIndex)
 				.sPages.at(pageIndex)
 				.sLines.at(pageLine)
 				.sLineCols.at(0)
@@ -2024,19 +2703,45 @@ double Game::dsUiDisplay(int chapIndex, int pageIndex)
 		{
 			/***	Append Page's Selected Message							***/
 			lineStrings.at(lineStrings.size() - 1)
-				.append(screenMenu.at(chapIndex)
+				.append(screenUi.at(chapIndex)
 							.sPages.at(pageIndex)
 							.pageSel);
 		}
 
-		/** 	Display Left Line String, Centered by setw(40)			-	 **/
-		cout << setw(40) << right << lineStrings.at(0);
+		/*  	CHECK IF pageLine <= 4	-	-	-	-	-	-	-	-	-	  */
+		/** 	If Page Line <= 4, Display Lines Anchored to Edge	-	-	 **/
+		if (pageLine <= 4)
+		{
+			/** 	Display Left Line String, Centered by setw(40)	-	-	 **/
+			cout << setw(40) << left << lineStrings.at(0);
 
-		/** 	Display Right Line String, Centered by setw(40)			-	 **/
-		cout << setw(40) << left << lineStrings.at(1);
+			/** 	Display Right Line String, Centered by setw(40)	-	-	 **/
+			cout << setw(40) << right << lineStrings.at(1);
+		}
+
+		/** 	If Page Line > 4, Display Lines Anchored to Center	-	-	 **/
+		else
+		{
+			/** 	Display Left Line String, Centered by setw(40)	-	-	 **/
+			cout << setw(40) << right << lineStrings.at(0);
+
+			/** 	Display Right Line String, Centered by setw(40)	-	-	 **/
+			cout << setw(40) << left << lineStrings.at(1);
+		}
 
 		/*  	OUTPUT NEWLINE	-	-	-	-	-	-	-	-	-	-	-	  */
 		cout << endl;
+
+		/*  	CHECK FOR LINE 7	-	-	-	-	-	-	-	-	-	-	  */
+		/** 	If Page Line is 7, Display Uis Screens Combat Text	-	-	 **/
+		if (pageLine == 7)
+		{
+			/***	Display Uis Screens Combat Text, Centered by setw(40)	***/
+			dsUisCombat();
+
+			/***	Skip 2 Pages Ahead	-	-	-	-	-	-	-	-	-	***/
+			pageLine += 2;
+		}
 	}
 
 	/** 	Display Bottom Border, Each Corner Spaced by setw(40)	-	-	 **/
@@ -2046,13 +2751,13 @@ double Game::dsUiDisplay(int chapIndex, int pageIndex)
 
 	/** 	Display Final Line, Centered by setw(40)			-	-	-	 **/
 	cout << setw(40) << right
-		 << screenMenu.at(chapIndex)
+		 << screenUi.at(chapIndex)
 				.sPages.at(pageIndex)
 				.sLines.at(0)
 				.sLineCols.at(1)
 				.lStr
 		 << left
-		 << screenMenu.at(chapIndex)
+		 << screenUi.at(chapIndex)
 				.sPages.at(pageIndex)
 				.sLines.at(0)
 				.sLineCols.at(2)
@@ -2060,10 +2765,10 @@ double Game::dsUiDisplay(int chapIndex, int pageIndex)
 
 	/** 	Take User Input, Min/Max Specified by Display Screen	-	-	 **/
 	userDouble = dsChoiceNumber(
-		screenMenu.at(chapIndex)
+		screenUi.at(chapIndex)
 			.sPages.at(pageIndex)
 			.pageMin,
-		screenMenu.at(chapIndex)
+		screenUi.at(chapIndex)
 			.sPages.at(pageIndex)
 			.pageMax);
 
@@ -2091,7 +2796,7 @@ void Game::dsUis(int chapIndex, int pageIndex)
 	do
 	{
 		// Display Menu and Take User Choice
-		userDouble = dsMenuDisplay(chapIndex, pageIndex);
+		userDouble = dsUisDisplay(chapIndex, pageIndex);
 		userInt = userDouble;
 
 		// If pageIndex == 0, Display Menu Page 1
@@ -2323,62 +3028,58 @@ bool Game::rng(int rngChance)
 // Accepts No Parameter(s) by Default
 // If Entered, also Accepts 1 Int Parameter to Specify Floor Index
 // Returns Floor, passes Data by Member Access
-Game::Floor Game::dsFloorNew(int floorIndex)
+Game::Floor &Game::dsFloorNew(int floorIndex)
 {
 	// Initialize Variable(s) for dsFloorNew()
-	Floor newFloor; // Initialize Floor(s) for storing Floor Data
+	Floor *newFloor = new Floor; // Initialize Floor(s) for storing Floor Data
 
 	// Fill New Floor with Default Floor Data
-	newFloor.floorName = ("Floor " + to_string(floorCount)); // Specify Name of Floor
-	newFloor.floorIndex = floorIndex;						 // Specify Index of Floor
-	newFloor.floorNumber = floorCount;						 // Specify Number of Floor
+	newFloor->floorName = ("Floor " + to_string(floorCount)); // Specify Name of Floor
+	newFloor->floorIndex = floorIndex;						  // Specify Index of Floor
+	newFloor->floorNumber = floorCount;						  // Specify Number of Floor
 
 	// If dsFloorNew() is Called with No Parameter, Specify Index of Floor as Next Index
 	if (floorIndex == (-1))
 	{
-		newFloor.floorIndex = (floorCount - 1); // Specify Index of Floor as Next Index
+		newFloor->floorIndex = (floorCount - 1); // Specify Index of Floor as Next Index
 	}
 
 	// Fill New Floor with Random Floor Data
-	newFloor.floorLevel = (floorIndex + rndInt((3 + floorDifficulty), 0));								 // Specify Level of Floor
-	newFloor.floorModifier = (1.0 + ((newFloor.floorLevel) / 10.0));									 // Specify Modifier of Floor
-	newFloor.floorMoney = (rndInt((gameConsts[fLOOT] * 2), gameConsts[fLOOT]) * newFloor.floorModifier); // Specify Reward of Floor
-	newFloor.isStore = rng(2);
+	newFloor->floorLevel = (floorIndex + rndInt((3 + floorDifficulty), 0));								   // Specify Level of Floor
+	newFloor->floorModifier = (1.0 + ((newFloor->floorLevel) / 10.0));									   // Specify Modifier of Floor
+	newFloor->floorMoney = (rndInt((gameConsts[fLOOT] * 2), gameConsts[fLOOT]) * newFloor->floorModifier); // Specify Reward of Floor
+	newFloor->isStore = rng(2);
 
 	// Return New Floor
-	return newFloor;
+	return *newFloor;
 }
 
 // Function to Create New Enemy
 // Accepts No Parameter(s) by Default
 // If Entered, also Accepts 1 Int Parameter to Specify Enemy Index
 // Returns Person, passes Data by Member Access
-Game::Person Game::dsEnemyNew(int floorIndex, int enemyIndex)
+Game::Person &Game::dsEnemyNew(int floorIndex, int enemyIndex)
 {
 	// Initialize Variable(s) for dsEnemyNew()
-	Weapon noWeapon;					  // Initialize Weapon(s) for storing Weapon Data
-	Armor noArmor;						  // Initialize Armor(s) for storing Armor Data
-	Person newEnemy;					  // Initialize Person(s) for storing Person Data
-	newEnemy.Weapons.push_back(noWeapon); // push_back() noWeapon to New Enemy's Weapon Vector
-	newEnemy.Armors.push_back(noArmor);	  // push_back() noArmor to New Enemy's Armor Vector
+	Person *newEnemy = new Person; // Initialize Person(s) for storing Person Data
 
 	// Fill New Enemy with Default Enemy Data
-	newEnemy.isPlayer = false;								  // Specify Person is Enemy
-	newEnemy.personName = ("Enemy " + to_string(enemyCount)); // Specify Name of Enemy
+	newEnemy->isPlayer = false;								   // Specify Person is Enemy
+	newEnemy->personName = ("Enemy " + to_string(enemyCount)); // Specify Name of Enemy
 	// Specify Maximum amount of Health of Enemy, gameConsts[hBUFF] used to create an upper limit in the future
-	newEnemy.personhMAX = (newEnemy.personHealth * (Floors.at(floorIndex).floorModifier / gameConsts[hBUFF]));
-	newEnemy.personHealth = newEnemy.personhMAX; // Specify Health of Enemy
-	newEnemy.personIndex = enemyIndex;			 // Specify Index of Enemy
-	newEnemy.personNumber = enemyCount;			 // Specify Number of Enemy
+	newEnemy->personhMAX = (newEnemy->personHealth * (Floors.at(floorIndex).floorModifier / gameConsts[hBUFF]));
+	newEnemy->personHealth = newEnemy->personhMAX; // Specify Health of Enemy
+	newEnemy->personIndex = enemyIndex;			   // Specify Index of Enemy
+	newEnemy->personNumber = enemyCount;		   // Specify Number of Enemy
 
 	// If dsEnemyNew() is Called with No Parameter, Specify Index of Enemy as Next Index
 	if (enemyIndex == (-1))
 	{
-		newEnemy.personIndex = (enemyTotal - 1); // Specify Index of Enemy as Next Index
+		newEnemy->personIndex = (enemyTotal - 1); // Specify Index of Enemy as Next Index
 	}
 
 	// Fill New Enemy with Random Enemy Data
-	newEnemy.personMoney = (rndInt((gameConsts[eLOOT] * 2), gameConsts[eLOOT]) * Floors.at(floorIndex).floorModifier); // Specify Reward of Enemy
+	newEnemy->personMoney = (rndInt((gameConsts[eLOOT] * 2), gameConsts[eLOOT]) * Floors.at(floorIndex).floorModifier); // Specify Reward of Enemy
 
 	// Fill New Enemy with Random Weapon and Armor
 	// Weapon newWeapon;					   // Initialize Weapon(s) for storing Weapon Data
@@ -2391,42 +3092,38 @@ Game::Person Game::dsEnemyNew(int floorIndex, int enemyIndex)
 	// Fill New Enemy's rngArray for RNG
 	for (int i = 0; i < gameConsts[rngASIZE]; ++i)
 	{
-		newEnemy.rngArray[i] = (i + 1);
+		newEnemy->rngArray[i] = (i + 1);
 	}
 
 	// Fill New Enemy's choiceArray for Random Choices
 	for (int i = 0; i < gameConsts[rngASIZE]; ++i)
 	{
-		newEnemy.choiceArray[i] = rndInt(gameConsts[rngESIZE]);
+		newEnemy->choiceArray[i] = rndInt(gameConsts[rngESIZE]);
 	}
 
 	// Return New Enemy
-	return newEnemy;
+	return *newEnemy;
 }
 
 // Function to Create New Player
 // Accepts No Parameter(s) by Default
 // If Entered, Accepts 1 Int Parameter to Specify Player Index
 // Returns Person, passes Data by Member Access
-Game::Person Game::dsPlayerNew(int playerIndex)
+Game::Person &Game::dsPlayerNew(int playerIndex)
 {
 	// Initialize Variable(s) for dsPlayerNew()
-	Weapon noWeapon;					   // Initialize Weapon(s) for storing Weapon Data
-	Armor noArmor;						   // Initialize Armor(s) for storing Armor Data
-	Person newPlayer;					   // Initialize Person(s) for storing Person Data
-	newPlayer.Weapons.push_back(noWeapon); // push_back() noWeapon to New Player's Weapon Vector
-	newPlayer.Armors.push_back(noArmor);   // push_back() noArmor to New Player's Armor Vector
+	Person *newPlayer = new Person; // Initialize Person(s) for storing Person Data
 
 	// Fill New Player with Default Player Data
-	newPlayer.isPlayer = true;									 // Specify Person is Player
-	newPlayer.personName = ("Player " + to_string(playerCount)); // Specify Name of Player
-	newPlayer.personIndex = playerIndex;						 // Specify Index of Player
-	newPlayer.personNumber = playerCount;						 // Specify Number of Player
+	newPlayer->isPlayer = true;									  // Specify Person is Player
+	newPlayer->personName = ("Player " + to_string(playerCount)); // Specify Name of Player
+	newPlayer->personIndex = playerIndex;						  // Specify Index of Player
+	newPlayer->personNumber = playerCount;						  // Specify Number of Player
 
 	// If dsPlayerNew() is Called with No Parameter, Specify Index of Player as Next Index
 	if (playerIndex == (-1))
 	{
-		newPlayer.personIndex = (playerCount - 1); // Specify Index of Player as Next Index
+		newPlayer->personIndex = (playerCount - 1); // Specify Index of Player as Next Index
 	}
 
 	// Fill New Player's Name with User Entered Name
@@ -2450,17 +3147,17 @@ Game::Person Game::dsPlayerNew(int playerIndex)
 	// Fill New Player's rngArray for RNG
 	for (int i = 0; i < gameConsts[rngASIZE]; ++i)
 	{
-		newPlayer.rngArray[i] = (i + 1);
+		newPlayer->rngArray[i] = (i + 1);
 	}
 
 	// Fill New Player's choiceArray for Random Choices
 	for (int i = 0; i < gameConsts[rngASIZE]; ++i)
 	{
-		newPlayer.choiceArray[i] = rndInt(gameConsts[rngESIZE]);
+		newPlayer->choiceArray[i] = rndInt(gameConsts[rngESIZE]);
 	}
 
 	// Return New Player
-	return newPlayer;
+	return *newPlayer;
 }
 
 // Function to Create New Game
@@ -2473,6 +3170,7 @@ void Game::dsGameNew()
 	{
 		// Specify Number of Floors Created
 		++floorCount;
+
 		// push_back() New Floor to Floors Vector
 		Floors.push_back(dsFloorNew(i));
 
@@ -2481,8 +3179,12 @@ void Game::dsGameNew()
 		{
 			// Specify Number of Enemies Created
 			++enemyCount;
+
 			// push_back() New Enemy to Enemies Vector
 			Floors.at(i).Enemies.push_back(dsEnemyNew(i, j));
+
+			// Add Default Items to New Enemy
+			Floors.at(i).Enemies.at(Floors.at(i).Enemies.size() - 1).PersonNew();
 		}
 	}
 
@@ -2491,8 +3193,12 @@ void Game::dsGameNew()
 	{
 		// Specify Number of Players Created
 		++playerCount;
+
 		// push_back() New Player to Players Vector
 		Players.push_back(dsPlayerNew(i));
+
+		// Add Default Items to New Player
+		Players.at(Players.size() - 1).PersonNew();
 	}
 
 	// Return Void
@@ -2510,95 +3216,82 @@ void Game::dsGameNew()
 // Function to Engage in Combat
 // Accepts no Parameters
 // Returns Void
-// void Game::gameCombat()
-//{
-//	// Initialize Variable(s) for gameSettings()
-//	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
-//	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
-//	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
-//
-//	for (int i = 0; i < floorTotal; ++i)
-//	{
-//		// Display New Floor Intro
-//		dsMenus(3);
-//
-//		for (int j = 0; j < enemyTotal; ++j)
-//		{
-//			do
-//			{
-//				// Move to Next Round
-//				++floorRound;
-//
-//				// Take Player's Combat Choice
-//				gamePlayerTurn(playerChoice, (enemyChoice - 1));
-//
-//				// Take Enemy's Combat Choice
-//				gameEnemyTurn();
-//
-//				// Consume Stamina for Actions in Combat
-//				Players.at(playerCurrent) -= Floors.at(floorCurrent).Enemies.at(enemyCurrent);
-//
-//				// Deal Damage to Loser in Combat
-//				Players.at(playerCurrent) += Floors.at(floorCurrent).Enemies.at(enemyCurrent);
-//
-//				// Stamina Recovery System
-//				gameStaminaRecovery();
-//			} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
-//			// Move to Next Enemy
-//			++enemyCurrent;
-//		}
-//		// Move to Next Floor
-//		++floorCurrent;
-//	}
+void Game::gameCombat()
+{
+	// Initialize Variable(s) for gameSettings()
+	int userInt = 0;	   // Initialize Int(s) for storing User Int(s)
+	double userDouble = 0; // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;   // Initialize Bool(s) for storing Bool(s)
 
-// Take User Choice of (1 - 5)
-// userInt = dsChoiceNumber(1, 5);
+	for (int i = 0; i < Floors.size(); ++i)
+	{
+		// Display New Floor Intro
+		dsMenus(FLOORINTRO);
 
-// Check User Choice
-// switch (userInt)
-//{
-// case 1: // If User Choice is 1, Continue
-//	isDone = true;
-//	break;
-// case 2: // If User Choice is within range, Continue
-//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 4 to Selected
-//	isDone = false;
-//	break;
-// case 3: // If User Choice is within range, Continue
-//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 5 to Selected
-//	isDone = false;
-//	break;
-// case 4: // If User Choice is within range, Continue
-//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 6 to Selected
-//	isDone = false;
-//	break;
-// case 5: // If User Choice is within range, Continue
-//	// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 7 to Selected
-//	isDone = false;
-//	break;
-// default: // If User Choice is Not within range, Wait
-//	isDone = false;
-//	break;
-//}
+		for (int j = 0; j < Floors.at(floorCurrent).Enemies.size(); ++j)
+		{
+			do
+			{
+				// Move to Next Round
+				++floorRound;
 
-// Fill uiLinesNumbers Array
-// for (int uMENU = 0; uMENU < gameConsts[uMENUS]; ++uMENU)
-//{
-//	// Fill uiLinesNumbers Array Lines
-//	for (int uLINE = 0; uLINE < gameConsts[uLINES]; ++uLINE)
-//	{
-//		// Fill uiLinesNumbers Array Columns
-//		for (int uCOL = 0; uCOL < gameConsts[uCOLS]; ++uCOL)
-//		{
-//			// Fill uiLinesNumbers Array Columns with (-1)
-//			uiLinesNumbers[uMENU][uLINE][uCOL] = (-1);
-//		}
-//	}
-//}
+				// Take Player's Combat Choice
+				gamePlayerTurn(playerChoice, (enemyChoice - 1));
 
-// Return Void
-// return;
-//}
+				// Take Enemy's Combat Choice
+				gameEnemyTurn();
+
+				// Consume Stamina for Actions in Combat
+				Players.at(playerCurrent) -= Floors.at(floorCurrent).Enemies.at(enemyCurrent);
+
+				// Deal Damage to Loser in Combat
+				Players.at(playerCurrent) += Floors.at(floorCurrent).Enemies.at(enemyCurrent);
+
+				// Stamina Recovery System
+				gameStaminaRecovery();
+			} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
+
+			// Move to Next Enemy
+			++enemyCurrent;
+		}
+
+		// Move to Next Floor
+		++floorCurrent;
+	}
+
+	// Take User Choice of(1 - 5)
+	userInt = dsChoiceNumber(1, 5);
+
+	// Check User Choice
+	switch (userInt)
+	{
+	case 1: // If User Choice is 1, Continue
+		isDone = true;
+		break;
+	case 2: // If User Choice is within range, Continue
+		// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 4 to Selected
+		isDone = false;
+		break;
+	case 3: // If User Choice is within range, Continue
+		// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 5 to Selected
+		isDone = false;
+		break;
+	case 4: // If User Choice is within range, Continue
+		// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 6 to Selected
+		isDone = false;
+		break;
+	case 5: // If User Choice is within range, Continue
+		// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 7 to Selected
+		isDone = false;
+		break;
+	default: // If User Choice is Not within range, Wait
+		isDone = false;
+		break;
+	}
+
+	// Return Void
+	return;
+}
 
 // Function to execute Person Attack
 // Accepts no parameters
@@ -2742,92 +3435,110 @@ void Game::gameStaminaRecovery()
 // Function to Take User's Choice in Combat
 // Requires 1 Int Parameter(s) for Current Ui Index
 // Returns Void, passes Data by Member Access
-// void Game::gamePlayerTurn(int uMENU, int uPAGE)
-//{
-//	// Initialize Variable(s) for gamePlayerTurn()
-//	int userInt = (-1);		  // Initialize Int(s) for storing User Int(s)
-//	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
-//	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
-//
-//	// Reset Player
-//	// playerChoice = (-1);
-//	Players.at(playerCurrent).isRecovering = true;
-//	Players.at(playerCurrent).isAttacking = false;
-//	Players.at(playerCurrent).isBlocking = false;
-//	Players.at(playerCurrent).isDodging = false;
-//	Players.at(playerCurrent).isWaiting = false;
-//
-//	// Set Ui Values
-//	// uiLinesNumbers[0][0][0] = Players.at(playerCurrent).personHealth;
-//	// uiLinesNumbers[0][0][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth;
-//	// uiLinesNumbers[0][1][0] = Players.at(playerCurrent).personStamina;
-//	// uiLinesNumbers[0][1][1] = Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina;
-//	// uiLinesNumbers[0][2][0] = Players.at(playerCurrent).personMoney;
-//	// uiLinesNumbers[0][2][1] = (enemyTotal - enemyCurrent);
-//
-//	// Take User's Choice with dsChoiceNumber() while isDone != true;
-//	do
-//	{
-//		// Display Game Ui with Correct Ui Index
-//		userDouble = gameUi(uMENU, uPAGE);
-//		userInt = userDouble;
-//
-//		// Check User Choice
-//		switch (userInt)
-//		{
-//		case 1: // If User Choice is 1, Attack
-//			// If User has enough Stamina, Attack
-//			if (Players.at(playerCurrent).personStamina >= gameConsts[aCOST])
-//			{
-//				Players.at(playerCurrent).isAttacking = true;
-//				isDone = true;
-//			}
-//			// If User does Not have enough Stamina, Take Choice Again
-//			else
-//			{
-//				isDone = false;
-//			}
-//			break;
-//		case 2: // If User Choice is 2, Block
-//			// Disable Stamina Recovery, Block
-//			Players.at(playerCurrent).isRecovering = false;
-//			Players.at(playerCurrent).isBlocking = true;
-//			isDone = true;
-//			break;
-//		case 3: // If User Choice is 3, Dodge
-//			// If User has enough Stamina, Dodge
-//			if (Players.at(playerCurrent).personStamina >= gameConsts[dCOST])
-//			{
-//				Players.at(playerCurrent).isDodging = true;
-//				isDone = true;
-//			}
-//			// If User does Not have enough Stamina, Take Choice Again
-//			else
-//			{
-//				isDone = false;
-//			}
-//			break;
-//		case 4: // If User Choice is 4, Wait
-//			// Enable Stamina Recovery, Wait
-//			Players.at(playerCurrent).isRecovering = true;
-//			Players.at(playerCurrent).isWaiting = true;
-//			isDone = true;
-//			break;
-//		case 9: // If User Choice is 9, Exit
-//			isDone = true;
-//			break;
-//		default: // If User Choice is Not within range, Wait
-//			isDone = false;
-//			break;
-//		}
-//	} while (isDone != true);
-//
-//	// playerChoice = userInt
-//	playerChoice = userInt;
-//
-//	// Return Void
-//	return;
-//}
+void Game::gamePlayerTurn(int uMENU, int uPAGE)
+{
+	// Initialize Variable(s) for gamePlayerTurn()
+	int userInt = (-1);		  // Initialize Int(s) for storing User Int(s)
+	double userDouble = (-1); // Initialize Double(s) for storing User Double(s)
+	bool isDone = false;	  // Initialize Bool(s) for storing Bool(s)
+
+	// Take User's Choice with dsChoiceNumber() while isDone != true;
+	do
+	{
+		// Display Game Ui with Correct Ui Index
+		userDouble = dsUisDisplay(uMENU, uPAGE);
+		userInt = userDouble;
+
+		// Check User Choice
+		switch (userInt)
+		{
+		case 1: // If User Choice is 1, Attack
+			// If User has enough Stamina, Attack
+			if (Players.at(playerCurrent).personStamina >= gameConsts[aCOST])
+			{
+				// Reset Player
+				// playerChoice = (-1);
+				Players.at(playerCurrent).isRecovering = true;
+				Players.at(playerCurrent).isAttacking = false;
+				Players.at(playerCurrent).isBlocking = false;
+				Players.at(playerCurrent).isDodging = false;
+				Players.at(playerCurrent).isWaiting = false;
+
+				// Attack
+				Players.at(playerCurrent).isAttacking = true;
+				isDone = true;
+			}
+			// If User does Not have enough Stamina, Take Choice Again
+			else
+			{
+				isDone = false;
+			}
+			break;
+		case 2: // If User Choice is 2, Block
+			// Reset Player
+			// playerChoice = (-1);
+			Players.at(playerCurrent).isRecovering = true;
+			Players.at(playerCurrent).isAttacking = false;
+			Players.at(playerCurrent).isBlocking = false;
+			Players.at(playerCurrent).isDodging = false;
+			Players.at(playerCurrent).isWaiting = false;
+
+			// Disable Stamina Recovery, Block
+			Players.at(playerCurrent).isRecovering = false;
+			Players.at(playerCurrent).isBlocking = true;
+			isDone = true;
+			break;
+		case 3: // If User Choice is 3, Dodge
+			// If User has enough Stamina, Dodge
+			if (Players.at(playerCurrent).personStamina >= gameConsts[dCOST])
+			{
+				// Reset Player
+				// playerChoice = (-1);
+				Players.at(playerCurrent).isRecovering = true;
+				Players.at(playerCurrent).isAttacking = false;
+				Players.at(playerCurrent).isBlocking = false;
+				Players.at(playerCurrent).isDodging = false;
+				Players.at(playerCurrent).isWaiting = false;
+
+				// Dodge
+				Players.at(playerCurrent).isDodging = true;
+				isDone = true;
+			}
+			// If User does Not have enough Stamina, Take Choice Again
+			else
+			{
+				isDone = false;
+			}
+			break;
+		case 4: // If User Choice is 4, Wait
+			// Reset Player
+			// playerChoice = (-1);
+			Players.at(playerCurrent).isRecovering = true;
+			Players.at(playerCurrent).isAttacking = false;
+			Players.at(playerCurrent).isBlocking = false;
+			Players.at(playerCurrent).isDodging = false;
+			Players.at(playerCurrent).isWaiting = false;
+
+			// Enable Stamina Recovery, Wait
+			Players.at(playerCurrent).isRecovering = true;
+			Players.at(playerCurrent).isWaiting = true;
+			isDone = true;
+			break;
+		case 9: // If User Choice is 9, Exit
+			isDone = true;
+			break;
+		default: // If User Choice is Not within range, Wait
+			isDone = false;
+			break;
+		}
+	} while (isDone != true);
+
+	// playerChoice = userInt
+	playerChoice = userInt;
+
+	// Return Void
+	return;
+}
 
 // Function to Take Enemy's Choice in Combat
 // Accepts No Parameter(s)
@@ -3071,191 +3782,3 @@ int Game::gameEnemyAi()
 /******************************************************************************
  *                             FUNCTION DEFINITIONS                           *
  ******************************************************************************/
-
-// Function to execute Person Attack
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::turnAttackShow()
-{
-	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking == true)
-	{
-		cout << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " hit "
-			 << Players.at(playerCurrent).personName << " at the same time for "
-			 << (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense)
-			 << " damage." << endl
-			 << endl;
-	}
-	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isDodging == true)
-	{
-		cout << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " dodged "
-			 << Players.at(playerCurrent).personName << "'s attack and hit them after for "
-			 << (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense)
-			 << " damage." << endl
-			 << endl;
-	}
-	return;
-}
-
-// Function to execute Person Block
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::turnBlockShow()
-{
-	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking == true)
-	{
-		if (Players.at(playerCurrent).personHealth - ((Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) / gameConsts[bBUFF]) <= 0)
-		{
-			cout << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " hit "
-				 << Players.at(playerCurrent).personName << "'s shield and damaged them for "
-				 << ((Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) / gameConsts[bBUFF])
-				 << " damage." << endl
-				 << endl;
-		}
-		else
-		{
-			cout << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " hit "
-				 << Players.at(playerCurrent).personName << "'s shield and damaged them for "
-				 << ((Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense) / gameConsts[bBUFF])
-				 << " damage." << endl
-				 << endl;
-			if ((Players.at(playerCurrent).personStamina - gameConsts[bCOST]) <= 0)
-			{
-				cout << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " stunned "
-					 << Players.at(playerCurrent).personName << " and hit them again for "
-					 << (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense)
-					 << " damage." << endl
-					 << endl;
-			}
-			else
-			{
-			}
-		}
-	}
-	return;
-}
-
-// Function to execute Person Dodge
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::turnDodgeShow()
-{
-	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isBlocking == true)
-	{
-		cout << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " caught "
-			 << Players.at(playerCurrent).personName << "'s dodge and hit them them after for "
-			 << (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense)
-			 << " damage." << endl
-			 << endl;
-	}
-	return;
-}
-
-// Function to execute Person Wait
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::turnWaitShow()
-{
-	if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).isAttacking == true)
-	{
-		cout << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " attacked "
-			 << Players.at(playerCurrent).personName << " while they hesitated and hit them for "
-			 << (Floors.at(floorCurrent).Enemies.at(enemyCurrent).Weapons.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personWeapon).weaponDamage - Players.at(playerCurrent).Armors.at(Players.at(playerCurrent).personArmor).armorDefense)
-			 << " damage." << endl
-			 << endl;
-	}
-	return;
-}
-
-// Function to execute Person Attack
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::enemyAttackShow()
-{
-	if (Players.at(playerCurrent).isAttacking == true)
-	{
-		cout << Players.at(playerCurrent).personName << " hit "
-			 << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " at the same time for "
-			 << (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense)
-			 << " damage." << endl
-			 << endl;
-	}
-	if (Players.at(playerCurrent).isDodging == true)
-	{
-		cout << Players.at(playerCurrent).personName << " dodged "
-			 << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << "'s attack and hit them after for "
-			 << (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense)
-			 << " damage." << endl
-			 << endl;
-	}
-	return;
-}
-
-// Function to execute Person Block
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::enemyBlockShow()
-{
-	if (Players.at(playerCurrent).isAttacking == true)
-	{
-		if (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth - ((Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) / gameConsts[bBUFF]) <= 0)
-		{
-			cout << Players.at(playerCurrent).personName << " hit "
-				 << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << "'s shield and damaged them for "
-				 << ((Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) / gameConsts[bBUFF])
-				 << " damage." << endl
-				 << endl;
-		}
-		else
-		{
-			cout << Players.at(playerCurrent).personName << " hit "
-				 << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << "'s shield and damaged them for "
-				 << ((Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense) / gameConsts[bBUFF])
-				 << " damage." << endl
-				 << endl;
-			if ((Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina - gameConsts[bCOST]) <= 0)
-			{
-				cout << Players.at(playerCurrent).personName << " stunned "
-					 << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " and hit them again for "
-					 << (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense)
-					 << " damage." << endl
-					 << endl;
-			}
-			else
-			{
-			}
-		}
-	}
-	return;
-}
-
-// Function to execute Person Dodge
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::enemyDodgeShow()
-{
-	if (Players.at(playerCurrent).isBlocking == true)
-	{
-		cout << Players.at(playerCurrent).personName << " caught "
-			 << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << "'s dodge and hit them them after for "
-			 << (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense)
-			 << " damage." << endl
-			 << endl;
-	}
-	return;
-}
-
-// Function to execute Person Wait
-// Accepts no parameters
-// Returns void, passes data by member access
-void Game::enemyWaitShow()
-{
-	if (Players.at(playerCurrent).isAttacking == true)
-	{
-		cout << Players.at(playerCurrent).personName << " attacked "
-			 << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personName << " while they hesitated and hit them for "
-			 << (Players.at(playerCurrent).Weapons.at(Players.at(playerCurrent).personWeapon).weaponDamage - Floors.at(floorCurrent).Enemies.at(enemyCurrent).Armors.at(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personArmor).armorDefense)
-			 << " damage." << endl
-			 << endl;
-	}
-	return;
-}
