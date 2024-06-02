@@ -3191,6 +3191,9 @@ void Game::gameCombat()
 			++enemyCurrent;
 		}
 
+		// Move to First Enemy
+		enemyCurrent = 0;
+
 		// Move to Next Floor
 		++floorCurrent;
 	}
