@@ -886,16 +886,8 @@ Game::Game()
 	dsFiles(fileUi);
 
 	/*  	ENGAGE IN COMBAT UNTIL VICTORY OR GAME OVER	-	-	-	-	-	  */
-	do
-	{
-		/** 	Play Until All Levels Done or All Players Dead	-	-	-	 **/
-		gameCombat();
-	} while (Floors.at(Floors.size() - 1)
-					 .Enemies.at(Floors.at(Floors.size() - 1)
-									 .Enemies.size() -
-								 1)
-					 .personHealth > 0 &&
-			 Players.at(Players.size() - 1).personHealth > 0);
+	/** 	Play Until All Levels Done or All Players Dead	-	-	-	 **/
+	gameCombat();
 
 	/*  	OPEN OUTRO MENU SCREENS AFTER GAME COMPLETE	-	-	-	-	-	  */
 	// dsMenus(OUTRO);
@@ -1450,7 +1442,7 @@ void Game::dsFiles(string dsFileName)
 
 			/***	Add Pointers to chapPtr Vector in Floor Intro Chapter	***/
 			screenMenu.at(FLOORINTRO)
-				.chapPtrs.push_back(&floorCurrent);
+				.chapPtrs.push_back(&floorActive);
 
 			/*  	CHECK WHICH CHAPTERS NEED DATA FROM CHAPTER VECTOR	-	  */
 			/** 	Loop through Menu Screen Chapters to Find Chapters	-	 **/
@@ -1523,7 +1515,7 @@ void Game::dsFiles(string dsFileName)
 				 ++uiScreen)
 			{
 				screenUi.at(uiScreen)
-					.chapPtrs.push_back(&floorCurrent);
+					.chapPtrs.push_back(&floorActive);
 				screenUi.at(uiScreen)
 					.chapPtrs.push_back(&floorRound);
 				screenUi.at(uiScreen)
@@ -1854,33 +1846,14 @@ double Game::dsMenuDisplay(int chapIndex, int pageIndex)
 					.sLineCols.at(LineCol)
 					.lInfo == true)
 			{
-				/*  	CHECK IF SCREEN IS FLOOR INTRO	-	-	-	-	-	  */
-				/** 	If Screen is Floor Intro Screen, Add 1	-	-	-	 **/
-				if (chapIndex == FLOORINTRO)
-				{
-					lineString.replace(
-						lineString.find_first_of("~"),
-						1,
-						to_string(*screenMenu.at(chapIndex)
-									   .sPages.at(pageIndex)
-									   .sLines.at(pageLine)
-									   .sLineCols.at(LineCol)
-									   .lNumPtr +
-								  1));
-				}
-
-				/** 	If Screen is Not Floor Intro Screen, Do Not Add 1	 **/
-				else
-				{
-					lineString.replace(
-						lineString.find_first_of("~"),
-						1,
-						to_string(*screenMenu.at(chapIndex)
-									   .sPages.at(pageIndex)
-									   .sLines.at(pageLine)
-									   .sLineCols.at(LineCol)
-									   .lNumPtr));
-				}
+				lineString.replace(
+					lineString.find_first_of("~"),
+					1,
+					to_string(*screenMenu.at(chapIndex)
+								   .sPages.at(pageIndex)
+								   .sLines.at(pageLine)
+								   .sLineCols.at(LineCol)
+								   .lNumPtr));
 			}
 
 			/***	Add lineString to lineStrings Vector	-	-	-	-	***/
@@ -2550,11 +2523,12 @@ void Game::dsUisCombat()
 		}
 	}
 
-	cout << left << setw(40) << "Player Health: " + to_string(Players.at(playerCurrent).personHealth)
-		 << setw(40) << right << "Enemy Health: " + to_string(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth)
+	cout << left << "Player Health: " << Players.at(playerCurrent).personHealth
+		 << "\tPlayer Money: " << Players.at(playerCurrent).personMoney
+		 << setw(33) << right << "Enemy Health: " << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth
 		 << endl
-		 << setw(40) << left << "Player Stam: " + to_string(Players.at(playerCurrent).personStamina)
-		 << setw(40) << right << "Enemy Stam: " + to_string(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina)
+		 << left << "Player Stam: " << Players.at(playerCurrent).personStamina
+		 << setw(61) << right << "Enemy Stam: " << Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina
 		 << endl;
 
 	/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	-	  */
@@ -3161,11 +3135,18 @@ void Game::gameCombat()
 
 	for (int i = 0; i < Floors.size(); ++i)
 	{
+		// Move to Next Floor
+		++floorActive;
+
 		// Display New Floor Intro
 		dsMenus(FLOORINTRO);
 
 		for (int j = 0; j < Floors.at(floorCurrent).Enemies.size(); ++j)
 		{
+			// Reset Choices
+			playerChoice = 0;
+			enemyChoice = 1;
+
 			do
 			{
 				// Move to Next Round
@@ -3185,47 +3166,57 @@ void Game::gameCombat()
 
 				// Stamina Recovery System
 				gameStaminaRecovery();
-			} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 && Players.at(playerCurrent).personHealth > 0);
 
-			// Move to Next Enemy
-			++enemyCurrent;
+			} while (Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth > 0 &&
+					 Players.at(playerCurrent).personHealth > 0);
+
+			// Check if player is dead
+			if (Players.at(playerCurrent).personHealth <= 0)
+			{
+				break;
+			}
+
+			else
+			{
+				// Display Victory Screen
+				dsMenus(4);
+
+				// Recover Players Resources After Killing Enemy
+				Players.at(playerCurrent) + Floors.at(floorCurrent).Enemies.at(enemyCurrent);
+
+				// Move to First Round
+				floorRound = 0;
+
+				// Move to Next Enemy
+				--enemyCount;
+				++enemyCurrent;
+			}
 		}
 
-		// Move to First Enemy
-		enemyCurrent = 0;
+		// Check if player is dead
+		if (Players.at(playerCurrent).personHealth <= 0)
+		{
+			break;
+		}
 
-		// Move to Next Floor
-		++floorCurrent;
+		else
+		{
+			// Reward Player After Beating Floor
+			Players.at(playerCurrent).personMoney += Floors.at(floorCurrent).floorMoney;
+
+			// Move to First Enemy
+			enemyCurrent = 0;
+
+			// Move to Next Floor
+			++floorCurrent;
+		}
 	}
 
-	// Take User Choice of(1 - 5)
-	userInt = dsChoiceNumber(1, 5);
-
-	// Check User Choice
-	switch (userInt)
+	// Check if player is dead
+	if (Players.at(playerCurrent).personHealth <= 0)
 	{
-	case 1: // If User Choice is 1, Continue
-		isDone = true;
-		break;
-	case 2: // If User Choice is within range, Continue
-		// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 4 to Selected
-		isDone = false;
-		break;
-	case 3: // If User Choice is within range, Continue
-		// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 5 to Selected
-		isDone = false;
-		break;
-	case 4: // If User Choice is within range, Continue
-		// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 6 to Selected
-		isDone = false;
-		break;
-	case 5: // If User Choice is within range, Continue
-		// uiLinesNumbers[uMENU][uLINE][3] = 1; // Set Menu Line 7 to Selected
-		isDone = false;
-		break;
-	default: // If User Choice is Not within range, Wait
-		isDone = false;
-		break;
+		// Display Death Screen
+		dsMenus(5);
 	}
 
 	// Return Void

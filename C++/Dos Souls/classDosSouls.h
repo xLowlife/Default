@@ -65,10 +65,9 @@ using namespace std;
 /** 	Initialize Const Strings for File	-	-	-	-	-	-	-	-	 **/
 const string
 	/***	File Names	-	-	-	-	-	-	-	-	-	-	-	-	-	***/
-	fileNew = "fileNew.dat",				 // Specify Name of New File
-	fileMenus = "fileMenus.txt",			 // Specify Name of Game Menu Screens File
-	fileUi = "fileUis.txt",					 // Specify Name of Game Ui Screens File
-	fileUisMessages = "fileUisMessages.txt", // Specify Name of Game Ui Messages File
+	fileNew = "fileNew.dat",	 // Specify Name of New File
+	fileMenus = "fileMenus.txt", // Specify Name of Game Menu Screens File
+	fileUi = "fileUis.txt",		 // Specify Name of Game Ui Screens File
 	fileItems = "fileItems.txt",
 	fileFloors = "fileFloors.txt",
 	fileEnemies = "fileEnemies.txt",
@@ -76,7 +75,7 @@ const string
 
 /** 	Initialize Const Int Array for Game Consts	-	-	-	-	-	-	 **/
 const int gameConsts[] =
-	{100, 1, 2, 100, 10, 3, 2, 1, 10, 25, 2, 50, 10, 4, 3, 500, 250};
+	{100, 1, 2, 100, 15, 3, 2, 1, 10, 25, 2, 50, 10, 4, 3, 500, 250};
 /***	Initialize Enums for Game Consts	-	-	-	-	-	-	-	-	***/
 enum gameConstNames
 {
@@ -162,6 +161,7 @@ private: /*  	PRIVATE MEMBER SECTION FOR CLASS	-	-	-	-	-	-	  */
 
 		/***	Game Progress Ints	-	-	-	-	-	-	-	-	-	-	***/
 		floorCurrent = 0,
+		floorActive = 0,
 		floorRound = 0,
 		enemyCurrent = 0,
 		playerCurrent = 0,
