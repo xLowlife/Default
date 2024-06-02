@@ -1518,29 +1518,39 @@ void Game::dsFiles(string dsFileName)
 		else if (dsFileName == fileUi)
 		{
 			/***	Add Pointers to chapPtr Vector in Combat 1 Chapter	-	***/
-			screenUi.at(COMBAT1)
-				.chapPtrs.push_back(&floorCurrent);
-			screenUi.at(COMBAT1)
-				.chapPtrs.push_back(&floorRound);
-			screenUi.at(COMBAT1)
-				.doubPtrs.push_back(&Players.at(0)
-										 .personHealth);
-			screenUi.at(COMBAT1)
-				.doubPtrs.push_back(&Floors.at(0)
-										 .Enemies.at(0)
-										 .personHealth);
-			screenUi.at(COMBAT1)
-				.doubPtrs.push_back(&Players.at(0)
-										 .personStamina);
-			screenUi.at(COMBAT1)
-				.doubPtrs.push_back(&Floors.at(0)
-										 .Enemies.at(0)
-										 .personStamina);
-			screenUi.at(COMBAT1)
-				.doubPtrs.push_back(&Players.at(0)
-										 .personMoney);
-			screenUi.at(COMBAT1)
-				.chapPtrs.push_back(&enemyCount);
+			for (int uiScreen = 0;
+				 uiScreen < screenUi.size();
+				 ++uiScreen)
+			{
+				screenUi.at(uiScreen)
+					.chapPtrs.push_back(&floorCurrent);
+				screenUi.at(uiScreen)
+					.chapPtrs.push_back(&floorRound);
+				screenUi.at(uiScreen)
+					.chapPtrs.push_back(
+						reinterpret_cast<int *>(&Players.at(0)
+													 .personMoney));
+				screenUi.at(uiScreen)
+					.chapPtrs.push_back(&enemyCount);
+				screenUi.at(uiScreen)
+					.chapPtrs.push_back(
+						reinterpret_cast<int *>(&Players.at(0)
+													 .personHealth));
+				screenUi.at(uiScreen)
+					.chapPtrs.push_back(
+						reinterpret_cast<int *>(&Floors.at(0)
+													 .Enemies.at(0)
+													 .personHealth));
+				screenUi.at(uiScreen)
+					.chapPtrs.push_back(
+						reinterpret_cast<int *>(&Players.at(0)
+													 .personStamina));
+				screenUi.at(uiScreen)
+					.chapPtrs.push_back(
+						reinterpret_cast<int *>(&Floors.at(0)
+													 .Enemies.at(0)
+													 .personStamina));
+			}
 
 			/*  	CHECK WHICH CHAPTERS NEED DATA FROM CHAPTER VECTOR	-	  */
 			/** 	Loop through Ui Screen Chapters to Find Chapters	-	 **/
@@ -1564,7 +1574,9 @@ void Game::dsFiles(string dsFileName)
 					for (int pageLine = 1;
 						 chapPtrsAmount < screenUi.at(uiScreen)
 											  .chapPtrs.size() &&
-						 pageLine < 2 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.size()*/;
+						 pageLine < screenUi.at(uiScreen)
+										.sPages.at(screenPage)
+										.sLines.size();
 						 ++pageLine)
 					{
 						/*  	CHECK WHICH LINE COLUMNS NEED DATA	-	-	  */
@@ -1595,62 +1607,6 @@ void Game::dsFiles(string dsFileName)
 
 								/***	Increase Count of Columns with Ptrs	***/
 								++chapPtrsAmount;
-							}
-						}
-					}
-				}
-			}
-
-			/*  	CHECK WHICH CHAPTERS NEED DATA FROM CHAPTER VECTOR	-	  */
-			/** 	Loop through Ui Screen Chapters to Find Chapters	-	 **/
-			for (int uiScreen = 0;
-				 uiScreen < screenUi.size();
-				 ++uiScreen)
-			{
-				/*  	CHECK WHICH PAGES NEED DATA FROM CHAPTER VECTOR	-	  */
-				/** 	Loop through Chapter Pages to Find Pages	-	-	 **/
-				for (int screenPage = 0;
-					 screenPage < screenUi.at(uiScreen)
-									  .sPages.size();
-					 ++screenPage)
-				{
-					/***	Initialize Ints for Tracking Pointers Needed	***/
-					int doubPtrsAmount = 0;
-
-					/*  	CHECK WHICH PAGE LINES NEED DATA FROM CHAPTER	  */
-					/** 	Loop through Page Lines to Find Lines	-	-	 **/
-					/** 	Break Loop If Out of Pointers to Offer	-	-	 **/
-					for (int pageLine = 2;
-						 doubPtrsAmount < screenUi.at(uiScreen)
-											  .doubPtrs.size() &&
-						 pageLine < 5 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.size()*/;
-						 ++pageLine)
-					{
-						/*  	CHECK WHICH LINE COLUMNS NEED DATA	-	-	  */
-						/** 	Loop through Line Columns to Find Columns	 **/
-						for (int LineCol = 1;
-							 LineCol < 2 /*screenUi.at(uiScreen).sPages.at(screenPage).sLines.at(pageLine).sLineCols.size()*/;
-							 ++LineCol)
-						{
-							/*  	POINT LINE COLUMNS TO DATA FROM CHAPTER	  */
-							/** 	If Line Column Needs Data from Chapter	 **/
-							if (screenUi.at(uiScreen)
-									.sPages.at(screenPage)
-									.sLines.at(pageLine)
-									.sLineCols.at(LineCol)
-									.lInfo == true)
-							{
-								/***	Point Column to Data from Chapter	***/
-								screenUi.at(uiScreen)
-									.sPages.at(screenPage)
-									.sLines.at(pageLine)
-									.sLineCols.at(LineCol)
-									.lDoubPtr =
-									screenUi.at(uiScreen)
-										.doubPtrs.at(doubPtrsAmount);
-
-								/***	Increase Count of Columns with Ptrs	***/
-								++doubPtrsAmount;
 							}
 						}
 					}
@@ -2594,6 +2550,13 @@ void Game::dsUisCombat()
 		}
 	}
 
+	cout << left << setw(40) << "Player Health: " + to_string(Players.at(playerCurrent).personHealth)
+		 << setw(40) << right << "Enemy Health: " + to_string(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personHealth)
+		 << endl
+		 << setw(40) << left << "Player Stam: " + to_string(Players.at(playerCurrent).personStamina)
+		 << setw(40) << right << "Enemy Stam: " + to_string(Floors.at(floorCurrent).Enemies.at(enemyCurrent).personStamina)
+		 << endl;
+
 	/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	-	  */
 	return;
 }
@@ -2609,8 +2572,6 @@ double Game::dsUisDisplay(int chapIndex, int pageIndex)
 
 	/** 	Initialize Strings for dsUisDisplay()	-	-	-	-	-	-	 **/
 	string lineString = " ";
-
-	int newDouble = (-1);
 
 	/*  	OUTPUT DISPLAY SCREEN TO CONSOLE	-	-	-	-	-	-	-	  */
 	/** 	Clear Console to Refresh Display Screen	-	-	-	-	-	-	 **/
@@ -2648,47 +2609,22 @@ double Game::dsUisDisplay(int chapIndex, int pageIndex)
 							 .lStr;
 
 			/***	If Page's Line Column Pointer Points to Value, Swap "~"	***/
-			//			if (screenUi.at(chapIndex)
-			//					.sPages.at(pageIndex)
-			//					.sLines.at(pageLine)
-			//					.sLineCols.at(LineCol)
-			//					.lInfo == true)
-			//			{
-			//				switch (screenUi.at(chapIndex)
-			//							.sPages.at(pageIndex)
-			//							.sLines.at(pageLine)
-			//							.sLineCols.at(LineCol)
-			//							.lType[0])
-			//				{
-			//				case 'i':
-			//					lineString.replace(
-			//						lineString.find_first_of("~"),
-			//						1,
-			//						to_string(*screenUi.at(chapIndex)
-			//									   .sPages.at(pageIndex)
-			//									   .sLines.at(pageLine)
-			//									   .sLineCols.at(LineCol)
-			//									   .lNumPtr));
-			//					break;
-			//				case 'd':
-			//					//
-			//					newDouble =
-			//						*screenUi.at(chapIndex)
-			//							 .sPages.at(pageIndex)
-			//							 .sLines.at(pageLine)
-			//							 .sLineCols.at(LineCol)
-			//							 .lDoubPtr;
-			//
-			//					//
-			//					lineString.replace(
-			//						lineString.find_first_of("~"),
-			//						1,
-			//						to_string(newDouble));
-			//					break;
-			//				default:
-			//					break;
-			//				}
-			//			}
+			if (screenUi.at(chapIndex)
+					.sPages.at(pageIndex)
+					.sLines.at(pageLine)
+					.sLineCols.at(LineCol)
+					.lInfo == true)
+			{
+				/** 	If Screen is Not Floor Intro Screen, Do Not Add 1	 **/
+				lineString.replace(
+					lineString.find_first_of("~"),
+					1,
+					to_string(*screenUi.at(chapIndex)
+								   .sPages.at(pageIndex)
+								   .sLines.at(pageLine)
+								   .sLineCols.at(LineCol)
+								   .lNumPtr));
+			}
 
 			/***	Add lineString to lineStrings Vector	-	-	-	-	***/
 			lineStrings.push_back(lineString);

@@ -121,7 +121,8 @@ enum screenUiNames
 	COMBAT1, // Specify Chapter of Player Attack Ui Screens
 	COMBAT2, // Specify Chapter of Player Block Ui Screens
 	COMBAT3, // Specify Chapter of Player Dodge Ui Screens
-	COMBAT4	 // Specify Chapter of Player Wait Ui Screens
+	COMBAT4, // Specify Chapter of Player Wait Ui Screens
+	COMBAT5	 // Specify Chapter of Player Wait Ui Screens
 };
 
 /*  	INITIALIZE GLOBAL FUNCTIONS FOR FILE	-	-	-	-	-	-	-	  */
