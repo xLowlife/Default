@@ -62,6 +62,9 @@ using namespace std;
  ******************************************************************************/
 
 /*  	INITIALIZE GLOBAL CONSTS FOR FILE	-	-	-	-	-	-	-	-	  */
+/** 	Initialize Const Ints for File	-	-	-	-	-	-	-	-	-	 **/
+const int arraySIZE = 4; // Specify Size of File Array
+
 /** 	Initialize Const Strings for File	-	-	-	-	-	-	-	-	 **/
 const string
 	/***	File Names	-	-	-	-	-	-	-	-	-	-	-	-	-	***/
@@ -126,7 +129,18 @@ enum screenUiNames
 
 /*  	INITIALIZE GLOBAL FUNCTIONS FOR FILE	-	-	-	-	-	-	-	  */
 /** 	Initialize File Read/Write Functions	-	-	-	-	-	-	-	 **/
-bool fileOpen(fstream &, string &, bool fileIsWriting = false);
+class newClass
+{
+};
+
+bool fileOpen(fstream &fileStream,
+			  const string &fileName = fileNew,
+			  bool fileIsWriting = false,
+			  bool fileIsBinary = false);
+
+void fileRead(newClass[], const string &fileName = fileNew);
+
+void fileWrite(newClass[], const string &fileName = fileNew, bool arrayIsEmpty = false);
 
 /******************************************************************************
  *                               GLOBAL DECLARATIONS                          *
@@ -278,35 +292,76 @@ public: /*  	PUBLIC MEMBER SECTION FOR CLASS	-	-	-	-	-	-	-	  */
 /*  	DEFINE GLOBAL FUNCTIONS FOR FILE	-	-	-	-	-	-	-	-	  */
 /** 	Define File Read/Write Functions	-	-	-	-	-	-	-	-	 **/
 
-// Function to Open Files in Binary Mode
+// Function to Open Files
 // Accepts:	1 Fstream Parameter for File Stream,
 // 			1 String Parameter for File Name,
 // Optional	1 Bool Parameter for true == Writing to File. (Default: false)
+// Optional	1 Bool Parameter for true == File is Binary. (Default: false)
 // Returns Bool, true == File is Open, false == File is Not Open
-bool fileOpen(fstream &fileStream, string &fileName, bool fileIsWriting)
+bool fileOpen(fstream &fileStream, const string &fileName,
+			  bool fileIsWriting, bool fileIsBinary)
 {
-	/*  	CHECK IF OPENING FSTREAM IN INPUT OR OUTPUT MODE	-	-	-	  */
-	/** 	If Opening Fstream in Output Mode, Open File with ios::out	-	 **/
-	if (fileIsWriting == true)
+	/*  	CHECK IF OPENING FILE IN BINARY MODE	-	-	-	-	-	-	  */
+	/** 	If Opening File in Binary Mode, Open File with ios::binary	-	 **/
+	if (fileIsBinary == true)
 	{
-		/***	Open File with ios::out to Write to File	-	-	-	-	***/
-		fileStream.open(fileName, ios::out /*| ios::binary*/);
+		/*  	CHECK IF OPENING FSTREAM IN INPUT OR OUTPUT MODE	-	-	  */
+		/** 	If Opening Fstream in Output Mode, Open File with ios::out	 **/
+		if (fileIsWriting == true)
+		{
+			/***	Open File with ios::out to Write to File	-	-	-	***/
+			fileStream.open(fileName, ios::out | ios::binary);
+		}
+
+		/** 	If Opening Fstream in Input Mode, Open File with ios::in	 **/
+		else
+		{
+			/***	Open File with ios::in to Read from File	-	-	-	***/
+			fileStream.open(fileName, ios::in | ios::binary);
+		}
 	}
 
-	/** 	If Opening Fstream in Input Mode, Open File with ios::in	-	 **/
+	/** 	If Opening File in Normal Mode, Open File without ios::binary	 **/
 	else
 	{
-		/***	Open File with ios::in to Read from File	-	-	-	-	***/
-		fileStream.open(fileName, ios::in /*| ios::binary*/);
+		/*  	CHECK IF OPENING FSTREAM IN INPUT OR OUTPUT MODE	-	-	  */
+		/** 	If Opening Fstream in Output Mode, Open File with ios::out	 **/
+		if (fileIsWriting == true)
+		{
+			/***	Open File with ios::out to Write to File	-	-	-	***/
+			fileStream.open(fileName, ios::out);
+		}
+
+		/** 	If Opening Fstream in Input Mode, Open File with ios::in	 **/
+		else
+		{
+			/***	Open File with ios::in to Read from File	-	-	-	***/
+			fileStream.open(fileName, ios::in);
+		}
 	}
 
 	/*  	CHECK IF FILE IS OPEN	-	-	-	-	-	-	-	-	-	-	  */
 	/** 	If File Fails to Open Correctly, Return File is Not Open	-	 **/
-	if (fileStream.fail())
+	if (!fileStream.is_open())
 	{
-		/***	Output Error Message	-	-	-	-	-	-	-	-	-	***/
-		cout << "File, " << fileName << ", failed to open" << endl
-			 << endl;
+		/*  	CHECK IF OPENING FSTREAM IN INPUT OR OUTPUT MODE	-	-	  */
+		/** 	If Opening Fstream in Output Mode, Output Write Message	-	 **/
+		if (fileIsWriting == true)
+		{
+			/***	Output Write Error Message	-	-	-	-	-	-	-	***/
+			cout << "File, " << fileName
+				 << ", failed to open in Write Mode" << endl
+				 << endl;
+		}
+
+		/** 	If Opening Fstream in Input Mode, Output Read Message	-	 **/
+		else
+		{
+			/***	Output Read Error Message	-	-	-	-	-	-	-	***/
+			cout << "File, " << fileName
+				 << ", failed to open in Read Mode" << endl
+				 << endl;
+		}
 
 		/***	Return File is Not Open	-	-	-	-	-	-	-	-	-	***/
 		return false; // false == File is Not Open
@@ -315,13 +370,136 @@ bool fileOpen(fstream &fileStream, string &fileName, bool fileIsWriting)
 	/** 	If File Opens Correctly, Return File is Open	-	-	-	-	 **/
 	else
 	{
-		/***	Output Success Message	-	-	-	-	-	-	-	-	-	***/
-		cout << "File, " << fileName << ", opened successfully" << endl
-			 << endl;
+		/*  	CHECK IF OPENING FSTREAM IN INPUT OR OUTPUT MODE	-	-	  */
+		/** 	If Opening Fstream in Output Mode, Output Write Message	-	 **/
+		if (fileIsWriting == true)
+		{
+			/***	Output Write Success Message	-	-	-	-	-	-	***/
+			cout << "File, " << fileName
+				 << ", opened in Write Mode successfully" << endl
+				 << endl;
+		}
+
+		/** 	If Opening Fstream in Input Mode, Output Read Message	-	 **/
+		else
+		{
+			/***	Output Read Success Message	-	-	-	-	-	-	-	***/
+			cout << "File, " << fileName
+				 << ", opened in Read Mode successfully" << endl
+				 << endl;
+		}
 
 		/***	Return File is Open	-	-	-	-	-	-	-	-	-	-	***/
 		return true; // true == File is Open
 	}
+}
+
+// Function to Read Data from Open Files
+// Accepts:	1 Array Parameter for File Array,
+// 			1 String Parameter for File Name.
+// Returns Void
+void fileRead(newClass fileArray[], const string &fileName)
+{
+	/*  	INITIALIZE VARIABLES FOR fileRead()	-	-	-	-	-	-	-	  */
+	/** 	Initialize Fstreams for fileRead()	-	-	-	-	-	-	-	 **/
+	fstream readStream;
+
+	/*  	OPEN FILE IN READ MODE WITH fileOpen()	-	-	-	-	-	-	  */
+	/** 	If File Opens Correctly, Read Data from File	-	-	-	-	 **/
+	if (fileOpen(readStream, fileName, false, true))
+	{
+		/***	Initialize Strings for Reading Data from File	-	-	-	***/
+		string lineTrash; // Initialize Variable for Trash from File
+
+		/***	Initialize New Data for Storing Read Data from File	-	-	***/
+		newClass newObject;
+
+		/*  	DISPLAY DATA INTRO MESSAGE	-	-	-	-	-	-	-	-	  */
+		cout << "List of Data:" << endl
+			 << endl;
+
+		/*  	READ DATA FROM FILE	-	-	-	-	-	-	-	-	-	-	  */
+		for (int Data = 0; Data < arraySIZE; ++Data)
+		{
+			/** 	Read fileArray[Data] from File	-	-	-	-	-	-	 **/
+			readStream.read(
+				reinterpret_cast<char *>(&fileArray[Data]),
+				sizeof(fileArray[Data]));
+
+			/***	Display Data After Reading	-	-	-	-	-	-	-	***/
+			// fileArray[Data].output(cout);
+
+			/***	Advance to Next Line in File	-	-	-	-	-	-	***/
+			getline(readStream, lineTrash);
+		}
+
+		/*  	CLOSE FILE WHEN DONE READING DATA	-	-	-	-	-	-	  */
+		readStream.close();
+	}
+
+	/** 	If File Fails to Open Correctly, Create File then Write	-	-	 **/
+	else
+	{
+		/*  	OPEN FILE IN WRITE MODE WITH EMPTY ARRAY	-	-	-	-	  */
+		fileWrite(fileArray, fileName, true);
+	}
+
+	/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	-	  */
+	return;
+}
+
+// Function to Write Data to Open Files
+// Accepts:	1 Array Parameter for File Array,
+// 			1 String Parameter for File Name,
+// Optional	1 Bool Parameter for true == Array is Empty. (Default: false)
+// Returns Void
+void fileWrite(newClass fileArray[], const string &fileName,
+			   bool arrayIsEmpty)
+{
+	/*  	INITIALIZE VARIABLES FOR fileWrite()	-	-	-	-	-	-	  */
+	/** 	Initialize Fstreams for fileWrite()	-	-	-	-	-	-	-	 **/
+	fstream writeStream;
+
+	/*  	CHECK IF ARRAY IS EMPTY	-	-	-	-	-	-	-	-	-	-	  */
+	/** 	If Array is Empty, Add New Data to Array	-	-	-	-	-	 **/
+	if (arrayIsEmpty == true)
+	{
+		/***	Initialize New Data for Array	-	-	-	-	-	-	-	***/
+		vector<newClass> newData;
+
+		newClass newData1 = {};
+
+		newData.push_back(newData1);
+
+		/***	Add New Data to Array	-	-	-	-	-	-	-	-	-	***/
+		for (int Data = 0; Data < newData.size(); ++Data)
+		{
+			fileArray[Data] = newData.at(Data);
+		}
+	}
+
+	/*  	OPEN FILE IN WRITE MODE WITH fileOpen()	-	-	-	-	-	-	  */
+	/** 	If File Opens Correctly, Write Data to File	-	-	-	-	-	 **/
+	if (fileOpen(writeStream, fileName, true, true))
+	{
+		/*  	WRITE DATA TO FILE	-	-	-	-	-	-	-	-	-	-	  */
+		for (int Data = 0; Data < arraySIZE; ++Data)
+		{
+			/** 	Write fileArray[Data] to File	-	-	-	-	-	-	 **/
+			writeStream.write(
+				reinterpret_cast<char *>(&fileArray[Data]),
+				sizeof(fileArray[Data]));
+
+			/***	Advance to Next Line in File	-	-	-	-	-	-	***/
+			writeStream << '\n';
+		}
+
+		/*  	CLOSE FILE WHEN DONE WRITING DATA	-	-	-	-	-	-	  */
+		writeStream.close();
+	}
+
+	/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	-	  */
+	return;
 }
 
 /******************************************************************************

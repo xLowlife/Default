@@ -612,6 +612,33 @@ struct Game::Person
 			}
 		}
 
+		/** 	If Both People Attack, Damage Both People	-	-	-	-	 **/
+		else
+		{
+			/*  	CHECK IF BOTH PEOPLE ARE ATTACKING	-	-	-	-	-	  */
+			/** 	If Both People Attack, Damage Both People	-	-	-	 **/
+			if (this->isAttacking == true && Person2.isAttacking == true)
+			{
+				/***	Deal Full Damage to Person 2 						***/
+				Person2.personHealth -=
+					(this->Weapons
+						 .at(this->personWeapon)
+						 .weaponDamage -
+					 Person2.Armors
+						 .at(Person2.personArmor)
+						 .armorDefense);
+
+				/***	Deal Full Damage to Person 1 						***/
+				this->personHealth -=
+					(Person2.Weapons
+						 .at(Person2.personWeapon)
+						 .weaponDamage -
+					 this->Armors
+						 .at(this->personArmor)
+						 .armorDefense);
+			}
+		}
+
 		/*  	RETURN VOID	-	-	-	-	-	-	-	-	-	-	-	-	  */
 		return;
 	}
