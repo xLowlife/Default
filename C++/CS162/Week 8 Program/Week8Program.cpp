@@ -112,7 +112,7 @@ public: /*  	PUBLIC MEMBER SECTION FOR CLASS	-	-	-	-	-	-	-	  */
 
 	/** 	Initialize Display Output Functions	-	-	-	-	-	-	-	 **/
 	void output(ostream &, char = 'V');
-	friend ostream &operator<<(ostream &, Student);
+	friend ostream &operator<<(ostream &, Person);
 };
 
 /*  	DEFINE PUBLIC FUNCTIONS FOR CLASS	-	-	-	-	-	-	-	-	  */
@@ -189,7 +189,6 @@ public: /*  	PUBLIC MEMBER SECTION FOR CLASS	-	-	-	-	-	-	-	  */
 	Student(const Student &source);
 	Student(const char arg_Name[], const char arg_Major[],
 			const char arg_City[], double arg_Gpa);
-	~Student();
 
 	/** 	Initialize Private Member Get Functions	-	-	-	-	-	-	 **/
 	int get_Id() { return Id; }
@@ -245,13 +244,6 @@ Student::Student(const char arg_Name[], const char arg_Major[],
 	strcpy(City, arg_City);
 }
 
-// Default Deconstructor for Student
-// Accepts No Parameters
-// Returns Void, Passes Data by Member Access
-Student::~Student()
-{
-}
-
 /** 	Define Display Output Functions	-	-	-	-	-	-	-	-	-	 **/
 
 // Function to Output Students
@@ -291,12 +283,12 @@ void Student::output(ostream &os, char ori)
 // Function to Output Students
 // Accepts 1 Ostream Parameter, and 1 Student Parameter
 // Returns Void, Passes Data by Member Access
-ostream &operator<<(ostream &os, Student p)
+ostream &operator<<(ostream &os, Student s)
 {
 
 	/*  	DISPLAY StudentS	-	-	-	-	-	-	-	-	-	-	-	  */
 	/** 	Display Students Vertically	-	-	-	-	-	-	-	-	-	 **/
-	p.output(os, 'V');
+	s.output(os, 'V');
 
 	/*  	RETURN OSTREAM	-	-	-	-	-	-	-	-	-	-	-	-	  */
 	return os;
