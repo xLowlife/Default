@@ -126,5 +126,10 @@
 		"ms-toolsai.jupyter",
 		"ms-toolsai.vscode-jupyter-cell-tags",
 		"ms-toolsai.jupyter-keymap"
-	]
+	],
+	"workbench.secondarySideBar.defaultVisibility": "hidden",
+	"settingsSync.keybindingsPerPlatform": false,
+	"git.autofetch": true,
+	"git.enableSmartCommit": true,
+	"git.confirmSync": false
 }
