@@ -1,0 +1,326 @@
+***********************************
+*     Ticket Notes Templates      *
+***********************************
+
+Part OOS? Put in Status Comments:
+Escalated to IAM | OOS | MSF- | CT
+Child Task
+
+*********** PART Reseat ***********
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Reseat PART
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Reseat PART
+[Powered Blade UP]
+Closing Task
+
+***********************************
+
+******** PART Replacement *********
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Replace PART
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Replace PART
+[Powered Blade UP]
+Closing Task
+
+[Serial Numbers]
+Old S/N: 
+New S/N: 
+LP: 
+
+***********************************
+
+********* DBD Replacement *********
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Replace DBD
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Replace DBD
+[Powered Blade UP]
+Disposed of Old DBD in Bin
+Closing Task
+
+[Serial Numbers]
+Old S/N: 
+New S/N: 
+LP: 
+Bin: 
+
+***********************************
+
+********* X Cable Reseat **********
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Reseat X Cable
+Verified Asset Tag
+On arrival Link was: 
+Performed: Reseat X Cable
+After Reseat Link is: 
+Closing Task
+
+[Cable Map]
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+Source<<>>Destination
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+
+***********************************
+
+********** X Cable Clean **********
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Clean X Cable
+Verified Asset Tag
+On arrival Link was: 
+Performed: Clean X Cable
+After Clean Link is: 
+Closing Task
+
+[Cable Map]
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+Source<<>>Destination
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+
+***********************************
+
+********* X Cable Move **********
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Move X Cable
+Verified Asset Tag
+On arrival Link was: 
+Performed: Move X Cable
+After Move Link is: 
+Closing Task
+
+[Cable Map]
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+Source<<>>Destination
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+
+***********************************
+
+******* X Cable Replacement *******
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Replace X Cable
+Verified Asset Tag
+On arrival Link was: 
+Performed: Replace X Cable
+After Replace Link is: 
+Closing Task
+
+[Cable Map]
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+Source<<>>Destination
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+
+[Serial Numbers]
+LP: 
+
+***********************************
+
+****** DAC Cable Replacement ******
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Replace DAC Cable
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Replace DAC Cable
+[Powered Blade UP]
+Closing Task
+
+[Cable Map]
+XX000 U FPGA
+XX000 U26 Eth
+1m DAC
+
+[Serial Numbers]
+LP: 
+
+***********************************
+
+************ DIMM Move ************
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Move DIMM
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Move DIMM
+[Powered Blade UP]
+Closing Task
+
+[Serial Numbers]
+DIMM SLOT1 S/N: 
+DIMM SLOT2 S/N: 
+DIMM SLOT1 -> DIMM SLOT2
+
+***********************************
+
+******** DIMM Replacement *********
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Replace DIMM
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Replace DIMM
+[Powered Blade UP]
+Closing Task
+
+[Serial Numbers]
+DIMM SLOT Old S/N: 
+DIMM SLOT New S/N: 
+DIMM SLOT LP: 
+
+***********************************
+
+********* Fan Replacement *********
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Replace Fan
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Replace Fan
+[Powered Blade UP]
+Closing Task
+
+[Serial Numbers]
+FAN SLOT Old S/N: 
+FAN SLOT New S/N: 
+FAN SLOT LP: 
+
+***********************************
+
+******* Replace Motherboard *******
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Replace System Board
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Replace System Board
+[Powered Blade UP]
+Booted into SMTK
+Performed: Motherboard Recovery
+Performed: FRU Update
+Attached Screenshot of SMTK Logs
+Closing Task
+
+[Serial Numbers]
+Old S/N: 
+New S/N: 
+LP: 
+Warranty Log: 
+
+***********************************
+
+****** Reboot Network Device ******
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Reboot Network Device
+Verified Asset Tag
+On arrival Blade was: 
+On arrival all Links were: 
+Performed: Reboot Network Device
+Waited 5 minutes
+[Powered Blade UP]
+Network Device Booted successfully
+All Link lights returned
+Closing Task
+
+***********************************
+
+******* Rack Manager Reseat *******
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Reseat Rack Manager
+Verified Asset Tag
+On arrival Rack Manager was: 
+Performed: Reseat Rack Manager
+After Reseat Rack Manager is: 
+Requested Credentials for Putty
+Putty to Rack Manager for RscmCli#
+Attached Screenshot of Post Screen
+Closing Task
+
+***********************************
+
+************ Template *************
+
+Task ID: 
+Asset Tag: 
+OFR1 for: Replace PART
+Verified Asset Tag
+On arrival Blade was: 
+[If Blade UP, Powered Blade DOWN]
+Performed: Replace PART
+[Powered Blade UP]
+Disposed of Old DBD in Bin
+Closing Task
+
+[Cable Map]
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+Source<<>>Destination
+XX000 U Eth
+XX000 U Eth
+m g CABLE
+
+[Serial Numbers]
+Old S/N: 
+New S/N: 
+LP: 
+Bin: 
+
+DIMM SLOT1 S/N: 
+DIMM SLOT2 S/N: 
+DIMM SLOT1 -> DIMM SLOT2
+
+***********************************
+
+***********************************
+*     Ticket Notes Templates      *
+***********************************
